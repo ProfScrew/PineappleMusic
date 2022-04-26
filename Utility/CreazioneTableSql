@@ -1,0 +1,104 @@
+CREATE TABLE Users
+(
+  Username VARCHAR(15) NOT NULL,
+  Name VARCHAR(15) NOT NULL,
+  Surname VARCHAR(15) NOT NULL,
+  DateBirth DATE NOT NULL,
+  Password VARCHAR(20) NOT NULL,
+  Gender CHAR(1) NOT NULL,
+  Phone INT NOT NULL,
+  Email VARCHAR(30) NOT NULL,
+  PRIMARY KEY (Username)
+);
+
+CREATE TABLE PremiumListeners
+(
+  Expiry DATE NOT NULL,
+  Username VARCHAR(15) NOT NULL,
+  PRIMARY KEY (Username),
+  FOREIGN KEY (Username) REFERENCES Users(Username)
+);
+
+CREATE TABLE Artists
+(
+  Username VARCHAR(15) NOT NULL,
+  PRIMARY KEY (Username),
+  FOREIGN KEY (Username) REFERENCES Users(Username)
+);
+
+CREATE TABLE Songs
+(
+  Name VARCHAR(40) NOT NULL,
+  IDSong INT NOT NULL,
+  Date DATE NOT NULL,
+  Upvote INT NOT NULL,
+  View INT NOT NULL,
+  Downvote INT NOT NULL,
+  PRIMARY KEY (IDSong)
+);
+
+CREATE TABLE Playlists
+(
+  Name VARCHAR(20) NOT NULL,
+  IDList INT NOT NULL,
+  CreationDate DATE NOT NULL,
+  Username VARCHAR(15) NOT NULL,
+  PRIMARY KEY (IDList),
+  FOREIGN KEY (Username) REFERENCES Users(Username)
+);
+
+CREATE TABLE Genres
+(
+  Genre VARCHAR(20) NOT NULL,
+  PRIMARY KEY (Genre)
+);
+
+CREATE TABLE NormalSongs
+(
+  IDSong INT NOT NULL,
+  FOREIGN KEY (IDSong) REFERENCES Songs(IDSong)
+);
+
+CREATE TABLE PremiumSongs
+(
+  ExpiryDate INT NOT NULL,
+  IDSong INT NOT NULL,
+  FOREIGN KEY (IDSong) REFERENCES Songs(IDSong)
+);
+
+CREATE TABLE belongArtists
+(
+  Genre VARCHAR(20) NOT NULL,
+  Username VARCHAR(15) NOT NULL,
+  PRIMARY KEY (Genre, Username),
+  FOREIGN KEY (Genre) REFERENCES Genres(Genre),
+  FOREIGN KEY (Username) REFERENCES Artists(Username)
+);
+
+CREATE TABLE belongSongs
+(
+  IDSong INT NOT NULL,
+  Genre VARCHAR(20) NOT NULL,
+  PRIMARY KEY (IDSong, Genre),
+  FOREIGN KEY (IDSong) REFERENCES Songs(IDSong),
+  FOREIGN KEY (Genre) REFERENCES Genres(Genre)
+);
+
+CREATE TABLE sing
+(
+  IDSong INT NOT NULL,
+  Username VARCHAR(15) NOT NULL,
+  PRIMARY KEY (IDSong, Username),
+  FOREIGN KEY (IDSong) REFERENCES Songs(IDSong),
+  FOREIGN KEY (Username) REFERENCES Artists(Username)
+);
+
+CREATE TABLE Composed
+(
+  IDSong INT NOT NULL,
+  IDList INT NOT NULL,
+  PRIMARY KEY (IDSong, IDList),
+  FOREIGN KEY (IDSong) REFERENCES Songs(IDSong),
+  FOREIGN KEY (IDList) REFERENCES Playlists(IDList)
+);
+
