@@ -4,11 +4,10 @@ CREATE TABLE Users
   Name VARCHAR(20) NOT NULL,
   Surname VARCHAR(20) NOT NULL,
   Birthdate DATE NOT NULL,
-  Password VARCHAR(20) NOT NULL,
-  Gender CHAR(1) NOT NULL,
+  Password VARCHAR(20) NOT NULL CHECK(LEN(Password)>=8),
+  Gender CHAR(1) NOT NULL CHECK(Gender = 'F' OR Gender = 'M'),
   Phone INT NOT NULL,
   Email VARCHAR(40) NOT NULL,
-  Blocked BOOLEAN NOT NULL,
   PRIMARY KEY (Username)
 );
 
@@ -33,26 +32,27 @@ CREATE TABLE Artists
   FOREIGN KEY (Username) REFERENCES Users(Username)
 );
 
-CREATE TABLE CreditCards
-(
-  Username VARCHAR(40) NOT NULL,
-  Name VARCHAR(20) NOT NULL,
-  Surname VARCHAR(20) NOT NULL,
-  NumberCard DOUBLE PRECISION NOT NULL,
-  ExpiryDate DATE NOT NULL,
-  CVV INT NOT NULL,
-  PRIMARY KEY (Username),
-  FOREIGN KEY (Username) REFERENCES Users(Username)
-);
-
 CREATE TABLE Songs
 (
   Name VARCHAR(40) NOT NULL,
   IDSong INT NOT NULL,
-  CreationDate DATE NOT NULL,
-  
+  Album INT,
+  Cover VARCHAR(40);
+  ReleaseDate DATE NOT NULL,
+  Content VARCHAR(80)
   PRIMARY KEY (IDSong)
+  FOREIGN KEY (Album) REFERENCES Albums(IDAlbum)
 );
+
+CREATE TABLE Albums{
+  IDAlbum INT NOT NULL;
+  Name VARCHAR(40) NOT NULL;
+  Cover VARCHAR(40);
+  Artist VARCHAR(40) NOT NULL;
+
+  PRIMARY KEY (IDAlbum)
+  FOREIGN KEY (Artist) REFERENCES Artists(Username)
+};
 
 CREATE TABLE NormalSongs
 (
@@ -83,7 +83,7 @@ CREATE TABLE Playlists
   Name VARCHAR(20) NOT NULL,
   IDList INT NOT NULL,
   CreationDate DATE NOT NULL,
-  Author VARCHAR(15) NOT NULL,
+  Author VARCHAR(40) NOT NULL,
   PRIMARY KEY (IDList),
   FOREIGN KEY (Author) REFERENCES Users(Username)
 );
@@ -106,7 +106,7 @@ CREATE TABLE Genres
 CREATE TABLE Relate
 (
   Genre VARCHAR(20) NOT NULL,
-  Artist VARCHAR(15) NOT NULL,
+  Artist VARCHAR(40) NOT NULL,
   PRIMARY KEY (Genre, Artist),
   FOREIGN KEY (Genre) REFERENCES Genres(Name),
   FOREIGN KEY (Artist) REFERENCES Artists(Username)
@@ -124,7 +124,7 @@ CREATE TABLE Belong
 CREATE TABLE Creates
 (
   Song INT NOT NULL,
-  Username VARCHAR(15) NOT NULL,
+  Username VARCHAR(40) NOT NULL,
   PRIMARY KEY (Song, Username),
   FOREIGN KEY (Song) REFERENCES Songs(IDSong),
   FOREIGN KEY (Username) REFERENCES Artists(Username)
