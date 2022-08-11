@@ -1,133 +1,210 @@
-CREATE TABLE Users
-(
-  Username VARCHAR(40) NOT NULL,
-  Name VARCHAR(20) NOT NULL,
-  Surname VARCHAR(20) NOT NULL,
-  Birthdate DATE NOT NULL,
-  Password VARCHAR(20) NOT NULL CHECK(LENGTH(Password)>=8),
-  Gender CHAR(1) NOT NULL CHECK(Gender = 'F' OR Gender = 'M'),
-  Phone INT NOT NULL,
-  Email VARCHAR(40) NOT NULL UNIQUE,
-  PRIMARY KEY (Username)
-);
+from platform import release
+import sqlalchemy
+from sqlalchemy import *
 
-CREATE TABLE NormalListeners
-(
-  Username VARCHAR(40) NOT NULL,
-  PRIMARY KEY (Username),
-  FOREIGN KEY (Username) REFERENCES Users(Username)
-);
-
-CREATE TABLE PremiumListeners
-(
-  Username VARCHAR(40) NOT NULL,
-  PRIMARY KEY (Username),
-  FOREIGN KEY (Username) REFERENCES Users(Username)
-);
-
-CREATE TABLE Artists
-(
-  Username VARCHAR(40) NOT NULL,
-  PRIMARY KEY (Username),
-  FOREIGN KEY (Username) REFERENCES Users(Username)
-);
-
-CREATE TABLE Albums(
-  IDAlbum INT NOT NULL,
-  Name VARCHAR(40) NOT NULL,
-  Cover VARCHAR(40),
-  Artist VARCHAR(40) NOT NULL,
-
-  PRIMARY KEY (IDAlbum),
-  FOREIGN KEY (Artist) REFERENCES Artists(Username)
-);
-
-CREATE TABLE Songs
-(
-  Name VARCHAR(40) NOT NULL,
-  IDSong INT NOT NULL,
-  Album INT,
-  Cover VARCHAR(40),
-  ReleaseDate DATE NOT NULL,
-  Content VARCHAR(80),
-  PRIMARY KEY (IDSong),
-  FOREIGN KEY (Album) REFERENCES Albums(IDAlbum)
-);
+# USERS
 
 
+class User():
+    __tablename__ = 'users'                   # obbligatorio
 
-CREATE TABLE NormalSongs
-(
-  Song INT NOT NULL,
-  PRIMARY KEY (Song),
-  FOREIGN KEY (Song) REFERENCES Songs(IDSong)
-);
+    # almeno un attributo deve fare parte della primary key
+    username = Column(String, primary_key=True)
+    name = Column(String)
+    surname = Column(String)
+    birthdate = Column(Date)
+    password = Column(String)
+    gender = Column(String)
+    phone = Column(Integer)
+    email = Column(String)
 
-CREATE TABLE PremiumSongs
-(
-  ExpiryDate INT NOT NULL,
-  Song INT NOT NULL,
-  PRIMARY KEY (Song),
-  FOREIGN KEY (Song) REFERENCES Songs(IDSong)
-);
+    # questo metodo è opzionale, serve solo per pretty printing
+    def __repr__(self):
+        return "<User(username='%s', name='%s', surname='%s',birthdate='%s' password='%s', gender='%s',phone='%d',email='%s')>" % (self.username, self.name, self.surname, self.birthdate, self.password, self.gender, self.phone, self.email)
 
-CREATE TABLE Statistics
-(
-  Song INT NOT NULL,
-  Upvote INT NOT NULL,
-  Downvote INT NOT NULL,
-  Views INT NOT NULL,
-  FOREIGN KEY (Song) REFERENCES Songs(IDSong)
-);
+# NORMALLISTENER
 
-CREATE TABLE Playlists
-(
-  Name VARCHAR(20) NOT NULL,
-  IDList INT NOT NULL,
-  CreationDate DATE NOT NULL,
-  Author VARCHAR(40) NOT NULL,
-  PRIMARY KEY (IDList),
-  FOREIGN KEY (Author) REFERENCES Users(Username)
-);
 
-CREATE TABLE Contains
-(
-  Song INT NOT NULL,
-  List INT NOT NULL,
-  PRIMARY KEY (Song, List),
-  FOREIGN KEY (Song) REFERENCES Songs(IDSong),
-  FOREIGN KEY (List) REFERENCES Playlists(IDList)
-);
+class NormalListener():
+    __tablename__ = 'normallisteners'                   # obbligatorio
 
-CREATE TABLE Genres
-(
-  Name VARCHAR(20) NOT NULL,
-  PRIMARY KEY (Name)
-);
+    username = Column(String, primary_key=True, foreign_key=User.username)
 
-CREATE TABLE Relate
-(
-  Genre VARCHAR(20) NOT NULL,
-  Artist VARCHAR(40) NOT NULL,
-  PRIMARY KEY (Genre, Artist),
-  FOREIGN KEY (Genre) REFERENCES Genres(Name),
-  FOREIGN KEY (Artist) REFERENCES Artists(Username)
-);
+    # questo metodo è opzionale, serve solo per pretty printing
+    def __repr__(self):
+        return "<NormalListener(username='%s')>" % (self.username)
 
-CREATE TABLE Belong
-(
-  Song INT NOT NULL,
-  Genre VARCHAR(20) NOT NULL,
-  PRIMARY KEY (Song, Genre),
-  FOREIGN KEY (Song) REFERENCES Songs(IDSong),
-  FOREIGN KEY (Genre) REFERENCES Genres(Name)
-);
 
-CREATE TABLE Creates
-(
-  Song INT NOT NULL,
-  Username VARCHAR(40) NOT NULL,
-  PRIMARY KEY (Song, Username),
-  FOREIGN KEY (Song) REFERENCES Songs(IDSong),
-  FOREIGN KEY (Username) REFERENCES Artists(Username)
-);
+# PREMIUMLISTENERS
+
+class PremiumListener():
+    __tablename__ = 'premiumlisteners'                   # obbligatorio
+
+    username = Column(String, primary_key=True, foreign_key=User.username)
+
+    # questo metodo è opzionale, serve solo per pretty printing
+    def __repr__(self):
+        return "<PremiumListener(username='%s')>" % (self.username)
+
+# ARTIST
+
+
+class Artist():
+    __tablename__ = 'artists'                   # obbligatorio
+
+    username = Column(String, primary_key=True, foreign_key=User.username)
+
+    # questo metodo è opzionale, serve solo per pretty printing
+    def __repr__(self):
+        return "<Artist(username='%s')>" % (self.username)
+
+# ALBUMS
+
+
+class Album():
+    __tablename__ = 'albums'                   # obbligatorio
+
+    idalbum = Column(Integer, primary_key=True)
+    name = Column(String)
+    cover = Column(String)
+    artists = Column(String, foreign_key=Artist.username)
+
+    # questo metodo è opzionale, serve solo per pretty printing
+    def __repr__(self):
+        return "<Album(idalbum='%d', name='%s', cover='%s',artists='%s')>" % (self.idalbum, self.name, self.cover, self.artists)
+
+# SONGS
+
+
+class Song():
+    __tablename__ = 'songs'                   # obbligatorio
+
+    name = Column(String)
+    idsong = Column(Integer, primary_key=True)
+    album = Column(Integer, foreign_key=Album.idalbum)
+    cover = Column(String)
+    releasedate = Column(Date)
+    content = Column(String)
+
+    # questo metodo è opzionale, serve solo per pretty printing
+    def __repr__(self):
+        return "<Song(name='%s', idsong='%d',album='%d' cover='%s', releaseDate='%s',content='%s')>" % (self.name, self.idsong, self.album, self.cover, self.releasedate, self.content)
+
+
+# NORMALSONGS
+
+class NormalSong():
+    __tablename__ = 'normalsongs'                   # obbligatorio
+
+    song = Column(Integer, primary_key=True, foreign_key=Song.idsong)
+
+    # questo metodo è opzionale, serve solo per pretty printing
+    def __repr__(self):
+        return "<NormalSong(song='%d')>" % (self.song)
+
+
+# PREMIUMSONGS
+
+class PremiumSong():
+    __tablename__ = 'premiumsongs'                   # obbligatorio
+
+    song = Column(Integer, primary_key=True, foreign_key=Song.idsong)
+
+    # questo metodo è opzionale, serve solo per pretty printing
+    def __repr__(self):
+        return "<PremiumSong(song='%d')>" % (self.song)
+
+
+# STATISTICS
+
+class Statistic():
+    __tablename__ = 'statistics'                   # obbligatorio
+
+    song = Column(Integer, foreign_key=Song.idsong)
+    upvote = Column(Integer)
+    downvote = Column(Integer)
+    views = Column(Integer)
+
+    # questo metodo è opzionale, serve solo per pretty printing
+    def __repr__(self):
+        return "<Statistic(song='%d', upvote='%d', downvote='%d',views='%d')>" % (self.song, self.upvote, self.downvote, self.views)
+
+
+# GENERES
+
+class Genre():
+    __tablename__ = 'genres'                   # obbligatorio
+
+    name = Column(String, primary_key=True)
+
+    # questo metodo è opzionale, serve solo per pretty printing
+    def __repr__(self):
+        return "<Genre(name='%s')>" % (self.name)
+
+# verso artist
+
+
+class Relate():
+    __tablename__ = 'relate'                   # obbligatorio
+
+    genre = Column(String, primary_key=True, foreign_key=Genre.name)
+    artist = Column(String, primary_key=True, foreign_key=Artist.username)
+
+    # questo metodo è opzionale, serve solo per pretty printing
+    def __repr__(self):
+        return "<Relate(genre='%s', artist='%s')>" % (self.genre, self.artist)
+
+# verso song
+
+
+class Belong():
+    __tablename__ = 'belong'                   # obbligatorio
+
+    genre = Column(String, primary_key=True, foreign_key=Genre.name)
+    artist = Column(String, primary_key=True, foreign_key=Artist.username)
+
+    # questo metodo è opzionale, serve solo per pretty printing
+
+    def __repr__(self):
+        return "<Belong(genre='%s', artist='%s')>" % (self.genre, self.artist)
+
+# CREATES
+
+
+class Creates():
+    __tablename__ = 'creates'                   # obbligatorio
+
+    song = Column(String, primary_key=True, foreign_key=Song.idsong)
+    username = Column(String, primary_key=True, foreign_key=Artist.username)
+
+    # questo metodo è opzionale, serve solo per pretty printing
+    def __repr__(self):
+        return "<Creates(song='%s',username='%s')>" % (self.song, self.username)
+
+
+# PLAYLIST
+
+class Playlist():
+    __tablename__ = 'playlists'                   # obbligatorio
+
+    name = Column(String)
+    idlist = Column(Integer, primary_key=True)
+    creationdate = Column(Date)
+    author = Column(String, foreign_key=User.username)
+
+    # questo metodo è opzionale, serve solo per pretty printing
+    def __repr__(self):
+        return "<Playlist(name='%s', idlist='%d', creationdate='%s',author='%s')>" % (self.name, self.idlist, self.creationdate, self.author)
+
+
+#contain in playlist
+
+class Contains():
+    __tablename__ = 'contains'                   # obbligatorio
+
+    song = Column(Integer, primary_key=True, foreign_key=Song.idsong)
+    list = Column(Integer, primary_key=True, foreign_key=Playlist.idlist)
+
+    # questo metodo è opzionale, serve solo per pretty printing
+    def __repr__(self):
+        return "<Contains(song='%d', list='%d')>" % (self.song, self.list)
