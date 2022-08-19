@@ -1,12 +1,13 @@
+
 import sqlalchemy
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 from models import *
+from config import *
 
-
-engine = create_engine('postgresql://guest_manager:PassGuestManager@localhost:5432/PinappleMusic', echo=True)
+engine = create_engine(config['GUEST_MANAGER_DB'], echo=True)
 
 
 Session = sessionmaker(bind=engine)       # factory pattern
