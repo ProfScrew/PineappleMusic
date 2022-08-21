@@ -1,16 +1,12 @@
-from flask import Blueprint, render_template, redirect, request, url_for, flash
-from flask import current_app as app
-from flask_login import login_required
-from flask_login import login_user,logout_user
+from flask import Blueprint, render_template, redirect, url_for, flash
+from flask_login import login_user,logout_user,login_required
 
-
-from Codice import *
-
-
-from Codice.models import User
 
 from .forms import LoginForm
+from Codice.models import User
 
+#problema inclusione circolare
+from Codice.__init__ import Session_guestmanager
 
 # Blueprint Configuration
 auth = Blueprint('auth', __name__,static_folder='static',template_folder='templates')

@@ -1,14 +1,11 @@
-from this import d
-import sqlalchemy
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-
 from flask_login import UserMixin
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from Codice import Base
+Base = declarative_base()
 
 # USERS
 
