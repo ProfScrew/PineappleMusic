@@ -1,15 +1,19 @@
+from this import d
 import sqlalchemy
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
+from flask_login import UserMixin
+
+from werkzeug.security import generate_password_hash, check_password_hash
+
+from Codice import Base
+
 # USERS
 
 # tabella = classe che eredita da Base
-Base = declarative_base()
-
-
-class User(Base):
+class User(Base, UserMixin):
     __tablename__ = 'users'                   # obbligatorio
 
     # almeno un attributo deve fare parte della primary key
@@ -22,11 +26,42 @@ class User(Base):
     phone = Column(Integer)
     email = Column(String)
 
+
+    
+    def __init__(self, username, name, surname, birthdate, password, gender, phone, email):
+        self.username = username
+        self.name = name
+        self.surname = surname
+        self.birthdate = birthdate
+        self.password = password
+        self.gender = gender
+        self.phone = phone
+        self.email = email
+    
     # questo metodo è opzionale, serve solo per pretty printing
 
+    
+    
     def __repr__(self):
         return "<User(username='%s', name='%s', surname='%s',birthdate='%s' password='%s', gender='%s',phone='%d',email='%s')>" % (self.username, self.name, self.surname, self.birthdate, self.password, self.gender, self.phone, self.email)
 
+#    @property
+#    def password(self):
+#        raise AttributeError('password is not a readable attribute')
+    
+#    @password.setter
+#    def password(self,password):
+#        self.password = generate_password_hash(password)
+    
+#    def verify_password(self, password):
+#        return check_password_hash(self.password, password)
+    
+    def verify_password(password):
+        return True
+        
+    def get_id(self):
+        return (self.username)
+    
 # NORMALLISTENER
 
 

@@ -21,7 +21,8 @@ jack = NormalListener(username='JackSparrow')
 
 #quer = select(NormalListener, User).join(NormalListener.username)
 
-a =  session.query(User).join(NormalListener)
+#a =  session.query(User).join(NormalListener)
+a = session.query(User).filter(User.username=='JackSparrow').first()
 
 print(a[0].username)
 
