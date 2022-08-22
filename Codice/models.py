@@ -3,6 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 
+
 from werkzeug.security import generate_password_hash, check_password_hash
 
 Base = declarative_base()
@@ -10,6 +11,8 @@ Base = declarative_base()
 # USERS
 
 # tabella = classe che eredita da Base
+
+
 class User(Base, UserMixin):
     __tablename__ = 'users'                   # obbligatorio
 
@@ -23,8 +26,6 @@ class User(Base, UserMixin):
     phone = Column(Integer)
     email = Column(String)
 
-
-    
     def __init__(self, username, name, surname, birthdate, password, gender, phone, email):
         self.username = username
         self.name = name
@@ -35,30 +36,53 @@ class User(Base, UserMixin):
         self.phone = phone
         self.email = email
     
+    
+    def encrypt_password(password):
+        return generate_password_hash(password)
+
+    def verify_password(self, password):
+        return check_password_hash(self.password, password)
+
+
+    def get_user(temp_session_db, username):
+        user = temp_session_db.query(User).filter(User.username == username).first()
+        return user
+
+    def register_user(temp_session_db,  username, name, surname, birthdate, password, gender, phone, email):
+        try:
+            temp_password = User.encrypt_password(password)
+            user = User(username, name, surname, birthdate,
+                        temp_password, gender, phone, email)
+            temp_session_db.add(user)
+            temp_session_db.commit()
+            return True
+        except:
+            return False
+
+
+    def delete_user(temp_session_db, username):
+        user = User.get_user(username)
+        temp_session_db.delete(user)
+        
+        
     # questo metodo è opzionale, serve solo per pretty printing
 
-    
-    
     def __repr__(self):
         return "<User(username='%s', name='%s', surname='%s',birthdate='%s' password='%s', gender='%s',phone='%d',email='%s')>" % (self.username, self.name, self.surname, self.birthdate, self.password, self.gender, self.phone, self.email)
 
-#    @property
-#    def password(self):
-#        raise AttributeError('password is not a readable attribute')
     
-#    @password.setter
-#    def password(self,password):
-#        self.password = generate_password_hash(password)
-    
-#    def verify_password(self, password):
-#        return check_password_hash(self.password, password)
-    
-    def verify_password(password):
-        return True
-        
+    #def verify_password(password):
+    #    return True
+
+    #def verify_password(self,password):
+    #    if self.password == password:
+    #        return True
+    #    else:
+    #        return False
+
     def get_id(self):
         return (self.username)
-    
+
 # NORMALLISTENER
 
 
@@ -69,9 +93,17 @@ class NormalListener(Base):
 
     users = relationship(User, backref="normallisteners", uselist=False)
 
-    def __init__(self, username, users):
+    def __init__(self, username):
         self.username = username
-        self.users = users
+
+    def register_normallistener(temp_session_db, username):
+        try:
+            normalistener = NormalListener(username)
+            temp_session_db.add(normalistener)
+            temp_session_db.commit()
+            return True
+        except:
+            return False
 
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
@@ -87,9 +119,17 @@ class PremiumListener(Base):
 
     users = relationship(User, backref="premiumlistenes", uselist=False)
 
-    def __init__(self, username, users):
+    def __init__(self, username):
         self.username = username
-        self.users = users
+
+    def register_premiumlistener(temp_session_db, username):
+        try:
+            premiumlistener = PremiumListener(username)
+            temp_session_db.add(premiumlistener)
+            temp_session_db.commit()
+            return True
+        except:
+            return False
 
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
@@ -105,9 +145,17 @@ class Artist(Base):
 
     users = relationship(User, backref="artists", uselist=False)
 
-    def __init__(self, username, users):
+    def __init__(self, username):
         self.username = username
-        self.users = users
+
+    def register_artist(temp_session_db, username):
+        try:
+            artist = Artist(username)
+            temp_session_db.add(artist)
+            temp_session_db.commit()
+            return True
+        except:
+            return False
 
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
@@ -126,16 +174,16 @@ class Album(Base):
 
     artists = relationship(Artist, backref="albums")
 
-    def __init__(self, idalbum, name, cover, artist, artists):
+    def __init__(self, idalbum, name, cover, artist):
         self.idalbum = idalbum
         self.name = name
         self.cover = cover
         self.artist = artist
-        self.artists = artists
 
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
-        return "<Album(idalbum='%d', name='%s', cover='%s',artists='%s')>" % (self.idalbum, self.name, self.cover, self.artists) #artist o artists?
+        # artist o artists?
+        return "<Album(idalbum='%d', name='%s', cover='%s',artists='%s')>" % (self.idalbum, self.name, self.cover, self.artists)
 
 # SONGS
 
@@ -152,14 +200,13 @@ class Song(Base):
 
     albums = relationship(Album, backref="songs")
 
-    def __init__(self, name, idsong, album, cover, releasedata, content, albums):
+    def __init__(self, name, idsong, album, cover, releasedata, content):
         self.name = name
         self.idsong = idsong
         self.album = album
         self.cover = cover
         self.releasedate = releasedata
         self.content = content
-        self.albums = albums
 
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
@@ -175,9 +222,8 @@ class NormalSong(Base):
 
     songs = relationship(Song, backref="normalsongs", uselist=False)
 
-    def __init__(self, song, songs):
+    def __init__(self, song):
         self.song = song
-        self.songs = songs
 
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
@@ -193,9 +239,8 @@ class PremiumSong(Base):
 
     songs = relationship(Song, backref="premiumsongs", uselist=False)
 
-    def __init__(self, song, songs):
+    def __init__(self, song):
         self.song = song
-        self.songs = songs
 
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
@@ -214,12 +259,11 @@ class Statistic(Base):
 
     songs = relationship(Song, backref="statistics", uselist=False)
 
-    def __init__(self, song, upvote, downvote, views, songs):
+    def __init__(self, song, upvote, downvote, views):
         self.song = song
         self.upvote = upvote
         self.downvote = downvote
         self.views = views
-        self.songs = songs
 
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
@@ -252,11 +296,9 @@ class Relate(Base):
     genres = relationship(Genre, backref="relate")
     artists = relationship(Artist, backref="relate")
 
-    def __init__(self, genre, artist, genres, artists):
+    def __init__(self, genre, artist):
         self.genre = genre
         self.artist = artist
-        self.genres = genres
-        self.artists = artists
 
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
@@ -274,11 +316,9 @@ class Belong(Base):
     genres = relationship(Genre, backref="belong")
     songs = relationship(Song, backref="belong")
 
-    def __init__(self, genre, song, genres, songs):
+    def __init__(self, genre, song):
         self.genre = genre
         self.song = song
-        self.genres = genres
-        self.songs = songs
 
     # questo metodo è opzionale, serve solo per pretty printing
 
@@ -297,11 +337,9 @@ class Creates(Base):
     songs = relationship(Song, backref="creates")
     artists = relationship(Artist, backref="creates")
 
-    def __init__(self, username, song, artists, songs):
+    def __init__(self, username, song):
         self.username = username
         self.song = song
-        self.artists = artists
-        self.songs = songs
 
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
@@ -320,11 +358,10 @@ class Playlist(Base):
 
     users = relationship(User, backref="playlists")
 
-    def __init__(self, idlist, creationdate, author, users):
+    def __init__(self, idlist, creationdate, author):
         self.idlist = idlist
         self.creationdate = creationdate
         self.author = author
-        self.users = users
 
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
@@ -342,11 +379,9 @@ class Contains(Base):
     songs = relationship(Song, backref="contains")
     playlists = relationship(Playlist, backref="contains")
 
-    def __init__(self, song, list, songs, playlists):
+    def __init__(self, song, list):
         self.song = song
         self.list = list
-        self.songs = songs
-        self.playlists = playlists
 
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):

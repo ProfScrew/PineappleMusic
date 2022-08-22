@@ -7,8 +7,8 @@ from Codice.database import *
 
 #problema inclusione circolare
 from .auth.routes import auth
-from .home.routes import home
-
+from .user.routes import user
+from .error.routes import error
 
 # initializing the webapp
 app = Flask(__name__)
@@ -42,7 +42,9 @@ app.config['UPLOAD_FOLDER'] = "/tmp/"
 
 with app.app_context():
     app.register_blueprint(auth, url_prefix='/auth')
-    app.register_blueprint(home, url_prefix='/home')
+    app.register_blueprint(user, url_prefix='/user')
+    app.register_blueprint(error, url_prefix='/error')
+
 
 
     
