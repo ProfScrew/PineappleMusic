@@ -1,0 +1,639 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 13.7 (Ubuntu 13.7-0ubuntu0.21.10.1)
+-- Dumped by pg_dump version 13.7 (Ubuntu 13.7-0ubuntu0.21.10.1)
+
+-- Started on 2022-08-22 19:25:07 CEST
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 204 (class 1259 OID 16881)
+-- Name: albums; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.albums (
+    idalbum integer NOT NULL,
+    name character varying(40) NOT NULL,
+    cover character varying(40),
+    artist character varying(40) NOT NULL
+);
+
+
+ALTER TABLE public.albums OWNER TO postgres;
+
+--
+-- TOC entry 203 (class 1259 OID 16871)
+-- Name: artists; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.artists (
+    username character varying(40) NOT NULL
+);
+
+
+ALTER TABLE public.artists OWNER TO postgres;
+
+--
+-- TOC entry 212 (class 1259 OID 16974)
+-- Name: belong; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.belong (
+    song integer NOT NULL,
+    genre character varying(20) NOT NULL
+);
+
+
+ALTER TABLE public.belong OWNER TO postgres;
+
+--
+-- TOC entry 210 (class 1259 OID 16939)
+-- Name: contains; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.contains (
+    song integer NOT NULL,
+    list integer NOT NULL
+);
+
+
+ALTER TABLE public.contains OWNER TO postgres;
+
+--
+-- TOC entry 213 (class 1259 OID 16989)
+-- Name: creates; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.creates (
+    song integer NOT NULL,
+    username character varying(40) NOT NULL
+);
+
+
+ALTER TABLE public.creates OWNER TO postgres;
+
+--
+-- TOC entry 211 (class 1259 OID 16954)
+-- Name: genres; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.genres (
+    name character varying(20) NOT NULL
+);
+
+
+ALTER TABLE public.genres OWNER TO postgres;
+
+--
+-- TOC entry 201 (class 1259 OID 16851)
+-- Name: normallisteners; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.normallisteners (
+    username character varying(40) NOT NULL
+);
+
+
+ALTER TABLE public.normallisteners OWNER TO postgres;
+
+--
+-- TOC entry 206 (class 1259 OID 16901)
+-- Name: normalsongs; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.normalsongs (
+    song integer NOT NULL
+);
+
+
+ALTER TABLE public.normalsongs OWNER TO postgres;
+
+--
+-- TOC entry 209 (class 1259 OID 16929)
+-- Name: playlists; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.playlists (
+    name character varying(20) NOT NULL,
+    idlist integer NOT NULL,
+    creationdate date NOT NULL,
+    author character varying(40) NOT NULL
+);
+
+
+ALTER TABLE public.playlists OWNER TO postgres;
+
+--
+-- TOC entry 202 (class 1259 OID 16861)
+-- Name: premiumlisteners; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.premiumlisteners (
+    username character varying(40) NOT NULL
+);
+
+
+ALTER TABLE public.premiumlisteners OWNER TO postgres;
+
+--
+-- TOC entry 207 (class 1259 OID 16911)
+-- Name: premiumsongs; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.premiumsongs (
+    expirydate integer NOT NULL,
+    song integer NOT NULL
+);
+
+
+ALTER TABLE public.premiumsongs OWNER TO postgres;
+
+--
+-- TOC entry 205 (class 1259 OID 16891)
+-- Name: songs; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.songs (
+    name character varying(40) NOT NULL,
+    idsong integer NOT NULL,
+    album integer,
+    cover character varying(40),
+    releasedate date NOT NULL,
+    content character varying(80)
+);
+
+
+ALTER TABLE public.songs OWNER TO postgres;
+
+--
+-- TOC entry 208 (class 1259 OID 16921)
+-- Name: statistics; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.statistics (
+    song integer NOT NULL,
+    upvote integer NOT NULL,
+    downvote integer NOT NULL,
+    views integer NOT NULL
+);
+
+
+ALTER TABLE public.statistics OWNER TO postgres;
+
+--
+-- TOC entry 200 (class 1259 OID 16842)
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.users (
+    username character varying(40) NOT NULL,
+    name character varying(20) NOT NULL,
+    surname character varying(20) NOT NULL,
+    birthdate date NOT NULL,
+    password character varying(128) NOT NULL,
+    gender character(1) NOT NULL,
+    phone integer NOT NULL,
+    email character varying(40) NOT NULL,
+    CONSTRAINT users_gender_check CHECK (((gender = 'F'::bpchar) OR (gender = 'M'::bpchar))),
+    CONSTRAINT users_password_check CHECK ((length((password)::text) >= 8))
+);
+
+
+ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- TOC entry 3076 (class 2606 OID 16885)
+-- Name: albums albums_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.albums
+    ADD CONSTRAINT albums_pkey PRIMARY KEY (idalbum);
+
+
+--
+-- TOC entry 3074 (class 2606 OID 16875)
+-- Name: artists artists_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.artists
+    ADD CONSTRAINT artists_pkey PRIMARY KEY (username);
+
+
+--
+-- TOC entry 3090 (class 2606 OID 16978)
+-- Name: belong belong_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.belong
+    ADD CONSTRAINT belong_pkey PRIMARY KEY (song, genre);
+
+
+--
+-- TOC entry 3086 (class 2606 OID 16943)
+-- Name: contains contains_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contains
+    ADD CONSTRAINT contains_pkey PRIMARY KEY (song, list);
+
+
+--
+-- TOC entry 3092 (class 2606 OID 16993)
+-- Name: creates creates_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.creates
+    ADD CONSTRAINT creates_pkey PRIMARY KEY (song, username);
+
+
+--
+-- TOC entry 3088 (class 2606 OID 16958)
+-- Name: genres genres_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.genres
+    ADD CONSTRAINT genres_pkey PRIMARY KEY (name);
+
+
+--
+-- TOC entry 3070 (class 2606 OID 16855)
+-- Name: normallisteners normallisteners_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.normallisteners
+    ADD CONSTRAINT normallisteners_pkey PRIMARY KEY (username);
+
+
+--
+-- TOC entry 3080 (class 2606 OID 16905)
+-- Name: normalsongs normalsongs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.normalsongs
+    ADD CONSTRAINT normalsongs_pkey PRIMARY KEY (song);
+
+
+--
+-- TOC entry 3084 (class 2606 OID 16933)
+-- Name: playlists playlists_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.playlists
+    ADD CONSTRAINT playlists_pkey PRIMARY KEY (idlist);
+
+
+--
+-- TOC entry 3072 (class 2606 OID 16865)
+-- Name: premiumlisteners premiumlisteners_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.premiumlisteners
+    ADD CONSTRAINT premiumlisteners_pkey PRIMARY KEY (username);
+
+
+--
+-- TOC entry 3082 (class 2606 OID 16915)
+-- Name: premiumsongs premiumsongs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.premiumsongs
+    ADD CONSTRAINT premiumsongs_pkey PRIMARY KEY (song);
+
+
+--
+-- TOC entry 3078 (class 2606 OID 16895)
+-- Name: songs songs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.songs
+    ADD CONSTRAINT songs_pkey PRIMARY KEY (idsong);
+
+
+--
+-- TOC entry 3066 (class 2606 OID 16850)
+-- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_email_key UNIQUE (email);
+
+
+--
+-- TOC entry 3068 (class 2606 OID 16848)
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (username);
+
+
+--
+-- TOC entry 3096 (class 2606 OID 16886)
+-- Name: albums albums_artist_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.albums
+    ADD CONSTRAINT albums_artist_fkey FOREIGN KEY (artist) REFERENCES public.artists(username);
+
+
+--
+-- TOC entry 3095 (class 2606 OID 16876)
+-- Name: artists artists_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.artists
+    ADD CONSTRAINT artists_username_fkey FOREIGN KEY (username) REFERENCES public.users(username);
+
+
+--
+-- TOC entry 3105 (class 2606 OID 16984)
+-- Name: belong belong_genre_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.belong
+    ADD CONSTRAINT belong_genre_fkey FOREIGN KEY (genre) REFERENCES public.genres(name);
+
+
+--
+-- TOC entry 3104 (class 2606 OID 16979)
+-- Name: belong belong_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.belong
+    ADD CONSTRAINT belong_song_fkey FOREIGN KEY (song) REFERENCES public.songs(idsong);
+
+
+--
+-- TOC entry 3103 (class 2606 OID 16949)
+-- Name: contains contains_list_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contains
+    ADD CONSTRAINT contains_list_fkey FOREIGN KEY (list) REFERENCES public.playlists(idlist);
+
+
+--
+-- TOC entry 3102 (class 2606 OID 16944)
+-- Name: contains contains_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.contains
+    ADD CONSTRAINT contains_song_fkey FOREIGN KEY (song) REFERENCES public.songs(idsong);
+
+
+--
+-- TOC entry 3106 (class 2606 OID 16994)
+-- Name: creates creates_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.creates
+    ADD CONSTRAINT creates_song_fkey FOREIGN KEY (song) REFERENCES public.songs(idsong);
+
+
+--
+-- TOC entry 3107 (class 2606 OID 16999)
+-- Name: creates creates_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.creates
+    ADD CONSTRAINT creates_username_fkey FOREIGN KEY (username) REFERENCES public.artists(username);
+
+
+--
+-- TOC entry 3093 (class 2606 OID 16856)
+-- Name: normallisteners normallisteners_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.normallisteners
+    ADD CONSTRAINT normallisteners_username_fkey FOREIGN KEY (username) REFERENCES public.users(username);
+
+
+--
+-- TOC entry 3098 (class 2606 OID 16906)
+-- Name: normalsongs normalsongs_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.normalsongs
+    ADD CONSTRAINT normalsongs_song_fkey FOREIGN KEY (song) REFERENCES public.songs(idsong);
+
+
+--
+-- TOC entry 3101 (class 2606 OID 16934)
+-- Name: playlists playlists_author_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.playlists
+    ADD CONSTRAINT playlists_author_fkey FOREIGN KEY (author) REFERENCES public.users(username);
+
+
+--
+-- TOC entry 3094 (class 2606 OID 16866)
+-- Name: premiumlisteners premiumlisteners_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.premiumlisteners
+    ADD CONSTRAINT premiumlisteners_username_fkey FOREIGN KEY (username) REFERENCES public.users(username);
+
+
+--
+-- TOC entry 3099 (class 2606 OID 16916)
+-- Name: premiumsongs premiumsongs_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.premiumsongs
+    ADD CONSTRAINT premiumsongs_song_fkey FOREIGN KEY (song) REFERENCES public.songs(idsong);
+
+
+--
+-- TOC entry 3097 (class 2606 OID 16896)
+-- Name: songs songs_album_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.songs
+    ADD CONSTRAINT songs_album_fkey FOREIGN KEY (album) REFERENCES public.albums(idalbum);
+
+
+--
+-- TOC entry 3100 (class 2606 OID 16924)
+-- Name: statistics statistics_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.statistics
+    ADD CONSTRAINT statistics_song_fkey FOREIGN KEY (song) REFERENCES public.songs(idsong);
+
+
+--
+-- TOC entry 3243 (class 0 OID 0)
+-- Dependencies: 204
+-- Name: TABLE albums; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.albums TO artists;
+GRANT SELECT ON TABLE public.albums TO premium_listeners;
+GRANT SELECT ON TABLE public.albums TO listeners;
+
+
+--
+-- TOC entry 3244 (class 0 OID 0)
+-- Dependencies: 203
+-- Name: TABLE artists; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT SELECT,INSERT ON TABLE public.artists TO guest_manager;
+GRANT SELECT,DELETE,UPDATE ON TABLE public.artists TO artists;
+GRANT SELECT ON TABLE public.artists TO premium_listeners;
+GRANT SELECT ON TABLE public.artists TO listeners;
+
+
+--
+-- TOC entry 3245 (class 0 OID 0)
+-- Dependencies: 212
+-- Name: TABLE belong; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.belong TO artists;
+GRANT SELECT ON TABLE public.belong TO premium_listeners;
+GRANT SELECT ON TABLE public.belong TO listeners;
+
+
+--
+-- TOC entry 3246 (class 0 OID 0)
+-- Dependencies: 210
+-- Name: TABLE contains; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE ON TABLE public.contains TO artists;
+GRANT SELECT,INSERT,DELETE ON TABLE public.contains TO premium_listeners;
+GRANT SELECT,INSERT,DELETE ON TABLE public.contains TO listeners;
+
+
+--
+-- TOC entry 3247 (class 0 OID 0)
+-- Dependencies: 213
+-- Name: TABLE creates; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.creates TO artists;
+GRANT SELECT ON TABLE public.creates TO premium_listeners;
+GRANT SELECT ON TABLE public.creates TO listeners;
+
+
+--
+-- TOC entry 3248 (class 0 OID 0)
+-- Dependencies: 211
+-- Name: TABLE genres; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT SELECT ON TABLE public.genres TO artists;
+GRANT SELECT ON TABLE public.genres TO premium_listeners;
+GRANT SELECT ON TABLE public.genres TO listeners;
+
+
+--
+-- TOC entry 3249 (class 0 OID 0)
+-- Dependencies: 201
+-- Name: TABLE normallisteners; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE ON TABLE public.normallisteners TO guest_manager;
+GRANT SELECT,DELETE ON TABLE public.normallisteners TO listeners;
+
+
+--
+-- TOC entry 3250 (class 0 OID 0)
+-- Dependencies: 206
+-- Name: TABLE normalsongs; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE ON TABLE public.normalsongs TO artists;
+GRANT SELECT ON TABLE public.normalsongs TO premium_listeners;
+GRANT SELECT ON TABLE public.normalsongs TO listeners;
+
+
+--
+-- TOC entry 3251 (class 0 OID 0)
+-- Dependencies: 209
+-- Name: TABLE playlists; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.playlists TO artists;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.playlists TO premium_listeners;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.playlists TO listeners;
+
+
+--
+-- TOC entry 3252 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: TABLE premiumlisteners; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT SELECT,INSERT ON TABLE public.premiumlisteners TO guest_manager;
+GRANT SELECT,DELETE ON TABLE public.premiumlisteners TO premium_listeners;
+
+
+--
+-- TOC entry 3253 (class 0 OID 0)
+-- Dependencies: 207
+-- Name: TABLE premiumsongs; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.premiumsongs TO artists;
+GRANT SELECT ON TABLE public.premiumsongs TO premium_listeners;
+
+
+--
+-- TOC entry 3254 (class 0 OID 0)
+-- Dependencies: 205
+-- Name: TABLE songs; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.songs TO artists;
+GRANT SELECT ON TABLE public.songs TO premium_listeners;
+GRANT SELECT ON TABLE public.songs TO listeners;
+
+
+--
+-- TOC entry 3255 (class 0 OID 0)
+-- Dependencies: 208
+-- Name: TABLE statistics; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.statistics TO artists;
+GRANT SELECT,UPDATE ON TABLE public.statistics TO premium_listeners;
+GRANT SELECT,UPDATE ON TABLE public.statistics TO listeners;
+
+
+--
+-- TOC entry 3256 (class 0 OID 0)
+-- Dependencies: 200
+-- Name: TABLE users; Type: ACL; Schema: public; Owner: postgres
+--
+
+GRANT SELECT,INSERT ON TABLE public.users TO guest_manager;
+GRANT SELECT,DELETE,UPDATE ON TABLE public.users TO artists;
+GRANT SELECT,DELETE,UPDATE ON TABLE public.users TO premium_listeners;
+GRANT SELECT,DELETE,UPDATE ON TABLE public.users TO listeners;
+
+
+-- Completed on 2022-08-22 19:25:07 CEST
+
+--
+-- PostgreSQL database dump complete
+--
+
