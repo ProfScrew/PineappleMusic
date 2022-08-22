@@ -39,15 +39,13 @@ def signup():
                     if not Artist.register_artist(Session_guestmanager, form.username.data):
                         # delete user
                         User.delete_user(form.username.data)
-                        flash(
-                            'Registration Failed(Type User Artist), Please try again.')
+                        flash('Registration Failed(Type User Artist), Please try again.')
                 elif form.artist.data == 'False':
                     print("Listener")
                     if not NormalListener.register_normallistener(Session_guestmanager, form.username.data):
                         # delete user
                         User.delete_user(form.username.data)
-                        flash(
-                            'Registration Failed(Type User Listener), Please try again.')
+                        flash('Registration Failed(Type User Listener), Please try again.')
 
                 flash('Registration Successfull.')
                 return redirect(url_for('auth.signin'))

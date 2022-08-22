@@ -1,9 +1,12 @@
 DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 code //lanciare visual studio con live share stefano
 
 //comandi flask
+cd Codice
 export FLASK_ENV=development
 export FLASK_APP=__init__.py 
 flask run
+
+http://127.0.0.1:5000/user/home
 
 //comandi postgresql
 systemctl start postgresql

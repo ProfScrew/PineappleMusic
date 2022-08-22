@@ -7,7 +7,11 @@ from Codice.auth.routes import auth
 user = Blueprint('user', __name__,static_folder='static',template_folder='templates')
 
 @user.route('/home', methods=['GET'])
-@login_required
+#@login_required
 def home():
-    print("Dati_sessione: ",current_user)
-    return render_template("home.html",title="Home")
+    return render_template("home.html",title="Home",user=current_user)
+
+@user.route('/profile', methods=['GET'])
+#@login_required
+def profile():
+    return render_template("profile.html",title="Home",user=current_user)
