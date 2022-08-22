@@ -4,13 +4,11 @@ from flask_login import login_user,logout_user,login_required
 
 from .forms import LoginForm
 from Codice.models import User
+from Codice.database import *
 
-#problema inclusione circolare
-from Codice.__init__ import Session_guestmanager
 
 # Blueprint Configuration
 auth = Blueprint('auth', __name__,static_folder='static',template_folder='templates')
-
 
 @auth.route('/signin', methods=['GET','POST'])
 def signin():
