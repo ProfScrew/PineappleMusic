@@ -69,6 +69,10 @@ class NormalListener(Base):
 
     users = relationship(User, backref="normallisteners", uselist=False)
 
+    def __init__(self, username, users):
+        self.username = username
+        self.users = users
+
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         return "<NormalListener(username='%s')>" % (self.username)
@@ -83,6 +87,10 @@ class PremiumListener(Base):
 
     users = relationship(User, backref="premiumlistenes", uselist=False)
 
+    def __init__(self, username, users):
+        self.username = username
+        self.users = users
+
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         return "<PremiumListener(username='%s')>" % (self.username)
@@ -96,6 +104,10 @@ class Artist(Base):
     username = Column(String, ForeignKey(User.username), primary_key=True)
 
     users = relationship(User, backref="artists", uselist=False)
+
+    def __init__(self, username, users):
+        self.username = username
+        self.users = users
 
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
@@ -114,9 +126,16 @@ class Album(Base):
 
     artists = relationship(Artist, backref="albums")
 
+    def __init__(self, idalbum, name, cover, artist, artists):
+        self.idalbum = idalbum
+        self.name = name
+        self.cover = cover
+        self.artist = artist
+        self.artists = artists
+
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
-        return "<Album(idalbum='%d', name='%s', cover='%s',artists='%s')>" % (self.idalbum, self.name, self.cover, self.artists)
+        return "<Album(idalbum='%d', name='%s', cover='%s',artists='%s')>" % (self.idalbum, self.name, self.cover, self.artists) #artist o artists?
 
 # SONGS
 
@@ -133,6 +152,15 @@ class Song(Base):
 
     albums = relationship(Album, backref="songs")
 
+    def __init__(self, name, idsong, album, cover, releasedata, content, albums):
+        self.name = name
+        self.idsong = idsong
+        self.album = album
+        self.cover = cover
+        self.releasedate = releasedata
+        self.content = content
+        self.albums = albums
+
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         return "<Song(name='%s', idsong='%d',album='%d' cover='%s', releaseDate='%s',content='%s')>" % (self.name, self.idsong, self.album, self.cover, self.releasedate, self.content)
@@ -147,6 +175,10 @@ class NormalSong(Base):
 
     songs = relationship(Song, backref="normalsongs", uselist=False)
 
+    def __init__(self, song, songs):
+        self.song = song
+        self.songs = songs
+
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         return "<NormalSong(song='%d')>" % (self.song)
@@ -160,6 +192,10 @@ class PremiumSong(Base):
     song = Column(Integer, ForeignKey(Song.idsong), primary_key=True)
 
     songs = relationship(Song, backref="premiumsongs", uselist=False)
+
+    def __init__(self, song, songs):
+        self.song = song
+        self.songs = songs
 
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
@@ -178,6 +214,13 @@ class Statistic(Base):
 
     songs = relationship(Song, backref="statistics", uselist=False)
 
+    def __init__(self, song, upvote, downvote, views, songs):
+        self.song = song
+        self.upvote = upvote
+        self.downvote = downvote
+        self.views = views
+        self.songs = songs
+
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         return "<Statistic(song='%d', upvote='%d', downvote='%d',views='%d')>" % (self.song, self.upvote, self.downvote, self.views)
@@ -189,6 +232,9 @@ class Genre(Base):
     __tablename__ = 'genres'                   # obbligatorio
 
     name = Column(String, primary_key=True)
+
+    def __init__(self, name):
+        self.name = name
 
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
@@ -206,6 +252,12 @@ class Relate(Base):
     genres = relationship(Genre, backref="relate")
     artists = relationship(Artist, backref="relate")
 
+    def __init__(self, genre, artist, genres, artists):
+        self.genre = genre
+        self.artist = artist
+        self.genres = genres
+        self.artists = artists
+
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         return "<Relate(genre='%s', artist='%s')>" % (self.genre, self.artist)
@@ -221,6 +273,12 @@ class Belong(Base):
 
     genres = relationship(Genre, backref="belong")
     songs = relationship(Song, backref="belong")
+
+    def __init__(self, genre, song, genres, songs):
+        self.genre = genre
+        self.song = song
+        self.genres = genres
+        self.songs = songs
 
     # questo metodo è opzionale, serve solo per pretty printing
 
@@ -239,6 +297,12 @@ class Creates(Base):
     songs = relationship(Song, backref="creates")
     artists = relationship(Artist, backref="creates")
 
+    def __init__(self, username, song, artists, songs):
+        self.username = username
+        self.song = song
+        self.artists = artists
+        self.songs = songs
+
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         return "<Creates(song='%s',username='%s')>" % (self.song, self.username)
@@ -256,6 +320,12 @@ class Playlist(Base):
 
     users = relationship(User, backref="playlists")
 
+    def __init__(self, idlist, creationdate, author, users):
+        self.idlist = idlist
+        self.creationdate = creationdate
+        self.author = author
+        self.users = users
+
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         return "<Playlist(name='%s', idlist='%d', creationdate='%s',author='%s')>" % (self.name, self.idlist, self.creationdate, self.author)
@@ -271,6 +341,12 @@ class Contains(Base):
 
     songs = relationship(Song, backref="contains")
     playlists = relationship(Playlist, backref="contains")
+
+    def __init__(self, song, list, songs, playlists):
+        self.song = song
+        self.list = list
+        self.songs = songs
+        self.playlists = playlists
 
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
