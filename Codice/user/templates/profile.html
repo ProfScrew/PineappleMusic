@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('user.static',filename='css/style.css') }}">
+<script defer type="text/javascript" src="{{ url_for('user.static', filename='js/script.js')}}"></script>
+{% endblock %}
+{% block pagebody %}
+
+{% include 'menu.html' %}
+
+
+{% endblock %}

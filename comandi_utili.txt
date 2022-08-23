@@ -4,7 +4,11 @@ DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 code //lanciare visual studio con live s
 cd Codice
 export FLASK_ENV=development
 export FLASK_APP=__init__.py 
+
 flask run
+
+flask run --host 0.0.0.0
+
 
 http://127.0.0.1:5000/user/home
 

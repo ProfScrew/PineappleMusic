@@ -1,9 +1,17 @@
-/* global bootstrap: false */
-(() => {
-    'use strict'
-    const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    tooltipTriggerList.forEach(tooltipTriggerEl => {
-      new bootstrap.Tooltip(tooltipTriggerEl)
-    })
-  })()
-  
+$(".sidebar ul li").on('click', function(){
+    $(".sidebar ul li.active").removeClass('active');
+    $(this).addClass('active');
+    
+
+});
+
+$('.open-btn').on('click',function(){
+    $('.sidebar').addClass('active');
+
+
+
+});
+
+$('.close-btn').on('click',function(){
+    $('.sidebar').removeClass('active');
+});

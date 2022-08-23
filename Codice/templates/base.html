@@ -9,11 +9,13 @@
     <meta charset="utf-8">
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css')}}">
-    {% block css %}{% endblock %}
-
+    
     <script defer type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.6.0.min.js')}}"></script>
     <script defer type="text/javascript" src="{{ url_for('static', filename='js/popper.js')}}"></script>
     <script defer type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js')}}"></script>
+
+    {% block css %}{% endblock %}
+
 </head>
 
 <body>
