@@ -16,6 +16,7 @@ auth = Blueprint('auth', __name__, static_folder='static',
 def signin():
     form = LoginForm()
     if form.validate_on_submit():
+        User.scream()
         user = User.get_user(Session_guestmanager, form.username.data)
         if user is not None and user.verify_password(form.password.data):
             login_user(user, True)

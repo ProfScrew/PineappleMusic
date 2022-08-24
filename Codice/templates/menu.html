@@ -1,11 +1,4 @@
 {% extends "base.html" %}
-{% block css %}
-<link rel="stylesheet" href="{{ url_for('user.static',filename='css/test.css') }}">
-<script defer type="text/javascript" src="{{ url_for('user.static', filename='js/script.js')}}"></script>
-
-<script src="https://kit.fontawesome.com/1dc8a471ce.js" crossorigin="anonymous"></script>
-
-{% endblock %}
 {% block pagebody %}
 
 
@@ -25,36 +18,39 @@
             </button>
         </div>
         <ul class="list-unstyled px-2">
-            <li class=""><a href="{{url_for('user.home')}}" class="text-decoration-none px-3 py-2 d-block"><i
+            <li><a href="{{url_for('user.home')}}" class="text-decoration-none px-3 py-2 d-block"><i
                         class="fa-solid fa-house"></i>Home</a></li>
-            <li class=""><a href="#" class="text-decoration-none px-3 py-2 d-block"><i
+            <li><a href="#" class="text-decoration-none px-3 py-2 d-block"><i
                         class="fa-solid fa-music"></i>Songs</a></li>
 
 
-            <li class=""><a href="#" class="text-decoration-none px-3 py-2 d-block"><i
+            <li><a href="#" class="text-decoration-none px-3 py-2 d-block"><i
                         class="fa-solid fa-list-ol"></i>Playlist</a></li>
-            <li class=""><a href="{{url_for('user.profile')}}" class="text-decoration-none px-3 py-2 d-block"><i
+            <li><a href="{{url_for('user.profile')}}" class="text-decoration-none px-3 py-2 d-block"><i
                         class="fa-solid fa-user"></i>Profile</a></li>
 
 
         </ul>
         <hr class="h-color mx-2">
-        <div class=" d-block " style=" position: absolute; bottom: 0; left: 3px; width: 100%;">
-
-            <li class=""><a href="{{url_for('auth.signout')}}" class="text-decoration-none px-3 py-2 d-block"><i
-                        class="fa-solid fa-right-from-bracket"></i>{{user.username}}</a></li>
-
-
+        <div class=" d-block " style=" position: absolute; bottom: 0; left: 3px;">
+            <ul class="list-unstyled px-2">
+                <li>
+                    <a href="{{url_for('auth.signout')}}" class="text-decoration-none px-3 py-2 d-block">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        {{user.username}}
+                    </a>
+                </li>
+            </ul>
         </div>
-
+    
 
     </div>
-    <div class="content">
-        <nav class="navbar navbar-expand-md navbar-light bg-light">
+    <div class="content " style="background-color: #FFFFFF"  >
+        <nav class="navbar navbar-expand-md navbar-light d-md-none d-block" style="background-color: #000">
             <div class="container-fluid">
                 <div class="d-flex justify-content-between d-md-none d-block">
-                    <a class="navbar-brand fs-4" href="#">Pineapple Music</a>
-                    <button class="btn px-1 py-0 open-btn"><i class="fa-solid fa-bars-staggered"></i></button>
+                    <a class="navbar-brand fs-4 text-white" href="#">Pineapple Music</a>
+                    <button class="btn px-1 py-0 open-btn text-white"><i class="fa-solid fa-bars-staggered"></i></button>
                 </div>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -62,10 +58,10 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-                    <ul class="navbar-nav mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Profile</a>
-                        </li>
+                    
+                        
+
+                    
                         <!--
                     <form class="d-flex">
                         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
@@ -75,7 +71,9 @@
                 </div>
             </div>
         </nav>
-
+   
+    {% block content %}
+        <!--
         <div class="dashboard-content px-3 pt-4">
             <h2 class="fs-5">
                 Dashboard
@@ -86,12 +84,13 @@
                 These exceptions can be handled using the try statement:
             </p>
         </div>
-
+        -->
+    {% endblock %}
     </div>
 </div>
 
-
-
-
-
 {% endblock %}
+
+
+
+

@@ -23,12 +23,18 @@
                   {{ form.username(class="form-control form-control-lg")}}
                   {{ form.username.label(class="form-label")}} 
                 </div>
-                 
-                <div class="form-outline form-white mb-4">
-                  {{ form.password(class="form-control form-control-lg")}}
+                
+                <div class="form-group">
+                  <div class="input-group" id="show_hide_password">
+                    {{ form.password(class="form-control form-control-lg")}}
+
+                      <div class="input-group-addon px-2 pt-2" style="background-color: white; border-radius: 0px 5px 5px 0px; ">
+                          <a href=""><i class="fa-solid fa-eye" aria-hidden="true"></i></a> 
+                      </div>
+                    
+                  </div>
                   {{ form.password.label(class="form-label") }}
                 </div>
-
                 {{ form.submit(class="btn btn-outline-light btn-lg px-5")}}
       
             </form>

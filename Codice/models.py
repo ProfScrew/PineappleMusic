@@ -36,6 +36,8 @@ class User(Base, UserMixin):
         self.phone = phone
         self.email = email
     
+    def scream():
+        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
     
     def encrypt_password(password):
         return generate_password_hash(password)
@@ -43,6 +45,7 @@ class User(Base, UserMixin):
     def verify_password(self, password):
         return check_password_hash(self.password, password)
 
+    
 
     def get_user(temp_session_db, username):
         user = temp_session_db.query(User).filter(User.username == username).first()
@@ -58,7 +61,16 @@ class User(Base, UserMixin):
             return True
         except:
             return False
-
+    def update_user(self, temp_session_db, username, temp_name, temp_surnamea, temp_birthdate, temp_password, temp_phone, temp_email, check_password):
+        try:
+            if check_password:
+                query = update(User).where(User.name == username).values(name = temp_name, surname = temp_surnamea, birthdate = temp_birthdate, password = temp_password, phone = temp_phone, email = temp_email)
+            else:
+                query = update(User).where(User.name == username).values(name = temp_name, surname = temp_surnamea, birthdate = temp_birthdate, phone = temp_phone, email = temp_email)
+            temp_session_db.execute(query)
+            return True
+        except:
+            return False
 
     def delete_user(temp_session_db, username):
         user = User.get_user(username)

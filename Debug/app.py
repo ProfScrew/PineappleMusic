@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker
 from models import *
 
 
-engine = create_engine('postgresql://guest_manager:PassGuestManager@localhost:5432/PinappleMusic', echo=True)
+engine = create_engine('postgresql://listeners:PassListeners@localhost:5432/PinappleMusic', echo=True)
 
 
 Session = sessionmaker(bind=engine)       # factory pattern
@@ -15,16 +15,16 @@ session = Session()
 for instance in session.query(User):
     print(instance)
 
-
-
-jack = NormalListener(username='JackSparrow')
+query = update(User).where(User.username == "Matrix").values(surname="table", email='matrix@gmail.com')
+session.execute(query)
+session.commit()
 
 #quer = select(NormalListener, User).join(NormalListener.username)
 
 #a =  session.query(User).join(NormalListener)
-a = session.query(User).filter(User.username=='JackSparrow').first()
+a = session.query(User).filter(User.username=='Matrix')
 
-print(a[0].username)
+print(a)
 
 #for u, a in session.query(NormalListener).filter(User.id == Address.user_id):
 #    print("({}, {})".format(u,a))
