@@ -1,3 +1,4 @@
+from unicodedata import name
 from flask_wtf import FlaskForm
 from wtforms import  StringField, PasswordField,DateField,SubmitField,SelectField,EmailField
 from wtforms.validators import DataRequired, Length, Email, Optional
@@ -5,7 +6,7 @@ from wtforms.validators import DataRequired, Length, Email, Optional
 
 class ModifyProfileForm(FlaskForm):
     
-    username = StringField("Username", validators=[DataRequired(),Length(1,40)])
+    
     name = StringField("Name", validators=[DataRequired(),Length(max=20)])
     surname = StringField("Surname", validators=[DataRequired(),Length(max=20)])
     birthdate = DateField("Birthdate", validators=[DataRequired()])
@@ -14,10 +15,6 @@ class ModifyProfileForm(FlaskForm):
     phone = StringField("Phone", validators=[DataRequired(),Length(min=6)])
     email = EmailField("Email", validators=[DataRequired(),Email()])
     
-    artist = SelectField('Artist', choices=[' ','True','False'])
-    
     submit = SubmitField("Update")
     
-    def validate(self):
-        
-        return True
+    

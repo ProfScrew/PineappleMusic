@@ -3,7 +3,7 @@ from sqlalchemy.orm import scoped_session
 from requests import Session
 
 from Codice.config import config
-from Codice.models import Base,create_engine
+from Codice.models import create_engine
 
 # setting sqlalchemy connection
 engine_artist = create_engine(config['ARTIST_DB'], echo=True)
@@ -22,4 +22,4 @@ Session_premiumlistener = Session()
 Session = scoped_session(sessionmaker(bind=engine_guestmanager))
 Session_guestmanager = Session()
 
-Base.query = Session.query_property()
+#Base.query = Session.query_property()

@@ -11,33 +11,34 @@
             
             <!-- Form Group (username)-->
             <form method="POST" action="{{ url_for('user.profile') }}">
-            <hr class="h-color-black mx-2">   
-            <div class="col-md-12">
-                <label class="small mb-1">Username</label>
-                <input class="form-control text-center" type="text" value="{{user.username}}" readonly>
-            </div>
+                {{ form.csrf_token }}
+                <hr class="h-color-black mx-2">   
+                <div class="col-md-12">
+                    <label class="small mb-1">Username</label>
+                    <input class="form-control text-center" type="text" value="{{user.username}}" readonly>
+                </div>
 
                 <div class="row gx-3 mb-3">
-                    <!-- Form Group (first name)-->
+                        <!-- Form Group (first name)-->
                     <div class="col-md-6">
-                        {{ form.username.label(class="small mb-1")}} 
+                        {{ form.name.label(class="small mb-1")}} 
                         {{ form.name(class="form-control",value=user.name)}}
 
                     </div>
-                    <!-- Form Group (last name)-->
+                        <!-- Form Group (last name)-->
                     <div class="col-md-6">
-                        {{ form.surname.label(class="small mb-1")}} 
-                        {{ form.surname(class="form-control",value=user.surname)}}
+                            {{ form.surname.label(class="small mb-1")}} 
+                            {{ form.surname(class="form-control",value=user.surname)}}
                     </div>
                 </div>
-                <!-- Form Row        -->
+                    <!-- Form Row        -->
                 <div class="row gx-3 mb-3">
-                    <!-- Form Group (organization name)-->
+                        <!-- Form Group (organization name)-->
 
                     {{ form.birthdate.label(class="form-label")}} 
                     {{ form.birthdate(class="form-control",value=user.birthdate)}}
 
-                    <!-- Form Group (location)-->
+                        <!-- Form Group (location)-->
                 </div>
 
 
@@ -47,14 +48,14 @@
                 </div>
 
 
-                <!-- Form Row-->
+                    <!-- Form Row-->
                 <div class="row gx-3 mb-3">
-                    <!-- Form Group (phone number)-->
+                        <!-- Form Group (phone number)-->
                     <div class="col-md-6">
                         {{ form.phone.label(class="small mb-1")}} 
                         {{ form.phone(class="form-control",value=user.phone)}}
                     </div>
-                    <!-- Form Group (birthday)-->
+                        <!-- Form Group (birthday)-->
                     <div class="col-md-6">
                         {{ form.email.label(class="small mb-1")}} 
                         {{ form.email(class="form-control",value=user.email)}}
@@ -74,18 +75,24 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            
 
-            <!-- Save changes button-->
-            {{ form.submit(class="btn btn-primary")}}
-        </form>
+                <!-- Save changes button-->
+                {{ form.submit(class="btn btn-primary")}}
+            </form>
+        
+            <form method="POST" action="{{ url_for('user.delete') }}">
+                <button type="submit" class="btn btn-danger">Delete Account</button>
+            </form>
 
-        <form method="POST" action="{{ url_for('user.delete') }}">
-            <button type="submit" class="btn btn-danger">Delete Account</button>
-        </form>
+            {% for message in get_flashed_messages()%}
+                <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                  {{message}}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {%endfor%}
+        </div>
     </div>
 </div>
-</div>
-
 
 {% endblock %}

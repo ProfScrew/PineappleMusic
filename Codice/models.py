@@ -6,8 +6,10 @@ from flask_login import UserMixin
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
-Base = declarative_base()
+from Codice.database import Session_artist, Session_guestmanager, Session_listener, Session_premiumlistener, Session
 
+Base = declarative_base()
+Base.query = Session.query_property()
 # USERS
 
 # tabella = classe che eredita da Base
@@ -45,7 +47,30 @@ class User(Base, UserMixin):
     def verify_password(self, password):
         return check_password_hash(self.password, password)
 
-    
+    def get_type_user(temp_username):
+
+        if Session_guestmanager.query(NormalListener).filter(NormalListener.username == temp_username).count() == 1:
+            return 1
+        elif Session_guestmanager.query(PremiumListener).filter(PremiumListener.username == temp_username).count() == 1:
+            return 2
+        elif Session_guestmanager.query(Artist).filter(Artist.username == temp_username).count() == 1:
+            return 3
+        else:
+            raise Exception("User not in any list")
+        
+        
+
+    def get_type_user_session(temp_username):
+        
+        type_user = User.get_type_user(temp_username)
+
+        if type_user == 1: 
+            return Session_listener
+        elif type_user == 2:
+            return Session_premiumlistener
+        elif type_user == 3:
+            return Session_artist
+        
 
     def get_user(temp_session_db, username):
         user = temp_session_db.query(User).filter(User.username == username).first()
@@ -61,18 +86,27 @@ class User(Base, UserMixin):
             return True
         except:
             return False
-    def update_user(self, temp_session_db, username, temp_name, temp_surnamea, temp_birthdate, temp_password, temp_phone, temp_email, check_password):
+    
+    def update_user(temp_session_db, temp_username, temp_name, temp_surname, temp_birthdate, temp_password, temp_phone, temp_email, check_password):
         try:
             if check_password:
-                query = update(User).where(User.name == username).values(name = temp_name, surname = temp_surnamea, birthdate = temp_birthdate, password = temp_password, phone = temp_phone, email = temp_email)
+                query = update(User).where(User.username == temp_username).values(name = temp_name, surname = temp_surname,
+                                                                                  birthdate = temp_birthdate, password = temp_password,
+                                                                                  phone = temp_phone, email = temp_email)
+                
+                
             else:
-                query = update(User).where(User.name == username).values(name = temp_name, surname = temp_surnamea, birthdate = temp_birthdate, phone = temp_phone, email = temp_email)
+                query = update(User).where(User.username == temp_username).values(name = temp_name, surname = temp_surname,
+                                                                                  birthdate = temp_birthdate, phone = temp_phone,
+                                                                                  email = temp_email)
             temp_session_db.execute(query)
+            temp_session_db.commit()
             return True
         except:
             return False
 
     def delete_user(temp_session_db, username):
+        
         user = User.get_user(username)
         temp_session_db.delete(user)
         

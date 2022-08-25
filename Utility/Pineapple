@@ -1,5 +1,5 @@
 --
--- PostgreSQL database dump
+-- postgresQL database dump
 --
 
 -- Dumped from database version 13.7 (Ubuntu 13.7-0ubuntu0.21.10.1)
@@ -634,6 +634,6 @@ GRANT SELECT,DELETE,UPDATE ON TABLE public.users TO listeners;
 -- Completed on 2022-08-22 19:25:07 CEST
 
 --
--- PostgreSQL database dump complete
+-- postgresQL database dump complete
 --
 
