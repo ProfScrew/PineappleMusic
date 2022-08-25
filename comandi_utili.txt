@@ -20,3 +20,7 @@ systemctl stop postgresql
 //gestione moduli python
 pip install flask
 pip install sqlalchemy
+
+server in produzione
+fuser -k 8000/tcp #uccidere tutti i processi su una porta specifica
+gunicorn -w 4 -b 0.0.0.0 "Codice.__init__:create_app()" --daemon #avviare il server come demone attenzione incapsulare __init__.py con def create_app():
