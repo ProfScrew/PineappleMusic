@@ -51,7 +51,7 @@ def signup():
                 flash('Registration Successfull.')
                 return redirect(url_for('auth.signin'))
             else:
-                flash('Registraton Failed(User not registered), Please try agian.')
+                flash('Registraton Failed(Server Error), Please try agian.')
         else:
             flash('Field Gender or Artist not specified.')
     return render_template("signup.html", title="Register", form=form)

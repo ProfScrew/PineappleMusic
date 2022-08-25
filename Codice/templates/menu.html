@@ -20,15 +20,26 @@
         <ul class="list-unstyled px-2">
             <li><a href="{{url_for('user.home')}}" class="text-decoration-none px-3 py-2 d-block"><i
                         class="fa-solid fa-house"></i>Home</a></li>
-            <li><a href="#" class="text-decoration-none px-3 py-2 d-block"><i
+            <li><a href="{{url_for('music.songs')}}" class="text-decoration-none px-3 py-2 d-block"><i
                         class="fa-solid fa-music"></i>Songs</a></li>
 
 
-            <li><a href="#" class="text-decoration-none px-3 py-2 d-block"><i
+            <li><a href="{{url_for('music.playlist')}}" class="text-decoration-none px-3 py-2 d-block"><i
                         class="fa-solid fa-list-ol"></i>Playlist</a></li>
             <li><a href="{{url_for('user.profile')}}" class="text-decoration-none px-3 py-2 d-block"><i
                         class="fa-solid fa-user"></i>Profile</a></li>
+            
+            {% if user_type == 1%}
+                <li><a href="{{url_for('user.premium')}}" class="text-decoration-none px-3 py-2 d-block">
+                    <i class="fa-solid fa-star"></i>Premium</a></li>
+            {% endif%}
 
+            {% if user_type == 3%}
+                <li><a href="{{url_for('artist.statistics')}}" class="text-decoration-none px-3 py-2 d-block">
+                    <i class="fa-solid fa-gauge-high"></i>Statistics</a></li>
+            {% endif%}
+
+            
 
         </ul>
         <hr class="h-color mx-2">
@@ -42,7 +53,9 @@
                 </li>
             </ul>
         </div>
-    
+        
+
+
 
     </div>
     <div class="content " style="background-color: #FFFFFF"  >

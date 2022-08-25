@@ -1,3 +1,4 @@
+import imp
 from flask import Flask
 from flask_login import LoginManager
 
@@ -9,6 +10,8 @@ from Codice.database import *
 from .auth.routes import auth
 from .user.routes import user
 from .error.routes import error
+from .artist.routes import artist
+from .music.routes import music
 
 # initializing the webapp
 app = Flask(__name__)
@@ -44,7 +47,8 @@ with app.app_context():
     app.register_blueprint(auth, url_prefix='/auth')
     app.register_blueprint(user, url_prefix='/user')
     app.register_blueprint(error, url_prefix='/error')
-
+    app.register_blueprint(artist, url_prefix='/artist')
+    app.register_blueprint(music, url_prefix='/music')
 
 
     

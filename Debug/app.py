@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker
 from models import *
 
 
-engine = create_engine('postgresql://listeners:PassListeners@129.152.15.83:5432/PineappleMusic', echo=True)
+engine = create_engine('postgresql://premium_listeners:PassPremiumListeners@129.152.15.83:5432/PineappleMusic', echo=True)
 
 
 Session = sessionmaker(bind=engine)       # factory pattern
@@ -15,9 +15,10 @@ session = Session()
 for instance in session.query(User):
     print(instance)
 
-query = session.query(NormalListener).filter(NormalListener.username == 'Stefano').count()
+premiumlistener = PremiumListener('Matrix')
+session.add(premiumlistener)
+session.commit()
 
-print("Count: ", query)
 
 
 #quer = select(NormalListener, User).join(NormalListener.username)

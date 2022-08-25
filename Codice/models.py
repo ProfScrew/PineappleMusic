@@ -82,6 +82,7 @@ class User(Base, UserMixin):
             temp_session_db.commit()
             return True
         except:
+            temp_session_db.flush()
             return False
 
     def update_user(temp_session_db, temp_username, temp_name, temp_surname, temp_birthdate, temp_password, temp_phone, temp_email, check_password):
@@ -102,12 +103,20 @@ class User(Base, UserMixin):
             return False
 
     def delete_user(temp_session_db, username):
-        User.scream()
         user = User.get_user(temp_session_db, username)
-        User.scream()
-        print(user)
+        #print(user)
         temp_session_db.delete(user)
         temp_session_db.commit()
+
+    def move_user_to_premium(username):
+        try:
+            PremiumListener.register_premiumlistener(Session_guestmanager,username)
+            NormalListener.delete_normallistener(Session_guestmanager,username)
+            return True
+        except:
+            
+            return False
+    
 
     # questo metodo è opzionale, serve solo per pretty printing
 
@@ -134,8 +143,7 @@ class NormalListener(Base):
 
     username = Column(String, ForeignKey(User.username), primary_key=True)
 
-    users = relationship(User, backref=backref("normallisteners", cascade="all,  delete, delete-orphan"),
-                         cascade="all, delete", uselist=False)
+    users = relationship(User, backref=backref("normallisteners", cascade="all,  delete, delete-orphan"), uselist=False)
 
     def __init__(self, username):
         self.username = username
@@ -149,6 +157,17 @@ class NormalListener(Base):
         except:
             return False
 
+    def get_user(temp_session_db, temp_username):
+        user = temp_session_db.query(NormalListener).filter(NormalListener.username == temp_username).first()
+        return user
+    
+    def delete_normallistener(temp_session_db,username):
+        user = NormalListener.get_user(temp_session_db,username)
+        temp_session_db.delete(user)
+        temp_session_db.commit()
+        
+    
+    
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         return "<NormalListener(username='%s')>" % (self.username)
@@ -161,7 +180,8 @@ class PremiumListener(Base):
 
     username = Column(String, ForeignKey(User.username), primary_key=True)
 
-    users = relationship(User, backref=backref("premiumlistenes", cascade="all,  delete, delete-orphan"), uselist=False)
+    users = relationship(User, backref=backref(
+        "premiumlistenes", cascade="all,  delete, delete-orphan"), uselist=False)
 
     def __init__(self, username):
         self.username = username
@@ -187,7 +207,8 @@ class Artist(Base):
 
     username = Column(String, ForeignKey(User.username), primary_key=True)
 
-    users = relationship(User, backref=backref("artists", cascade="all,  delete, delete-orphan"), uselist=False)
+    users = relationship(User, backref=backref(
+        "artists", cascade="all,  delete, delete-orphan"), uselist=False)
 
     def __init__(self, username):
         self.username = username
@@ -216,7 +237,8 @@ class Album(Base):
     cover = Column(String)
     artist = Column(String, ForeignKey(Artist.username))
 
-    artists = relationship(Artist, backref=backref("albums", cascade="all,  delete, delete-orphan"))
+    artists = relationship(Artist, backref=backref(
+        "albums", cascade="all,  delete, delete-orphan"))
 
     def __init__(self, idalbum, name, cover, artist):
         self.idalbum = idalbum
@@ -242,7 +264,8 @@ class Song(Base):
     releasedate = Column(Date)
     content = Column(String)
 
-    albums = relationship(Album, backref=backref("songs", cascade="all,  delete, delete-orphan"))
+    albums = relationship(Album, backref=backref(
+        "songs", cascade="all,  delete, delete-orphan"))
 
     def __init__(self, name, idsong, album, cover, releasedata, content):
         self.name = name
@@ -264,7 +287,8 @@ class NormalSong(Base):
 
     song = Column(Integer, ForeignKey(Song.idsong), primary_key=True)
 
-    songs = relationship(Song, backref=backref("normalsongs", cascade="all,  delete, delete-orphan"), uselist=False)
+    songs = relationship(Song, backref=backref(
+        "normalsongs", cascade="all,  delete, delete-orphan"), uselist=False)
 
     def __init__(self, song):
         self.song = song
@@ -281,7 +305,8 @@ class PremiumSong(Base):
 
     song = Column(Integer, ForeignKey(Song.idsong), primary_key=True)
 
-    songs = relationship(Song, backref=backref("premiumsongs", cascade="all,  delete, delete-orphan"), uselist=False)
+    songs = relationship(Song, backref=backref(
+        "premiumsongs", cascade="all,  delete, delete-orphan"), uselist=False)
 
     def __init__(self, song):
         self.song = song
@@ -301,7 +326,8 @@ class Statistic(Base):
     downvote = Column(Integer)
     views = Column(Integer)
 
-    songs = relationship(Song, backref=backref("statistics", cascade="all,  delete, delete-orphan"), uselist=False)
+    songs = relationship(Song, backref=backref(
+        "statistics", cascade="all,  delete, delete-orphan"), uselist=False)
 
     def __init__(self, song, upvote, downvote, views):
         self.song = song
@@ -358,8 +384,10 @@ class Belong(Base):
     genre = Column(String, ForeignKey(Genre.name), primary_key=True)
     song = Column(String, ForeignKey(Song.idsong), primary_key=True)
 
-    genres = relationship(Genre, backref=backref("belong", cascade="all,  delete, delete-orphan"))
-    songs = relationship(Song, backref=backref("belong", cascade="all,  delete, delete-orphan"))
+    genres = relationship(Genre, backref=backref(
+        "belong", cascade="all,  delete, delete-orphan"))
+    songs = relationship(Song, backref=backref(
+        "belong", cascade="all,  delete, delete-orphan"))
 
     def __init__(self, genre, song):
         self.genre = genre
@@ -379,8 +407,10 @@ class Creates(Base):
     song = Column(String,  ForeignKey(Song.idsong), primary_key=True,)
     username = Column(String, ForeignKey(Artist.username), primary_key=True)
 
-    songs = relationship(Song, backref=backref("creates", cascade="all,  delete, delete-orphan"))
-    artists = relationship(Artist, backref=backref("creates", cascade="all,  delete, delete-orphan"))
+    songs = relationship(Song, backref=backref(
+        "creates", cascade="all,  delete, delete-orphan"))
+    artists = relationship(Artist, backref=backref(
+        "creates", cascade="all,  delete, delete-orphan"))
 
     def __init__(self, username, song):
         self.username = username
@@ -401,7 +431,8 @@ class Playlist(Base):
     creationdate = Column(Date)
     author = Column(String, ForeignKey(User.username))
 
-    users = relationship(User, backref=backref("playlists", cascade="all,  delete, delete-orphan"))
+    users = relationship(User, backref=backref(
+        "playlists", cascade="all,  delete, delete-orphan"))
 
     def __init__(self, idlist, creationdate, author):
         self.idlist = idlist
@@ -422,8 +453,10 @@ class Contains(Base):
     song = Column(Integer, ForeignKey(Song.idsong), primary_key=True)
     list = Column(Integer, ForeignKey(Playlist.idlist), primary_key=True)
 
-    songs = relationship(Song,backref=backref("contains", cascade="all,  delete, delete-orphan"))
-    playlists = relationship(Playlist, backref=backref("contains", cascade="all,  delete, delete-orphan"))
+    songs = relationship(Song, backref=backref(
+        "contains", cascade="all,  delete, delete-orphan"))
+    playlists = relationship(Playlist, backref=backref(
+        "contains", cascade="all,  delete, delete-orphan"))
 
     def __init__(self, song, list):
         self.song = song

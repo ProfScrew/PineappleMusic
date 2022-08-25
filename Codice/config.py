@@ -3,7 +3,7 @@ config = {
     
     'ARTIST_DB' : "postgresql://artists:PassArtists@129.152.15.83:5432/PineappleMusic",
     'LISTENER_DB' : "postgresql://listeners:PassListeners@129.152.15.83:5432/PineappleMusic",
-    'PREMIUMLISTENER_DB' : "postgresql://premiumListener:PassPremiumListeners@129.152.15.83:5432/PineappleMusic",
+    'PREMIUMLISTENER_DB' : "postgresql://premium_listeners:PassPremiumListeners@129.152.15.83:5432/PineappleMusic",
     'GUEST_MANAGER_DB' : "postgresql://guest_manager:PassGuestManager@129.152.15.83:5432/PineappleMusic",
     'DELETE_MANAGER_DB' : "postgresql://delete_manager:PassDeleteManager@129.152.15.83:5432/PineappleMusic"
 }

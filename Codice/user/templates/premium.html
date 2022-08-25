@@ -1,0 +1,67 @@
+{% extends 'menu.html' %}
+
+{% block content %}
+
+
+<div class="d-flex justify-content-center dashboard-content px-3 pt-4  text-center">
+    <!-- Account details card-->
+
+    <div class="">Update your account to Premium
+        <div class="">
+            
+            <!-- Form Group (username)-->
+            <form method="POST" action="{{ url_for('user.premium') }}">
+                {{ form.csrf_token }}
+                <hr class="h-color-black mx-2">   
+                <div class="col-md-12">
+                    <label class="small mb-1">Username</label>
+                    <input class="form-control text-center" type="text" value="{{user.username}}" readonly>
+                </div>
+                
+                <div class="row gx-3 mb-3">
+                        <!-- Form Group (organization name)-->
+
+                    {{ form.card_number.label(class="form-label")}} 
+                    {{ form.card_number(class="form-control",placeholder="xxxx xxxx xxxx xxxx")}}
+
+                        <!-- Form Group (location)-->
+                </div>
+                <div class="row gx-3 mb-3">
+                        <!-- Form Group (first name)-->
+                    <div class="col-md-6">
+                        {{ form.month.label(class="small mb-1")}} 
+                        {{ form.month(class="form-control")}}
+
+                    </div>
+                        <!-- Form Group (last name)-->
+                    <div class="col-md-6">
+                            {{ form.year.label(class="small mb-1")}} 
+                            {{ form.year(class="form-control")}}
+                    </div>
+                </div>
+                    <!-- Form Row        -->
+                <div class="row gx-3 mb-3">
+                    <div class="col-md-6">
+                            <!-- Form Group (organization name)-->
+                        {{ form.cvv.label(class="form-label")}} 
+                        {{ form.cvv(class="form-control",placeholder="xxx")}}
+                            <!-- Form Group (location)-->
+                    </div>
+                </div>
+                    
+
+                <!-- Save changes button-->
+                {{ form.submit(class="btn btn-primary")}}
+            </form>
+
+            {% for message in get_flashed_messages()%}
+                <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                  {{message}}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {%endfor%}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

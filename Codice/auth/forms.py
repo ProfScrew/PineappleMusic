@@ -20,7 +20,7 @@ class RegisterForm(FlaskForm):
     password = PasswordField("Password", validators=[DataRequired(),Length(min=8)])
     
     gender = SelectField("Gender", choices=[' ','M','F'], validate_choice=True )
-    phone = StringField("Phone", validators=[DataRequired(),Length(min=6)])
+    phone = StringField("Phone", validators=[DataRequired(),Length(min=6, max = 6)])
     email = EmailField("Email", validators=[DataRequired(),Email()])
     
     artist = SelectField('Artist', choices=[' ','True','False'])

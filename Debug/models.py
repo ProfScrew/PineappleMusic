@@ -51,6 +51,9 @@ class PremiumListener(Base):
 
     users = relationship(User, backref="premiumlistenes", uselist=False)
     
+    def __init__(self, username):
+        self.username = username
+    
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         return "<PremiumListener(username='%s')>" % (self.username)
@@ -223,7 +226,7 @@ class Playlist(Base):
     author = Column(String, ForeignKey(User.username))
 
     users = relationship(User, backref="playlists")
-
+    
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         return "<Playlist(name='%s', idlist='%d', creationdate='%s',author='%s')>" % (self.name, self.idlist, self.creationdate, self.author)
