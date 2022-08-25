@@ -1,6 +1,6 @@
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from flask_login import UserMixin
 
 
@@ -37,10 +37,10 @@ class User(Base, UserMixin):
         self.gender = gender
         self.phone = phone
         self.email = email
-    
+
     def scream():
         print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-    
+
     def encrypt_password(password):
         return generate_password_hash(password)
 
@@ -57,23 +57,20 @@ class User(Base, UserMixin):
             return 3
         else:
             raise Exception("User not in any list")
-        
-        
 
     def get_type_user_session(temp_username):
-        
-        type_user = User.get_type_user(temp_username)
 
-        if type_user == 1: 
+        type_user = User.get_type_user(temp_username)
+        if type_user == 1:
             return Session_listener
         elif type_user == 2:
             return Session_premiumlistener
         elif type_user == 3:
             return Session_artist
-        
 
     def get_user(temp_session_db, username):
-        user = temp_session_db.query(User).filter(User.username == username).first()
+        user = temp_session_db.query(User).filter(
+            User.username == username).first()
         return user
 
     def register_user(temp_session_db,  username, name, surname, birthdate, password, gender, phone, email):
@@ -86,19 +83,18 @@ class User(Base, UserMixin):
             return True
         except:
             return False
-    
+
     def update_user(temp_session_db, temp_username, temp_name, temp_surname, temp_birthdate, temp_password, temp_phone, temp_email, check_password):
         try:
             if check_password:
-                query = update(User).where(User.username == temp_username).values(name = temp_name, surname = temp_surname,
-                                                                                  birthdate = temp_birthdate, password = temp_password,
-                                                                                  phone = temp_phone, email = temp_email)
-                
-                
+                query = update(User).where(User.username == temp_username).values(name=temp_name, surname=temp_surname,
+                                                                                  birthdate=temp_birthdate, password=temp_password,
+                                                                                  phone=temp_phone, email=temp_email)
+
             else:
-                query = update(User).where(User.username == temp_username).values(name = temp_name, surname = temp_surname,
-                                                                                  birthdate = temp_birthdate, phone = temp_phone,
-                                                                                  email = temp_email)
+                query = update(User).where(User.username == temp_username).values(name=temp_name, surname=temp_surname,
+                                                                                  birthdate=temp_birthdate, phone=temp_phone,
+                                                                                  email=temp_email)
             temp_session_db.execute(query)
             temp_session_db.commit()
             return True
@@ -106,21 +102,22 @@ class User(Base, UserMixin):
             return False
 
     def delete_user(temp_session_db, username):
-        
-        user = User.get_user(username)
+        User.scream()
+        user = User.get_user(temp_session_db, username)
+        User.scream()
+        print(user)
         temp_session_db.delete(user)
-        
-        
+        temp_session_db.commit()
+
     # questo metodo è opzionale, serve solo per pretty printing
 
     def __repr__(self):
         return "<User(username='%s', name='%s', surname='%s',birthdate='%s' password='%s', gender='%s',phone='%d',email='%s')>" % (self.username, self.name, self.surname, self.birthdate, self.password, self.gender, self.phone, self.email)
 
-    
-    #def verify_password(password):
+    # def verify_password(password):
     #    return True
 
-    #def verify_password(self,password):
+    # def verify_password(self,password):
     #    if self.password == password:
     #        return True
     #    else:
@@ -137,7 +134,8 @@ class NormalListener(Base):
 
     username = Column(String, ForeignKey(User.username), primary_key=True)
 
-    users = relationship(User, backref="normallisteners", uselist=False)
+    users = relationship(User, backref=backref("normallisteners", cascade="all,  delete, delete-orphan"),
+                         cascade="all, delete", uselist=False)
 
     def __init__(self, username):
         self.username = username
@@ -163,7 +161,7 @@ class PremiumListener(Base):
 
     username = Column(String, ForeignKey(User.username), primary_key=True)
 
-    users = relationship(User, backref="premiumlistenes", uselist=False)
+    users = relationship(User, backref=backref("premiumlistenes", cascade="all,  delete, delete-orphan"), uselist=False)
 
     def __init__(self, username):
         self.username = username
@@ -189,7 +187,7 @@ class Artist(Base):
 
     username = Column(String, ForeignKey(User.username), primary_key=True)
 
-    users = relationship(User, backref="artists", uselist=False)
+    users = relationship(User, backref=backref("artists", cascade="all,  delete, delete-orphan"), uselist=False)
 
     def __init__(self, username):
         self.username = username
@@ -218,7 +216,7 @@ class Album(Base):
     cover = Column(String)
     artist = Column(String, ForeignKey(Artist.username))
 
-    artists = relationship(Artist, backref="albums")
+    artists = relationship(Artist, backref=backref("albums", cascade="all,  delete, delete-orphan"))
 
     def __init__(self, idalbum, name, cover, artist):
         self.idalbum = idalbum
@@ -244,7 +242,7 @@ class Song(Base):
     releasedate = Column(Date)
     content = Column(String)
 
-    albums = relationship(Album, backref="songs")
+    albums = relationship(Album, backref=backref("songs", cascade="all,  delete, delete-orphan"))
 
     def __init__(self, name, idsong, album, cover, releasedata, content):
         self.name = name
@@ -266,7 +264,7 @@ class NormalSong(Base):
 
     song = Column(Integer, ForeignKey(Song.idsong), primary_key=True)
 
-    songs = relationship(Song, backref="normalsongs", uselist=False)
+    songs = relationship(Song, backref=backref("normalsongs", cascade="all,  delete, delete-orphan"), uselist=False)
 
     def __init__(self, song):
         self.song = song
@@ -283,7 +281,7 @@ class PremiumSong(Base):
 
     song = Column(Integer, ForeignKey(Song.idsong), primary_key=True)
 
-    songs = relationship(Song, backref="premiumsongs", uselist=False)
+    songs = relationship(Song, backref=backref("premiumsongs", cascade="all,  delete, delete-orphan"), uselist=False)
 
     def __init__(self, song):
         self.song = song
@@ -303,7 +301,7 @@ class Statistic(Base):
     downvote = Column(Integer)
     views = Column(Integer)
 
-    songs = relationship(Song, backref="statistics", uselist=False)
+    songs = relationship(Song, backref=backref("statistics", cascade="all,  delete, delete-orphan"), uselist=False)
 
     def __init__(self, song, upvote, downvote, views):
         self.song = song
@@ -333,6 +331,7 @@ class Genre(Base):
 # verso artist
 
 
+'''
 class Relate(Base):
     __tablename__ = 'relate'                   # obbligatorio
 
@@ -349,7 +348,7 @@ class Relate(Base):
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         return "<Relate(genre='%s', artist='%s')>" % (self.genre, self.artist)
-
+'''
 # verso song
 
 
@@ -359,8 +358,8 @@ class Belong(Base):
     genre = Column(String, ForeignKey(Genre.name), primary_key=True)
     song = Column(String, ForeignKey(Song.idsong), primary_key=True)
 
-    genres = relationship(Genre, backref="belong")
-    songs = relationship(Song, backref="belong")
+    genres = relationship(Genre, backref=backref("belong", cascade="all,  delete, delete-orphan"))
+    songs = relationship(Song, backref=backref("belong", cascade="all,  delete, delete-orphan"))
 
     def __init__(self, genre, song):
         self.genre = genre
@@ -380,8 +379,8 @@ class Creates(Base):
     song = Column(String,  ForeignKey(Song.idsong), primary_key=True,)
     username = Column(String, ForeignKey(Artist.username), primary_key=True)
 
-    songs = relationship(Song, backref="creates")
-    artists = relationship(Artist, backref="creates")
+    songs = relationship(Song, backref=backref("creates", cascade="all,  delete, delete-orphan"))
+    artists = relationship(Artist, backref=backref("creates", cascade="all,  delete, delete-orphan"))
 
     def __init__(self, username, song):
         self.username = username
@@ -402,7 +401,7 @@ class Playlist(Base):
     creationdate = Column(Date)
     author = Column(String, ForeignKey(User.username))
 
-    users = relationship(User, backref="playlists")
+    users = relationship(User, backref=backref("playlists", cascade="all,  delete, delete-orphan"))
 
     def __init__(self, idlist, creationdate, author):
         self.idlist = idlist
@@ -410,6 +409,7 @@ class Playlist(Base):
         self.author = author
 
     # questo metodo è opzionale, serve solo per pretty printing
+
     def __repr__(self):
         return "<Playlist(name='%s', idlist='%d', creationdate='%s',author='%s')>" % (self.name, self.idlist, self.creationdate, self.author)
 
@@ -422,8 +422,8 @@ class Contains(Base):
     song = Column(Integer, ForeignKey(Song.idsong), primary_key=True)
     list = Column(Integer, ForeignKey(Playlist.idlist), primary_key=True)
 
-    songs = relationship(Song, backref="contains")
-    playlists = relationship(Playlist, backref="contains")
+    songs = relationship(Song,backref=backref("contains", cascade="all,  delete, delete-orphan"))
+    playlists = relationship(Playlist, backref=backref("contains", cascade="all,  delete, delete-orphan"))
 
     def __init__(self, song, list):
         self.song = song

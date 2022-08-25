@@ -1,5 +1,5 @@
 --
--- postgresQL database dump
+-- adminQL database dump
 --
 
 -- Dumped from database version 13.7 (Ubuntu 13.7-0ubuntu0.21.10.1)
@@ -24,7 +24,7 @@ SET default_table_access_method = heap;
 
 --
 -- TOC entry 204 (class 1259 OID 16881)
--- Name: albums; Type: TABLE; Schema: public; Owner: postgres
+-- Name: albums; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.albums (
@@ -35,11 +35,11 @@ CREATE TABLE public.albums (
 );
 
 
-ALTER TABLE public.albums OWNER TO postgres;
+ALTER TABLE public.albums OWNER TO admin;
 
 --
 -- TOC entry 203 (class 1259 OID 16871)
--- Name: artists; Type: TABLE; Schema: public; Owner: postgres
+-- Name: artists; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.artists (
@@ -47,11 +47,11 @@ CREATE TABLE public.artists (
 );
 
 
-ALTER TABLE public.artists OWNER TO postgres;
+ALTER TABLE public.artists OWNER TO admin;
 
 --
 -- TOC entry 212 (class 1259 OID 16974)
--- Name: belong; Type: TABLE; Schema: public; Owner: postgres
+-- Name: belong; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.belong (
@@ -60,11 +60,11 @@ CREATE TABLE public.belong (
 );
 
 
-ALTER TABLE public.belong OWNER TO postgres;
+ALTER TABLE public.belong OWNER TO admin;
 
 --
 -- TOC entry 210 (class 1259 OID 16939)
--- Name: contains; Type: TABLE; Schema: public; Owner: postgres
+-- Name: contains; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.contains (
@@ -73,11 +73,11 @@ CREATE TABLE public.contains (
 );
 
 
-ALTER TABLE public.contains OWNER TO postgres;
+ALTER TABLE public.contains OWNER TO admin;
 
 --
 -- TOC entry 213 (class 1259 OID 16989)
--- Name: creates; Type: TABLE; Schema: public; Owner: postgres
+-- Name: creates; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.creates (
@@ -86,11 +86,11 @@ CREATE TABLE public.creates (
 );
 
 
-ALTER TABLE public.creates OWNER TO postgres;
+ALTER TABLE public.creates OWNER TO admin;
 
 --
 -- TOC entry 211 (class 1259 OID 16954)
--- Name: genres; Type: TABLE; Schema: public; Owner: postgres
+-- Name: genres; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.genres (
@@ -98,11 +98,11 @@ CREATE TABLE public.genres (
 );
 
 
-ALTER TABLE public.genres OWNER TO postgres;
+ALTER TABLE public.genres OWNER TO admin;
 
 --
 -- TOC entry 201 (class 1259 OID 16851)
--- Name: normallisteners; Type: TABLE; Schema: public; Owner: postgres
+-- Name: normallisteners; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.normallisteners (
@@ -110,11 +110,11 @@ CREATE TABLE public.normallisteners (
 );
 
 
-ALTER TABLE public.normallisteners OWNER TO postgres;
+ALTER TABLE public.normallisteners OWNER TO admin;
 
 --
 -- TOC entry 206 (class 1259 OID 16901)
--- Name: normalsongs; Type: TABLE; Schema: public; Owner: postgres
+-- Name: normalsongs; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.normalsongs (
@@ -122,11 +122,11 @@ CREATE TABLE public.normalsongs (
 );
 
 
-ALTER TABLE public.normalsongs OWNER TO postgres;
+ALTER TABLE public.normalsongs OWNER TO admin;
 
 --
 -- TOC entry 209 (class 1259 OID 16929)
--- Name: playlists; Type: TABLE; Schema: public; Owner: postgres
+-- Name: playlists; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.playlists (
@@ -137,11 +137,11 @@ CREATE TABLE public.playlists (
 );
 
 
-ALTER TABLE public.playlists OWNER TO postgres;
+ALTER TABLE public.playlists OWNER TO admin;
 
 --
 -- TOC entry 202 (class 1259 OID 16861)
--- Name: premiumlisteners; Type: TABLE; Schema: public; Owner: postgres
+-- Name: premiumlisteners; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.premiumlisteners (
@@ -149,11 +149,11 @@ CREATE TABLE public.premiumlisteners (
 );
 
 
-ALTER TABLE public.premiumlisteners OWNER TO postgres;
+ALTER TABLE public.premiumlisteners OWNER TO admin;
 
 --
 -- TOC entry 207 (class 1259 OID 16911)
--- Name: premiumsongs; Type: TABLE; Schema: public; Owner: postgres
+-- Name: premiumsongs; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.premiumsongs (
@@ -162,11 +162,11 @@ CREATE TABLE public.premiumsongs (
 );
 
 
-ALTER TABLE public.premiumsongs OWNER TO postgres;
+ALTER TABLE public.premiumsongs OWNER TO admin;
 
 --
 -- TOC entry 205 (class 1259 OID 16891)
--- Name: songs; Type: TABLE; Schema: public; Owner: postgres
+-- Name: songs; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.songs (
@@ -179,11 +179,11 @@ CREATE TABLE public.songs (
 );
 
 
-ALTER TABLE public.songs OWNER TO postgres;
+ALTER TABLE public.songs OWNER TO admin;
 
 --
 -- TOC entry 208 (class 1259 OID 16921)
--- Name: statistics; Type: TABLE; Schema: public; Owner: postgres
+-- Name: statistics; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.statistics (
@@ -194,11 +194,11 @@ CREATE TABLE public.statistics (
 );
 
 
-ALTER TABLE public.statistics OWNER TO postgres;
+ALTER TABLE public.statistics OWNER TO admin;
 
 --
 -- TOC entry 200 (class 1259 OID 16842)
--- Name: users; Type: TABLE; Schema: public; Owner: postgres
+-- Name: users; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.users (
@@ -215,11 +215,11 @@ CREATE TABLE public.users (
 );
 
 
-ALTER TABLE public.users OWNER TO postgres;
+ALTER TABLE public.users OWNER TO admin;
 
 --
 -- TOC entry 3076 (class 2606 OID 16885)
--- Name: albums albums_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: albums albums_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.albums
@@ -228,7 +228,7 @@ ALTER TABLE ONLY public.albums
 
 --
 -- TOC entry 3074 (class 2606 OID 16875)
--- Name: artists artists_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: artists artists_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.artists
@@ -237,7 +237,7 @@ ALTER TABLE ONLY public.artists
 
 --
 -- TOC entry 3090 (class 2606 OID 16978)
--- Name: belong belong_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: belong belong_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.belong
@@ -246,7 +246,7 @@ ALTER TABLE ONLY public.belong
 
 --
 -- TOC entry 3086 (class 2606 OID 16943)
--- Name: contains contains_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: contains contains_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.contains
@@ -255,7 +255,7 @@ ALTER TABLE ONLY public.contains
 
 --
 -- TOC entry 3092 (class 2606 OID 16993)
--- Name: creates creates_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: creates creates_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.creates
@@ -264,7 +264,7 @@ ALTER TABLE ONLY public.creates
 
 --
 -- TOC entry 3088 (class 2606 OID 16958)
--- Name: genres genres_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: genres genres_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.genres
@@ -273,7 +273,7 @@ ALTER TABLE ONLY public.genres
 
 --
 -- TOC entry 3070 (class 2606 OID 16855)
--- Name: normallisteners normallisteners_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: normallisteners normallisteners_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.normallisteners
@@ -282,7 +282,7 @@ ALTER TABLE ONLY public.normallisteners
 
 --
 -- TOC entry 3080 (class 2606 OID 16905)
--- Name: normalsongs normalsongs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: normalsongs normalsongs_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.normalsongs
@@ -291,7 +291,7 @@ ALTER TABLE ONLY public.normalsongs
 
 --
 -- TOC entry 3084 (class 2606 OID 16933)
--- Name: playlists playlists_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: playlists playlists_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.playlists
@@ -300,7 +300,7 @@ ALTER TABLE ONLY public.playlists
 
 --
 -- TOC entry 3072 (class 2606 OID 16865)
--- Name: premiumlisteners premiumlisteners_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: premiumlisteners premiumlisteners_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.premiumlisteners
@@ -309,7 +309,7 @@ ALTER TABLE ONLY public.premiumlisteners
 
 --
 -- TOC entry 3082 (class 2606 OID 16915)
--- Name: premiumsongs premiumsongs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: premiumsongs premiumsongs_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.premiumsongs
@@ -318,7 +318,7 @@ ALTER TABLE ONLY public.premiumsongs
 
 --
 -- TOC entry 3078 (class 2606 OID 16895)
--- Name: songs songs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: songs songs_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.songs
@@ -327,7 +327,7 @@ ALTER TABLE ONLY public.songs
 
 --
 -- TOC entry 3066 (class 2606 OID 16850)
--- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.users
@@ -336,7 +336,7 @@ ALTER TABLE ONLY public.users
 
 --
 -- TOC entry 3068 (class 2606 OID 16848)
--- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.users
@@ -345,25 +345,25 @@ ALTER TABLE ONLY public.users
 
 --
 -- TOC entry 3096 (class 2606 OID 16886)
--- Name: albums albums_artist_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: albums albums_artist_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.albums
-    ADD CONSTRAINT albums_artist_fkey FOREIGN KEY (artist) REFERENCES public.artists(username);
+    ADD CONSTRAINT albums_artist_fkey FOREIGN KEY (artist) REFERENCES public.artists(username) ON DELETE CASCADE;
 
 
 --
 -- TOC entry 3095 (class 2606 OID 16876)
--- Name: artists artists_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: artists artists_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.artists
-    ADD CONSTRAINT artists_username_fkey FOREIGN KEY (username) REFERENCES public.users(username);
+    ADD CONSTRAINT artists_username_fkey FOREIGN KEY (username) REFERENCES public.users(username)ON DELETE CASCADE;
 
 
 --
 -- TOC entry 3105 (class 2606 OID 16984)
--- Name: belong belong_genre_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: belong belong_genre_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.belong
@@ -372,116 +372,116 @@ ALTER TABLE ONLY public.belong
 
 --
 -- TOC entry 3104 (class 2606 OID 16979)
--- Name: belong belong_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: belong belong_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.belong
-    ADD CONSTRAINT belong_song_fkey FOREIGN KEY (song) REFERENCES public.songs(idsong);
+    ADD CONSTRAINT belong_song_fkey FOREIGN KEY (song) REFERENCES public.songs(idsong) ON DELETE CASCADE;
 
 
 --
 -- TOC entry 3103 (class 2606 OID 16949)
--- Name: contains contains_list_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: contains contains_list_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.contains
-    ADD CONSTRAINT contains_list_fkey FOREIGN KEY (list) REFERENCES public.playlists(idlist);
+    ADD CONSTRAINT contains_list_fkey FOREIGN KEY (list) REFERENCES public.playlists(idlist) ON DELETE CASCADE;
 
 
 --
 -- TOC entry 3102 (class 2606 OID 16944)
--- Name: contains contains_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: contains contains_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.contains
-    ADD CONSTRAINT contains_song_fkey FOREIGN KEY (song) REFERENCES public.songs(idsong);
+    ADD CONSTRAINT contains_song_fkey FOREIGN KEY (song) REFERENCES public.songs(idsong) ON DELETE CASCADE;
 
 
 --
 -- TOC entry 3106 (class 2606 OID 16994)
--- Name: creates creates_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: creates creates_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.creates
-    ADD CONSTRAINT creates_song_fkey FOREIGN KEY (song) REFERENCES public.songs(idsong);
+    ADD CONSTRAINT creates_song_fkey FOREIGN KEY (song) REFERENCES public.songs(idsong) ON DELETE CASCADE;
 
 
 --
 -- TOC entry 3107 (class 2606 OID 16999)
--- Name: creates creates_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: creates creates_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.creates
-    ADD CONSTRAINT creates_username_fkey FOREIGN KEY (username) REFERENCES public.artists(username);
+    ADD CONSTRAINT creates_username_fkey FOREIGN KEY (username) REFERENCES public.artists(username) ON DELETE CASCADE;
 
 
 --
 -- TOC entry 3093 (class 2606 OID 16856)
--- Name: normallisteners normallisteners_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: normallisteners normallisteners_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.normallisteners
-    ADD CONSTRAINT normallisteners_username_fkey FOREIGN KEY (username) REFERENCES public.users(username);
+    ADD CONSTRAINT normallisteners_username_fkey FOREIGN KEY (username) REFERENCES public.users(username) ON DELETE CASCADE;
 
 
 --
 -- TOC entry 3098 (class 2606 OID 16906)
--- Name: normalsongs normalsongs_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: normalsongs normalsongs_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.normalsongs
-    ADD CONSTRAINT normalsongs_song_fkey FOREIGN KEY (song) REFERENCES public.songs(idsong);
+    ADD CONSTRAINT normalsongs_song_fkey FOREIGN KEY (song) REFERENCES public.songs(idsong) ON DELETE CASCADE;
 
 
 --
 -- TOC entry 3101 (class 2606 OID 16934)
--- Name: playlists playlists_author_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: playlists playlists_author_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.playlists
-    ADD CONSTRAINT playlists_author_fkey FOREIGN KEY (author) REFERENCES public.users(username);
+    ADD CONSTRAINT playlists_author_fkey FOREIGN KEY (author) REFERENCES public.users(username) ON DELETE CASCADE;
 
 
 --
 -- TOC entry 3094 (class 2606 OID 16866)
--- Name: premiumlisteners premiumlisteners_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: premiumlisteners premiumlisteners_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.premiumlisteners
-    ADD CONSTRAINT premiumlisteners_username_fkey FOREIGN KEY (username) REFERENCES public.users(username);
+    ADD CONSTRAINT premiumlisteners_username_fkey FOREIGN KEY (username) REFERENCES public.users(username) ON DELETE CASCADE;
 
 
 --
 -- TOC entry 3099 (class 2606 OID 16916)
--- Name: premiumsongs premiumsongs_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: premiumsongs premiumsongs_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.premiumsongs
-    ADD CONSTRAINT premiumsongs_song_fkey FOREIGN KEY (song) REFERENCES public.songs(idsong);
+    ADD CONSTRAINT premiumsongs_song_fkey FOREIGN KEY (song) REFERENCES public.songs(idsong) ON DELETE CASCADE;
 
 
 --
 -- TOC entry 3097 (class 2606 OID 16896)
--- Name: songs songs_album_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: songs songs_album_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.songs
-    ADD CONSTRAINT songs_album_fkey FOREIGN KEY (album) REFERENCES public.albums(idalbum);
+    ADD CONSTRAINT songs_album_fkey FOREIGN KEY (album) REFERENCES public.albums(idalbum) ON DELETE CASCADE;
 
 
 --
 -- TOC entry 3100 (class 2606 OID 16924)
--- Name: statistics statistics_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: statistics statistics_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
 ALTER TABLE ONLY public.statistics
-    ADD CONSTRAINT statistics_song_fkey FOREIGN KEY (song) REFERENCES public.songs(idsong);
+    ADD CONSTRAINT statistics_song_fkey FOREIGN KEY (song) REFERENCES public.songs(idsong) ON DELETE CASCADE;
 
 
 --
 -- TOC entry 3243 (class 0 OID 0)
 -- Dependencies: 204
--- Name: TABLE albums; Type: ACL; Schema: public; Owner: postgres
+-- Name: TABLE albums; Type: ACL; Schema: public; Owner: admin
 --
 
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.albums TO artists;
@@ -492,7 +492,7 @@ GRANT SELECT ON TABLE public.albums TO listeners;
 --
 -- TOC entry 3244 (class 0 OID 0)
 -- Dependencies: 203
--- Name: TABLE artists; Type: ACL; Schema: public; Owner: postgres
+-- Name: TABLE artists; Type: ACL; Schema: public; Owner: admin
 --
 
 GRANT SELECT,INSERT ON TABLE public.artists TO guest_manager;
@@ -504,7 +504,7 @@ GRANT SELECT ON TABLE public.artists TO listeners;
 --
 -- TOC entry 3245 (class 0 OID 0)
 -- Dependencies: 212
--- Name: TABLE belong; Type: ACL; Schema: public; Owner: postgres
+-- Name: TABLE belong; Type: ACL; Schema: public; Owner: admin
 --
 
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.belong TO artists;
@@ -515,7 +515,7 @@ GRANT SELECT ON TABLE public.belong TO listeners;
 --
 -- TOC entry 3246 (class 0 OID 0)
 -- Dependencies: 210
--- Name: TABLE contains; Type: ACL; Schema: public; Owner: postgres
+-- Name: TABLE contains; Type: ACL; Schema: public; Owner: admin
 --
 
 GRANT SELECT,INSERT,DELETE ON TABLE public.contains TO artists;
@@ -526,7 +526,7 @@ GRANT SELECT,INSERT,DELETE ON TABLE public.contains TO listeners;
 --
 -- TOC entry 3247 (class 0 OID 0)
 -- Dependencies: 213
--- Name: TABLE creates; Type: ACL; Schema: public; Owner: postgres
+-- Name: TABLE creates; Type: ACL; Schema: public; Owner: admin
 --
 
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.creates TO artists;
@@ -537,7 +537,7 @@ GRANT SELECT ON TABLE public.creates TO listeners;
 --
 -- TOC entry 3248 (class 0 OID 0)
 -- Dependencies: 211
--- Name: TABLE genres; Type: ACL; Schema: public; Owner: postgres
+-- Name: TABLE genres; Type: ACL; Schema: public; Owner: admin
 --
 
 GRANT SELECT ON TABLE public.genres TO artists;
@@ -548,7 +548,7 @@ GRANT SELECT ON TABLE public.genres TO listeners;
 --
 -- TOC entry 3249 (class 0 OID 0)
 -- Dependencies: 201
--- Name: TABLE normallisteners; Type: ACL; Schema: public; Owner: postgres
+-- Name: TABLE normallisteners; Type: ACL; Schema: public; Owner: admin
 --
 
 GRANT SELECT,INSERT,DELETE ON TABLE public.normallisteners TO guest_manager;
@@ -558,7 +558,7 @@ GRANT SELECT,DELETE ON TABLE public.normallisteners TO listeners;
 --
 -- TOC entry 3250 (class 0 OID 0)
 -- Dependencies: 206
--- Name: TABLE normalsongs; Type: ACL; Schema: public; Owner: postgres
+-- Name: TABLE normalsongs; Type: ACL; Schema: public; Owner: admin
 --
 
 GRANT SELECT,INSERT,DELETE ON TABLE public.normalsongs TO artists;
@@ -569,7 +569,7 @@ GRANT SELECT ON TABLE public.normalsongs TO listeners;
 --
 -- TOC entry 3251 (class 0 OID 0)
 -- Dependencies: 209
--- Name: TABLE playlists; Type: ACL; Schema: public; Owner: postgres
+-- Name: TABLE playlists; Type: ACL; Schema: public; Owner: admin
 --
 
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.playlists TO artists;
@@ -580,7 +580,7 @@ GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.playlists TO listeners;
 --
 -- TOC entry 3252 (class 0 OID 0)
 -- Dependencies: 202
--- Name: TABLE premiumlisteners; Type: ACL; Schema: public; Owner: postgres
+-- Name: TABLE premiumlisteners; Type: ACL; Schema: public; Owner: admin
 --
 
 GRANT SELECT,INSERT ON TABLE public.premiumlisteners TO guest_manager;
@@ -590,7 +590,7 @@ GRANT SELECT,DELETE ON TABLE public.premiumlisteners TO premium_listeners;
 --
 -- TOC entry 3253 (class 0 OID 0)
 -- Dependencies: 207
--- Name: TABLE premiumsongs; Type: ACL; Schema: public; Owner: postgres
+-- Name: TABLE premiumsongs; Type: ACL; Schema: public; Owner: admin
 --
 
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.premiumsongs TO artists;
@@ -600,7 +600,7 @@ GRANT SELECT ON TABLE public.premiumsongs TO premium_listeners;
 --
 -- TOC entry 3254 (class 0 OID 0)
 -- Dependencies: 205
--- Name: TABLE songs; Type: ACL; Schema: public; Owner: postgres
+-- Name: TABLE songs; Type: ACL; Schema: public; Owner: admin
 --
 
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.songs TO artists;
@@ -611,7 +611,7 @@ GRANT SELECT ON TABLE public.songs TO listeners;
 --
 -- TOC entry 3255 (class 0 OID 0)
 -- Dependencies: 208
--- Name: TABLE statistics; Type: ACL; Schema: public; Owner: postgres
+-- Name: TABLE statistics; Type: ACL; Schema: public; Owner: admin
 --
 
 GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.statistics TO artists;
@@ -622,7 +622,7 @@ GRANT SELECT,UPDATE ON TABLE public.statistics TO listeners;
 --
 -- TOC entry 3256 (class 0 OID 0)
 -- Dependencies: 200
--- Name: TABLE users; Type: ACL; Schema: public; Owner: postgres
+-- Name: TABLE users; Type: ACL; Schema: public; Owner: admin
 --
 
 GRANT SELECT,INSERT ON TABLE public.users TO guest_manager;
@@ -634,6 +634,6 @@ GRANT SELECT,DELETE,UPDATE ON TABLE public.users TO listeners;
 -- Completed on 2022-08-22 19:25:07 CEST
 
 --
--- postgresQL database dump complete
+-- adminQL database dump complete
 --
 

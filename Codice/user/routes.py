@@ -21,7 +21,7 @@ def home():
 @login_required
 def profile():
     form = ModifyProfileForm()
-    
+
     if form.validate_on_submit():
         if form.password.data == '':
             check_password = False
@@ -31,22 +31,20 @@ def profile():
         if User.update_user(User.get_type_user_session(current_user.username),
                             current_user.username, form.name.data,
                             form.surname.data, form.birthdate.data,
-                            form.password.data,form.phone.data,form.email.data,
+                            form.password.data, form.phone.data, form.email.data,
                             check_password):
             flash('Update Successful')
             return redirect(url_for('user.profile'))
         else:
             flash('Update Failed')
-        
-        
-                
+
     return render_template("profile.html", title="Profile", user=current_user, form=form)
 
 
 @user.route('/delete', methods=['POST'])
 @login_required
 def delete():
-    
+    User.delete_user(Session_deletemanager, current_user.username)
     logout_user()
-    flash('You have been logged out.')
+    flash('Your account was deleted.')
     return redirect(url_for('auth.signin'))
