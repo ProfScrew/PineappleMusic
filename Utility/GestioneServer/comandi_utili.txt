@@ -1,0 +1,35 @@
+//comandi flask
+cd Codice
+export FLASK_ENV=development
+export FLASK_APP=__init__.py 
+
+flask run
+
+flask run --host 0.0.0.0
+
+
+//comandi postgresql
+systemctl start postgresql
+systemctl restart postgresql
+systemctl stop postgresql
+
+//gestione moduli python
+pip list //lista tutti i moduli installati
+pip install flask //per installare un modulo
+
+//Server in Produzione Online
+fuser -k 8000/tcp //uccidere tutti i processi su una porta specifica
+gunicorn -w 4 -b 0.0.0.0 "Codice.__init__:create_app()" --daemon //avviare il server come demone attenzione incapsulare __init__.py con def create_app():
+
+//cartella backup db
+cd /var/lib/docker/volumes/compose-postgres_pgadmin-data/_data/storage/stefano_gmail.com/
+//scaricare un file dal server online
+nc -nlvp 5000 < LastPineappleMusic  //lato server
+nc -nv 129.152.15.83 5000 > LastPineappleMusic //lato client
+
+//gestione docker
+
+docker-compose start
+docker-compose stop
+docker-compose restart
+
