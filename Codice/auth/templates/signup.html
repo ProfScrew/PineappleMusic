@@ -89,7 +89,13 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                         {%endfor%}
+                        
 
+                        <div>
+                            <p class="mb-0"><br>You are a registered artist <br>and need to insert your first song? <br><a href="{{url_for('auth.requiredsong')}}"
+                                class="text-white-50 fw-bold">Click Here</a>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>

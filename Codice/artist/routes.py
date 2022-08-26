@@ -13,3 +13,9 @@ artist = Blueprint('artist', __name__, static_folder='static',
 @artist.route('/statistcs', methods=['GET'])
 def statistics():
     return "ciao"
+
+
+
+@artist.route('/insertsong', methods=['GET','POST'])
+def insertsong():
+    return render_template('insertsong.html')

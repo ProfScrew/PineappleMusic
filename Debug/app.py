@@ -1,3 +1,4 @@
+from unicodedata import name
 import sqlalchemy
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
@@ -6,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from models import *
 
 
-engine = create_engine('postgresql://premium_listeners:PassPremiumListeners@129.152.15.83:5432/PineappleMusic', echo=True)
+engine = create_engine('postgresql://artists:PassArtists@129.152.15.83:5432/PineappleMusic', echo=True)
 
 
 Session = sessionmaker(bind=engine)       # factory pattern
@@ -15,11 +16,10 @@ session = Session()
 for instance in session.query(User):
     print(instance)
 
-premiumlistener = PremiumListener('Matrix')
-session.add(premiumlistener)
+
+song = Song(name='Testing', idsong=None,album=None,cover='1XjENKcGg1SZTKWLwpwVI2qgAMvALM_fO',releasedate='2022-8-10',content='1HMKIjUQ5g_ABZVPfVGNWh0q2o10aYoK9')
+session.add(song)
 session.commit()
-
-
 
 #quer = select(NormalListener, User).join(NormalListener.username)
 

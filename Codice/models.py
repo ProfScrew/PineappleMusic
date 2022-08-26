@@ -2,11 +2,15 @@ from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 from flask_login import UserMixin
+import requests
 
+from sqlalchemy.exc import PendingRollbackError
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from Codice.database import Session_artist, Session_guestmanager, Session_listener, Session_premiumlistener, Session
+
+
 
 Base = declarative_base()
 Base.query = Session.query_property()
@@ -81,6 +85,9 @@ class User(Base, UserMixin):
             temp_session_db.add(user)
             temp_session_db.commit()
             return True
+        except PendingRollbackError as e:
+            temp_session_db.rollback()
+            return False
         except:
             temp_session_db.flush()
             return False
@@ -104,19 +111,21 @@ class User(Base, UserMixin):
 
     def delete_user(temp_session_db, username):
         user = User.get_user(temp_session_db, username)
-        #print(user)
+        # print(user)
         temp_session_db.delete(user)
         temp_session_db.commit()
 
     def move_user_to_premium(username):
         try:
-            PremiumListener.register_premiumlistener(Session_guestmanager,username)
-            NormalListener.delete_normallistener(Session_guestmanager,username)
+            PremiumListener.register_premiumlistener(
+                Session_guestmanager, username)
+            NormalListener.delete_normallistener(
+                Session_guestmanager, username)
             return True
         except:
-            
+
             return False
-    
+
 
     # questo metodo è opzionale, serve solo per pretty printing
 
@@ -143,7 +152,8 @@ class NormalListener(Base):
 
     username = Column(String, ForeignKey(User.username), primary_key=True)
 
-    users = relationship(User, backref=backref("normallisteners", cascade="all,  delete, delete-orphan"), uselist=False)
+    users = relationship(User, backref=backref(
+        "normallisteners", cascade="all,  delete, delete-orphan"), uselist=False)
 
     def __init__(self, username):
         self.username = username
@@ -158,17 +168,17 @@ class NormalListener(Base):
             return False
 
     def get_user(temp_session_db, temp_username):
-        user = temp_session_db.query(NormalListener).filter(NormalListener.username == temp_username).first()
+        user = temp_session_db.query(NormalListener).filter(
+            NormalListener.username == temp_username).first()
         return user
-    
-    def delete_normallistener(temp_session_db,username):
-        user = NormalListener.get_user(temp_session_db,username)
+
+    def delete_normallistener(temp_session_db, username):
+        user = NormalListener.get_user(temp_session_db, username)
         temp_session_db.delete(user)
         temp_session_db.commit()
-        
-    
-    
+
     # questo metodo è opzionale, serve solo per pretty printing
+
     def __repr__(self):
         return "<NormalListener(username='%s')>" % (self.username)
 
@@ -275,6 +285,32 @@ class Song(Base):
         self.releasedate = releasedata
         self.content = content
 
+    def insert_song(temp_name, temp_album, temp_cover, temp_releasedate, temp_content):
+        # Session_artist
+        try:
+            song = Song(name=temp_name, idsong=None, album=temp_album, cover=temp_cover,
+                        releasedate=temp_releasedate,content= temp_content)
+            Session_artist.add(song)
+            Session_artist.commit()
+            return True
+        except:
+            return False
+
+    def get_songs():  # provisoria###############
+        songs = Session_artist.query(Song).all()
+        return songs
+
+    def check_links(cover, content):
+        try:
+            request_cover = requests.get(cover)
+            request_content = requests.get(content)
+            if request_cover.status_code == 200 and request_content.status_code == 200:
+                return True
+            else:
+                return False
+        except:
+            return False
+    
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         return "<Song(name='%s', idsong='%d',album='%d' cover='%s', releaseDate='%s',content='%s')>" % (self.name, self.idsong, self.album, self.cover, self.releasedate, self.content)

@@ -12,7 +12,8 @@ music = Blueprint('music', __name__, static_folder='static',
 
 @music.route('/songs', methods=['GET'])
 def songs():
-    return render_template("songs.html",user=current_user,user_type=User.get_type_user(current_user.username))
+    
+    return render_template("songs.html",user=current_user,user_type=User.get_type_user(current_user.username), listsong=Song.get_songs())
 
 @music.route('/playlist', methods=['GET'])
 def playlist():

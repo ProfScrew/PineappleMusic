@@ -25,5 +25,26 @@ class RegisterForm(FlaskForm):
     
     artist = SelectField('Artist', choices=[' ','True','False'])
     
-    submit = SubmitField("Registrati")
+    submit = SubmitField("Register")
+    
+    
+
+
+class SongForm(FlaskForm):
+    
+    username = StringField("Username", validators=[DataRequired(),Length(1,40)])
+    password = PasswordField("Password", validators=[DataRequired(),Length(min=8)])
+    
+    name = StringField("Name", validators=[DataRequired(),Length(max=40)])
+    cover = StringField("Cover", validators=[DataRequired(),Length(max=120)])
+    content=StringField("Content", validators=[DataRequired(),Length(max=120)])
+    release_date=DateField("Release Date", validators=[DataRequired()])
+    premium = SelectField("Premium", choices=[' ','The song will be premium','The song will be available to everyone'], validate_choice=True )
+    
+    #https://drive.google.com/file/d/1HMKIjUQ5g_ABZVPfVGNWh0q2o10aYoK9/view?usp=sharing
+    
+    
+    submit = SubmitField("Upload")
+    
+    
     

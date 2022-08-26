@@ -4,8 +4,25 @@
 
 
 <div class="d-flex justify-content-center dashboard-content px-3 pt-4  text-center">
-    <h1>Songs</h1>
-
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1>Songs</h1>
+            </div>
+        </div>
+    
+        <div class="row">
+            <div class="col">  
+                {% for item in listsong %}
+                    <img src="https://drive.google.com/uc?export=view&id={{item.cover}}" height="100" width="80">
+                    <audio controls>
+                        <source src="https://docs.google.com/uc?export=open&id={{item.content}}" type="audio/mpeg"> 
+                            Your browser does not support the audio element.
+                        </audio>
+                {% endfor %}
+        </div>
+    </div>
+</div>
    
 </div>
 
