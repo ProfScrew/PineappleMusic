@@ -2,28 +2,90 @@
 
 {% block content %}
 
+<div class="container-fluid">
 
-<div class="d-flex justify-content-center dashboard-content px-3 pt-4  text-center">
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <h1>Songs</h1>
+    <div class="col-12">
+        <h1 class="text-center">Songs</h1>
+    </div>
+
+    <audio id="playerhidden" controls autoplay hidden>
+        <source type="audio/mpeg">
+    </audio>
+
+    <div class="col-12">
+        <table id="example" class="table table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Cover</th>
+                    <th>Cover Link</th>
+                    <th>Song</th>
+                    <th>Content Link</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in listsong %}
+                <tr>
+                    <td><img src="https://drive.google.com/uc?export=view&id={{item.cover}}" height="50" width="50">
+                    </td>
+                    <td>{{item.cover}}</td>
+                    <td>{{item.name}}</td>
+                    <td>{{item.content}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<div class="music-player">
+    <div class="song-bar">
+        <div class="song-infos">
+            <div class="image-container">
+                <img id="coverplayer" src="{{ url_for('static', filename='img/pineapplemusic.ico')}}" alt="cover" />
+            </div>
+            <div class="song-description">
+                <p class="title" id="title-song">
+
+                </p>
+                <p class="artist">Artist Name</p>
             </div>
         </div>
-    
-        <div class="row">
-            <div class="col">  
-                {% for item in listsong %}
-                    <img src="https://drive.google.com/uc?export=view&id={{item.cover}}" height="100" width="80">
-                    <audio controls>
-                        <source src="https://docs.google.com/uc?export=open&id={{item.content}}" type="audio/mpeg"> 
-                            Your browser does not support the audio element.
-                        </audio>
-                {% endfor %}
+
+    </div>
+    <div class="progress-controller">
+        <div class="control-buttons">
+            <i class="fas fa-step-backward"></i>
+            <i class="play-pause fas fa-play" id="playpause"></i>
+            <i class="fas fa-step-forward"></i>
+            <i class="fas fa-undo-alt" id="repeatsong"></i>
+        </div>
+        <div class="progress-container">
+            <span>0:49</span>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+            <span>3:15</span>
+        </div>
+    </div>
+    <div class="other-features">
+
+        <div class="volume-bar">
+            <i class="fas fa-volume-down"></i>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
         </div>
     </div>
 </div>
-   
-</div>
+
+
+
+
+
+
+
+
+
 
 {% endblock %}

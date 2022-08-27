@@ -33,3 +33,43 @@ $(document).ready(function() {
         }
     });
 });
+
+$('#playpause').on('click',function(){
+    if(typeof($('#playerhidden').attr('src')) != "undefined" && $('#playerhidden').attr('src').length>0){
+        if($('#playpause').attr('class')=='play-pause fas fa-play'){
+            $("#playerhidden").trigger("play");
+            $('#playpause').attr('class','fa fa-light fa-pause');
+        }else{
+            $("#playerhidden").trigger("pause");
+            $('#playpause').attr('class','play-pause fas fa-play');
+        }
+    }
+    
+});
+
+$('#repeatsong').on('click',function(){
+    if(typeof($('#playerhidden').attr('src')) != "undefined" && $('#playerhidden').attr('src').length>0){
+        document.getElementsByTagName("audio")[0].currentTime=0;
+    }
+    
+});
+
+$('#example').DataTable( {
+    'columnDefs' : [
+        //hide the first and third column
+        { 'visible': false, 'targets': [1,3] }
+    ]
+});
+
+$(document).ready(function () {
+    var table = $('#example').DataTable();
+    
+    $('#example tbody').on('click', 'tr', function () {
+        var data = table.row( this ).data();
+        $("#coverplayer").attr("src","https://drive.google.com/uc?export=view&id="+data[1]);
+        $("#title-song").text(data[2]);
+        $("#playerhidden").attr("src","https://docs.google.com/uc?export=open&id="+data[3]);
+        $("#playerhidden").trigger("play");
+        $('#playpause').attr('class','fa fa-light fa-pause');
+    });
+});
