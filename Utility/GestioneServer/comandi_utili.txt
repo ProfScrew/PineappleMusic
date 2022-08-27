@@ -32,7 +32,10 @@ nc -nv 129.152.15.83 5000 > LastPineappleMusic //lato client
 docker-compose start
 docker-compose stop
 docker-compose restart
+docker-compose down
 
-//restore server
-https://hevodata.com/learn/pgadmin-docker/
+docker volume ls
+docker volume rm (docker volume ls -q)
 
+docker images
+docker rmi img
