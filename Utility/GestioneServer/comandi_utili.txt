@@ -33,3 +33,6 @@ docker-compose start
 docker-compose stop
 docker-compose restart
 
+//restore server
+https://hevodata.com/learn/pgadmin-docker/
+
