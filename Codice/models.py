@@ -78,12 +78,18 @@ class User(Base, UserMixin):
             User.username == username).first()
         return user
 
-    def register_user(temp_session_db,  username, name, surname, birthdate, password, gender, phone, email):
+    def register_user(temp_session_db,  username, name, surname, birthdate, password, gender, phone, email, artist):
         try:
             temp_password = User.encrypt_password(password)
             user = User(username, name, surname, birthdate,
                         temp_password, gender, phone, email)
             temp_session_db.add(user)
+            if artist == 'True':
+                artist = Artist(username)
+                temp_session_db.add(artist)
+            else:
+                normal = NormalListener(username)        
+                temp_session_db.add(normal)
             temp_session_db.commit()
             return True
         except PendingRollbackError as e:
@@ -116,15 +122,17 @@ class User(Base, UserMixin):
         temp_session_db.delete(user)
         temp_session_db.commit()
 
-    def move_user_to_premium(username):
+    def move_user_to_premium(username):############
         try:
-            PremiumListener.register_premiumlistener(
-                Session_guestmanager, username)
-            NormalListener.delete_normallistener(
-                Session_guestmanager, username)
+            premiumlistener = PremiumListener(username)
+            Session_guestmanager.add(premiumlistener)
+            user = NormalListener.get_user(Session_guestmanager, username)
+            Session_guestmanager.delete(user)
+            
+            Session_guestmanager.commit()
             return True
         except:
-
+            Session_guestmanager.rollback()
             return False
 
 
@@ -159,24 +167,12 @@ class NormalListener(Base):
     def __init__(self, username):
         self.username = username
 
-    def register_normallistener(temp_session_db, username):
-        try:
-            normalistener = NormalListener(username)
-            temp_session_db.add(normalistener)
-            temp_session_db.commit()
-            return True
-        except:
-            return False
 
     def get_user(temp_session_db, temp_username):
         user = temp_session_db.query(NormalListener).filter(
             NormalListener.username == temp_username).first()
         return user
 
-    def delete_normallistener(temp_session_db, username):
-        user = NormalListener.get_user(temp_session_db, username)
-        temp_session_db.delete(user)
-        temp_session_db.commit()
 
     # questo metodo è opzionale, serve solo per pretty printing
 
@@ -197,14 +193,6 @@ class PremiumListener(Base):
     def __init__(self, username):
         self.username = username
 
-    def register_premiumlistener(temp_session_db, username):
-        try:
-            premiumlistener = PremiumListener(username)
-            temp_session_db.add(premiumlistener)
-            temp_session_db.commit()
-            return True
-        except:
-            return False
 
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
@@ -223,43 +211,36 @@ class Artist(Base):
 
     def __init__(self, username):
         self.username = username
-
-    def register_artist(temp_session_db, username):
-        try:
-            artist = Artist(username)
-            temp_session_db.add(artist)
-            temp_session_db.commit()
-            return True
-        except:
-            return False
+       
 
     def insert_song(temp_name, temp_album, temp_cover, temp_releasedate, temp_content, temp_username,song_genres, song_type):
         try:
-            song = Song.insert_song(temp_name=temp_name, temp_album=temp_album, temp_cover=temp_cover,
-                                temp_releasedate=temp_releasedate, temp_content= temp_content)
-            if song.idsong == None:
-                return False
             
-            Belong.register_genres(song_genres,song.idsong)
-            
-            
+            song = Song(name=temp_name, idsong=None, album=temp_album, cover=temp_cover,
+                    releasedate=temp_releasedate,content= temp_content)
+            Session_artist.add(song)
+            Session_artist.flush()
+            belong = Belong(genre=song_genres,song=song.idsong)
+            Session_artist.add(belong)
             
             if song_type == 'The song will be premium':
-                PremiumSong.register(song.idsong)
+                #PremiumSong.register(song.idsong)
+                premiumsong = PremiumSong(song=song.idsong)
+                Session_artist.add(premiumsong)
+                
             else:
-                NormalSong.register(song.idsong)
+                #NormalSong.register(song.idsong)
+                normalsong = NormalSong(song=song.idsong)
+                Session_artist.add(normalsong)
             
-            if Creates.register_song_author(temp_username, song.idsong):
-                return True
+            create = Creates(username=temp_username,song=song.idsong)
+            Session_artist.add(create)
             
-            #inserimento genere
             
-
-            #inserimento tipo canzone
-            
-            else:
-                return False
+            Session_artist.commit()
+            return True
         except:
+            Session_artist.rollback()
             return False
     
     def check_if_artist(temp_username):
@@ -297,6 +278,11 @@ class Album(Base):
         self.cover = cover
         self.artist = artist
 
+    def get_albums(temp_username):
+        albums = Session_artist.query(Album).filter(Album.artist == temp_username).all()
+        return albums
+
+    
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         # artist o artists?
@@ -328,19 +314,11 @@ class Song(Base):
 
     def insert_song(temp_name, temp_album, temp_cover, temp_releasedate, temp_content):
         # Session_artist
-        try:
-            
-            song = Song(name=temp_name, idsong=None, album=temp_album, cover=temp_cover,
-                        releasedate=temp_releasedate,content= temp_content)
-            
-            Session_artist.add(song)
-            Session_artist.commit()
-            
-            #need to decide how to manage
-            return song
-        except:
-            Session_artist.flush()
-            return None
+        
+        song = Song(name=temp_name, idsong=None, album=temp_album, cover=temp_cover,
+                    releasedate=temp_releasedate,content= temp_content)
+        return song
+    
     
     #def get_song_with_artist_genres():
     #    
@@ -379,10 +357,7 @@ class NormalSong(Base):
     def __init__(self, song):
         self.song = song
 
-    def register(temp_song):
-        normalsong = NormalSong(song=temp_song)
-        Session_artist.add(normalsong)
-        Session_artist.commit()
+    
     
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
@@ -402,10 +377,7 @@ class PremiumSong(Base):
     def __init__(self, song):
         self.song = song
         
-    def register(temp_song):
-        premiumsong = PremiumSong(song=temp_song)
-        Session_artist.add(premiumsong)
-        Session_artist.commit()
+    
             
     
     # questo metodo è opzionale, serve solo per pretty printing
@@ -492,11 +464,6 @@ class Belong(Base):
         self.genre = genre
         self.song = song
 
-    def register_genres(temp_genre, temp_song_id):
-        
-        query = Belong(genre=temp_genre,song=temp_song_id)
-        Session_artist.add(query)
-        Session_artist.commit()
         
     ##########################################################################################################
     # questo metodo è opzionale, serve solo per pretty printing
@@ -522,19 +489,6 @@ class Creates(Base):
         self.username = username
         self.song = song
 
-    def register_song_author(temp_username, temp_song):
-        # Session_artist
-        try:
-            
-            query = Creates(username=temp_username,song=temp_song)
-            Session_artist.add(query)
-            Session_artist.commit()
-            
-            #need to decide how to manage
-            return True
-        except:
-            Session_artist.flush()
-            return False
     
     def check_artist(temp_username):
         user = Session_artist.query(Creates).filter(Creates.username == temp_username).count()

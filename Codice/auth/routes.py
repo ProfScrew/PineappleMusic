@@ -45,23 +45,7 @@ def signup():
         if not (form.artist.data == ' ' or form.gender.data == ' '):
             if User.register_user(Session_guestmanager, form.username.data, form.name.data, form.surname.data,
                                   form.birthdate.data, form.password.data, form.gender.data, form.phone.data,
-                                  form.email.data):
-                # register if artist or listener
-                if form.artist.data == 'True':
-                    print("Artist")
-                    if not Artist.register_artist(Session_guestmanager, form.username.data):
-                        # delete user
-                        User.delete_user(form.username.data)
-                        flash(
-                            'Registration Failed(Type User Artist), Please try again.')
-                elif form.artist.data == 'False':
-                    print("Listener")
-                    if not NormalListener.register_normallistener(Session_guestmanager, form.username.data):
-                        # delete user
-                        User.delete_user(form.username.data)
-                        flash(
-                            'Registration Failed(Type User Listener), Please try again.')
-
+                                  form.email.data, form.artist.data):
                 flash('Registration Successfull.')
                 if form.artist.data == 'True':
                     return redirect(url_for('auth.requiredsong'))

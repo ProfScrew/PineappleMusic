@@ -1,9 +1,9 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required, current_user
 
 from Codice.models import *
 from Codice.database import *
-
+from Codice.artist.forms import *
 
 # Blueprint Configuration
 artist = Blueprint('artist', __name__, static_folder='static',
@@ -17,5 +17,11 @@ def statistics():
 
 
 @artist.route('/insertsong', methods=['GET','POST'])
+@login_required
 def insertsong():
-    return render_template('insertsong.html')
+    #print(current_user)
+    form = ModifyProfileForm()
+    print(current_user.username)
+    form2 = SongForm()
+    #form2.set_album()
+    return render_template('insertsong.html', form = form, form2=form2, user = current_user)

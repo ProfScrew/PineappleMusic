@@ -13,8 +13,8 @@
     </audio>
 
     <div class="col-12 table-responsive">
-        <table id="example" class="table table-secondary table-striped table-hover" style="width:100%">
-            <thead>
+        <table id="example" class="table table-striped" style="width:100%">
+            <thead class="table-dark">
                 <tr>
                     <th>Cover</th>
                     <th>Cover Link</th>
@@ -28,7 +28,7 @@
             </thead>
             <tbody>
                 {% for item in listsong %}
-                <tr>
+                <tr class="table-light">
                     <td><img src="https://drive.google.com/uc?export=view&id={{item.cover}}" height="50" width="50"></td>
                     <td>{{item.cover}}</td>
                     <td>Artist</td>
@@ -51,7 +51,7 @@
 
 
 <div class="music-player col-10">
-    <div class="song-bar">
+    <div class="song-bar" n>
         <div class="song-infos">
             <div class="image-container">
                 <img id="coverplayer" src="{{ url_for('static', filename='img/pineapplemusic.ico')}}" alt="cover" />
@@ -75,7 +75,7 @@
         <div class="progress-container">
             <span id="time-att">0:00</span>
             <div class="progress-bar">
-                <div class="progress" id="time-bar" style="width: 0%;" ></div>
+                <div class="progress " id="time-bar" style="width: 0%;" ></div>
             </div>
             <span id="time-dur">3:15</span>
         </div>
