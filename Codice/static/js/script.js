@@ -75,7 +75,8 @@ $(document).ready(function () {
     $('#example tbody').on('click', 'tr', function () {
         var data = table.row(this).data();
         $("#coverplayer").attr("src", "https://drive.google.com/uc?export=view&id=" + data[1]);
-        $("#title-song").text(data[2]);
+        $("#title-song").text(data[3]);
+        $("#artist-song").text(data[2]);
         $("#playerhidden").attr("src", "https://docs.google.com/uc?export=open&id=" + data[6]);
         $("#playerhidden").trigger("play");
         $('#playpause').attr('class', 'fa fa-light fa-pause');
@@ -85,6 +86,33 @@ $(document).ready(function () {
             
             $("#time-dur").text(convert_to_time(audioCurrentTime));
         });
+    });
+
+    $("#progress-bar-song").on("click", function(e) {
+  
+      
+        var pos_curr = e.pageX - $("#progress-bar-song").offset().left; //Position cursor
+        var size_bar=document.getElementById("progress-bar-song").offsetWidth;
+        
+        /*alert(pos_curr+" "+size_bar);
+        alert(pos_curr*100/size_bar);*/
+        $('#time-bar').attr('style',"width:"+pos_curr*100/size_bar+"%;");
+        var duration = document.getElementById("playerhidden").duration;
+        document.getElementById("playerhidden").currentTime =duration/100*pos_curr*100/size_bar;
+        $("#playerhidden").trigger("play");
+    });
+
+
+    $("#progress-bar-vol").on("click", function(e) {
+  
+      
+        var pos_curr = e.pageX - $("#progress-bar-vol").offset().left; //Position cursor
+        var size_bar=document.getElementById("progress-bar-vol").offsetWidth;
+        
+        /*alert(pos_curr+" "+size_bar);
+        alert(pos_curr*100/size_bar);*/
+        $('#progress-bar-vol-contr').attr('style',"width:"+pos_curr*100/size_bar+"%;");
+        document.getElementById("playerhidden").volume =pos_curr/size_bar;
     });
 
 });
@@ -99,23 +127,3 @@ var interval = setInterval(function(){
     }
   }, 1000);
 
-
-  $(document).ready(function() {
-
-    $(".progress-bar").on("click", function(e) {
-  
-      
-        var pos_curr = e.pageX - $(".progress-bar").offset().left; //Position cursor
-        var size_bar=document.getElementsByClassName("progress-bar")[0].offsetWidth;
-        
-        
-        /*alert(pos_curr+" "+size_bar);
-        alert(pos_curr*100/size_bar);*/
-        $('#time-bar').attr('style',"width:"+pos_curr*100/size_bar+"%;");
-        var duration = document.getElementById("playerhidden").duration;
-        document.getElementById("playerhidden").currentTime =duration/100*pos_curr*100/size_bar;
-        $("#playerhidden").trigger("play");
-    });
-    
-    
-    });

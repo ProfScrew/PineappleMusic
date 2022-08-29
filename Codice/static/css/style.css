@@ -164,7 +164,7 @@ i:hover {
 .control-buttons {
     display: flex;
     align-items: center;
-    gap: 2em;
+    gap: 1em;
 }
 
 .play-pause,
@@ -204,7 +204,7 @@ i:hover {
     background-color: var(--secondary-color);
 }
 
-.progress-bar:hover .progress {
+.progress-bar .progress {
     background-color: var(--green-color);
 }
 
