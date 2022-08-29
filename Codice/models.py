@@ -9,6 +9,7 @@ from sqlalchemy.exc import PendingRollbackError
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from Codice.database import Session_artist, Session_guestmanager, Session_listener, Session_premiumlistener, Session
+from Debug.models import Belong, Genre
 
 
 
@@ -232,15 +233,30 @@ class Artist(Base):
         except:
             return False
 
-    def insert_song(temp_name, temp_album, temp_cover, temp_releasedate, temp_content, temp_username):
+    def insert_song(temp_name, temp_album, temp_cover, temp_releasedate, temp_content, temp_username,song_genres, song_type):
         try:
             song = Song.insert_song(temp_name=temp_name, temp_album=temp_album, temp_cover=temp_cover,
                                 temp_releasedate=temp_releasedate, temp_content= temp_content)
             if song.idsong == None:
                 return False
             
+            Belong.register_genres(song_genres,song.idsong)
+            
+            
+            
+            if song_type == 'The song will be premium':
+                PremiumSong.register(song.idsong)
+            else:
+                NormalSong.register(song.idsong)
+            
             if Creates.register_song_author(temp_username, song.idsong):
                 return True
+            
+            #inserimento genere
+            
+
+            #inserimento tipo canzone
+            
             else:
                 return False
         except:
@@ -325,7 +341,11 @@ class Song(Base):
         except:
             Session_artist.flush()
             return None
-
+    
+    #def get_song_with_artist_genres():
+    #    
+    #    return song
+    
     def get_songs():  # provisoria###############
         songs = Session_artist.query(Song).all()
         return songs
@@ -359,6 +379,11 @@ class NormalSong(Base):
     def __init__(self, song):
         self.song = song
 
+    def register(temp_song):
+        normalsong = NormalSong(song=temp_song)
+        Session_artist.add(normalsong)
+        Session_artist.commit()
+    
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         return "<NormalSong(song='%d')>" % (self.song)
@@ -376,7 +401,13 @@ class PremiumSong(Base):
 
     def __init__(self, song):
         self.song = song
-
+        
+    def register(temp_song):
+        premiumsong = PremiumSong(song=temp_song)
+        Session_artist.add(premiumsong)
+        Session_artist.commit()
+            
+    
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         return "<PremiumSong(song='%d')>" % (self.song)
@@ -413,6 +444,8 @@ class Genre(Base):
 
     name = Column(String, primary_key=True)
 
+    list = ['','Rock', 'Pop', 'Metal', 'Rap', 'Classic', 'Jazz', 'Reggae', 'Latin']
+    
     def __init__(self, name):
         self.name = name
 
@@ -459,6 +492,13 @@ class Belong(Base):
         self.genre = genre
         self.song = song
 
+    def register_genres(temp_genre, temp_song_id):
+        
+        query = Belong(genre=temp_genre,song=temp_song_id)
+        Session_artist.add(query)
+        Session_artist.commit()
+        
+    ##########################################################################################################
     # questo metodo è opzionale, serve solo per pretty printing
 
     def __repr__(self):

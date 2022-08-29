@@ -58,7 +58,7 @@ $(document).ready(function () {
         },
         'columnDefs': [
             //hide the first and third column
-            { 'visible': false, 'targets': [1, 3] }
+            { 'visible': false, 'targets': [1, 6] }
         ]
     });
 });
@@ -76,7 +76,7 @@ $(document).ready(function () {
         var data = table.row(this).data();
         $("#coverplayer").attr("src", "https://drive.google.com/uc?export=view&id=" + data[1]);
         $("#title-song").text(data[2]);
-        $("#playerhidden").attr("src", "https://docs.google.com/uc?export=open&id=" + data[3]);
+        $("#playerhidden").attr("src", "https://docs.google.com/uc?export=open&id=" + data[6]);
         $("#playerhidden").trigger("play");
         $('#playpause').attr('class', 'fa fa-light fa-pause');
 

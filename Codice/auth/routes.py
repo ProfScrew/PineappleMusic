@@ -25,7 +25,7 @@ def signin():
                     login_user(user, True)
                     return redirect(url_for('user.home'))
                 else:
-                    flash("Song Not Found. Your Account was deleted. Register Again and insert your first song.")
+                    flash("Song Not Found. Your Account was deleted. Register again and insert your first song.")
                     User.delete_user(Session_deletemanager,form.username.data)
             elif artist_check == 0:
                 flash("Artist. Login failed try again.")
@@ -87,8 +87,9 @@ def requiredsong():
             if user is not None and user.verify_password(form.password.data) and (User.get_type_user(form.username.data) == 3):
                 if Song.check_links(form.cover.data,form.content.data):
                     if Artist.insert_song(form.name.data, None, form.cover.data.split("/")[5], form.release_date.data,
-                                        form.content.data.split("/")[5], form.username.data):
+                                        form.content.data.split("/")[5], form.username.data, form.genre.data, form.premium.data):
                         flash("Succesfull Insert")
+                        
                         return redirect(url_for('auth.signin'))
                     else:
                         flash("Error Insert Song.")

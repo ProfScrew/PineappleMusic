@@ -9,12 +9,14 @@ from Codice.database import *
 music = Blueprint('music', __name__, static_folder='static',
                  template_folder='templates')
 
-
+@login_required
 @music.route('/songs', methods=['GET'])
 def songs():
     
-    return render_template("songs.html",user=current_user,user_type=User.get_type_user(current_user.username), listsong=Song.get_songs())
+    return render_template("songs.html",user=current_user,user_type=User.get_type_user(current_user.username),
+                           listsong=Song.get_songs())
 
+@login_required
 @music.route('/playlist', methods=['GET'])
 def playlist():
     return render_template("playlist.html",user=current_user, user_type=User.get_type_user(current_user.username))

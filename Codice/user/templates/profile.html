@@ -78,11 +78,11 @@
             
 
                 <!-- Save changes button-->
-                {{ form.submit(class="btn btn-primary")}}
+                {{ form.submit(class="btn btn-success")}}
             </form>
         
             <form method="POST" action="{{ url_for('user.delete') }}">
-                <button type="submit" class="btn btn-danger">Delete Account</button>
+                <button type="submit" class="btn btn-warning">Delete Account</button>
             </form>
 
             {% for message in get_flashed_messages()%}

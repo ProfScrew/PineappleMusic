@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import  StringField, PasswordField,DateField,SubmitField,SelectField,EmailField
 from wtforms.validators import DataRequired, Length, Email
 
+from Codice.models import Genre
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(1, 40)])
@@ -39,7 +40,9 @@ class SongForm(FlaskForm):
     cover = StringField("Cover", validators=[DataRequired(),Length(max=120)])
     content=StringField("Content", validators=[DataRequired(),Length(max=120)])
     release_date=DateField("Release Date", validators=[DataRequired()])
-    premium = SelectField("Premium", choices=[' ','The song will be premium','The song will be available to everyone'], validate_choice=True )
+    genre=SelectField("Genre", choices=Genre.list)
+    premium = SelectField("Premium", choices=[' ','The song will be premium','The song will be available to everyone'],
+                          validate_choice=True )
     
     #https://drive.google.com/file/d/1HMKIjUQ5g_ABZVPfVGNWh0q2o10aYoK9/view?usp=sharing
     
