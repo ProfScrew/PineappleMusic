@@ -17,9 +17,10 @@ for instance in session.query(User):
     print(instance)
 
 
-song = Song(name='Testing', idsong=None,album=None,cover='1XjENKcGg1SZTKWLwpwVI2qgAMvALM_fO',releasedate='2022-8-10',content='1HMKIjUQ5g_ABZVPfVGNWh0q2o10aYoK9')
+song = Song(name='IDSOngTest', idsong=None,album=None,cover='1XjENKcGg1SZTKWLwpwVI2qgAMvALM_fO',releasedate='2022-8-10',content='1HMKIjUQ5g_ABZVPfVGNWh0q2o10aYoK9')
 session.add(song)
 session.commit()
+print(song.idsong)
 
 #quer = select(NormalListener, User).join(NormalListener.username)
 

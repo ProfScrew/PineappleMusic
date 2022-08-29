@@ -232,6 +232,31 @@ class Artist(Base):
         except:
             return False
 
+    def insert_song(temp_name, temp_album, temp_cover, temp_releasedate, temp_content, temp_username):
+        try:
+            song = Song.insert_song(temp_name=temp_name, temp_album=temp_album, temp_cover=temp_cover,
+                                temp_releasedate=temp_releasedate, temp_content= temp_content)
+            if song.idsong == None:
+                return False
+            
+            if Creates.register_song_author(temp_username, song.idsong):
+                return True
+            else:
+                return False
+        except:
+            return False
+    
+    def check_if_artist(temp_username):
+        try:
+            artist = Session_artist.query(Artist).filter(Artist.username == temp_username).count()
+            if artist == 0:
+                return 2 
+            else:
+                return 1
+        except:
+            return 0
+    
+    
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         return "<Artist(username='%s')>" % (self.username)
@@ -277,24 +302,29 @@ class Song(Base):
     albums = relationship(Album, backref=backref(
         "songs", cascade="all,  delete, delete-orphan"))
 
-    def __init__(self, name, idsong, album, cover, releasedata, content):
+    def __init__(self, name, idsong, album, cover, releasedate, content):
         self.name = name
         self.idsong = idsong
         self.album = album
         self.cover = cover
-        self.releasedate = releasedata
+        self.releasedate = releasedate
         self.content = content
 
     def insert_song(temp_name, temp_album, temp_cover, temp_releasedate, temp_content):
         # Session_artist
         try:
+            
             song = Song(name=temp_name, idsong=None, album=temp_album, cover=temp_cover,
                         releasedate=temp_releasedate,content= temp_content)
+            
             Session_artist.add(song)
             Session_artist.commit()
-            return True
+            
+            #need to decide how to manage
+            return song
         except:
-            return False
+            Session_artist.flush()
+            return None
 
     def get_songs():  # provisoria###############
         songs = Session_artist.query(Song).all()
@@ -452,6 +482,27 @@ class Creates(Base):
         self.username = username
         self.song = song
 
+    def register_song_author(temp_username, temp_song):
+        # Session_artist
+        try:
+            
+            query = Creates(username=temp_username,song=temp_song)
+            Session_artist.add(query)
+            Session_artist.commit()
+            
+            #need to decide how to manage
+            return True
+        except:
+            Session_artist.flush()
+            return False
+    
+    def check_artist(temp_username):
+        user = Session_artist.query(Creates).filter(Creates.username == temp_username).count()
+        if user > 0:
+            return True
+        else:
+            return False
+    
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         return "<Creates(song='%s',username='%s')>" % (self.song, self.username)

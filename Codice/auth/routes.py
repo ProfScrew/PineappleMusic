@@ -19,8 +19,19 @@ def signin():
         User.scream()
         user = User.get_user(Session_guestmanager, form.username.data)
         if user is not None and user.verify_password(form.password.data):
-            login_user(user, True)
-            return redirect(url_for('user.home'))
+            artist_check = Artist.check_if_artist(form.username.data)
+            if artist_check == 1:
+                if Creates.check_artist(form.username.data):
+                    login_user(user, True)
+                    return redirect(url_for('user.home'))
+                else:
+                    flash("Song Not Found. Your Account was deleted. Register Again and insert your first song.")
+                    User.delete_user(Session_deletemanager,form.username.data)
+            elif artist_check == 0:
+                flash("Artist. Login failed try again.")
+            else:
+                login_user(user, True)
+                return redirect(url_for('user.home'))
         flash('Invalid username or password.')
     return render_template("signin.html", title="Login", form=form)
 
@@ -75,9 +86,10 @@ def requiredsong():
             user = User.get_user(Session_guestmanager, form.username.data)
             if user is not None and user.verify_password(form.password.data) and (User.get_type_user(form.username.data) == 3):
                 if Song.check_links(form.cover.data,form.content.data):
-                    if Song.insert_song(form.name.data, None, form.cover.data.split("/")[5], form.release_date.data,
-                                        form.content.data.split("/")[5]):
-                        flash("ok")
+                    if Artist.insert_song(form.name.data, None, form.cover.data.split("/")[5], form.release_date.data,
+                                        form.content.data.split("/")[5], form.username.data):
+                        flash("Succesfull Insert")
+                        return redirect(url_for('auth.signin'))
                     else:
                         flash("Error Insert Song.")
                 else:
