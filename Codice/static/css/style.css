@@ -8,6 +8,13 @@ body {
     min-width: 16.66666667%;
     max-width: 16.66666667%;
     transition: all 0.3s;
+    position: relative
+}
+
+#exitaccount {
+    position: absolute;
+    bottom: 0;
+    left: 3px;
 }
 
 .content {
@@ -33,12 +40,16 @@ hr.h-color {
     color: #fff;
 }
 
+.sidebar li i {
+    margin-right: 1rem;
+}
+
 @media(max-width: 767px) {
     #side_nav {
         margin-left: -58.33333333%;
         position: fixed;
         min-height: 100vh;
-        z-index: 1;
+        z-index: 11;
         
         min-width: 58.33333333%;
         max-width: 58.33333333%;
@@ -79,6 +90,7 @@ hr.h-color {
     position: fixed;
     bottom: 0;
     height: 7rem;
+    z-index: 5;
     
 
     padding-right: 0px;
@@ -243,5 +255,9 @@ i:hover {
 }
 
 .song-list{
-    padding-bottom:  7rem;
+    padding-bottom:  8rem;
+    max-height: 100vh;
+    box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
