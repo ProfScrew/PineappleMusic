@@ -4,6 +4,8 @@ from sqlalchemy.orm import relationship, backref
 from flask_login import UserMixin
 import requests
 
+from flask_login import current_user
+
 from sqlalchemy.exc import PendingRollbackError
 
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -18,6 +20,7 @@ Base.query = Session.query_property()
 # USERS
 
 # tabella = classe che eredita da Base
+
 
 
 class User(Base, UserMixin):
@@ -43,6 +46,9 @@ class User(Base, UserMixin):
         self.phone = phone
         self.email = email
 
+    def get_current_user():
+        return current_user.username
+    
     def scream():
         print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 

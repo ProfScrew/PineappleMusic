@@ -22,6 +22,13 @@ def insertsong():
     #print(current_user)
     form = ModifyProfileForm()
     print(current_user.username)
-    form2 = SongForm()
-    #form2.set_album()
+    
+    
+    form2 = SongForm(current_user.username)
+    
+    
+    form2.genre.choices = Genre.list
+    #list_albums = Album.get_albums(current_user.username)
+    #form2.album.choices = list_albums
+    
     return render_template('insertsong.html', form = form, form2=form2, user = current_user)
