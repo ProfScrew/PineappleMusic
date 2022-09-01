@@ -1,11 +1,13 @@
 {% extends 'menu.html' %}
-
+{% block css %}
+<script defer type="text/javascript" src="{{ url_for('music.static', filename='js/music.js')}}"></script>
+{% endblock %}
 {% block content %}
 
 <div class="container-fluid song-list">
 
     <div class="col-12">
-        <h1 class="text-center">Songs</h1>
+        <h1 class="text-center">{{page_name}}</h1>
     </div>
 
     <audio id="playerhidden" controls autoplay hidden>
@@ -23,7 +25,9 @@
                     <th>Album</th>
                     <th>Genre</th>
                     <th>Content Link</th>
+                    {% if add_to_playlist%}
                     <th>Add to Playlist</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -36,11 +40,16 @@
                     <td>Album</td>
                     <td>Genre</td>
                     <td>{{item.content}}</td>
-                    <td><select class="selectpicker" data-live-search="true" multiple>
-                        <option>playlist1</option>
-                        <option>playlist2</option>
-                        <option>playlist3</option>
-                      </select></td>
+                    {% if add_to_playlist%}
+                    <td>
+                        <form method="POST" action="{{ url_for('music.search') }}">
+                            {{ form.csrf_token }}
+                            {{ form.songname(value=item.idsong)}}
+                            {{ form.playlist(class="selectpicker",multiple=True)}}
+                            {{ form.submit(class="btn btn-success")}}
+                        </form>
+                    </td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
             </tbody>

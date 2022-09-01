@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_login import LoginManager
+from flask_wtf.csrf import CSRFProtect
 
 from Codice.config import config
 from Codice.models import User
@@ -29,7 +30,7 @@ def create_app():
     login_manager = LoginManager()
     login_manager.login_view = 'auth.signin'
 
-
+    
     @login_manager.user_loader
     # user loader
     def load_user(user_id):
@@ -42,6 +43,9 @@ def create_app():
     app.config['MAX_CONTENT_PATH'] = 10485760
 
     app.config['UPLOAD_FOLDER'] = "/tmp/"
+
+    csrf = CSRFProtect(app)
+    csrf.init_app(app)
 
     with app.app_context():
         app.register_blueprint(auth, url_prefix='/auth')

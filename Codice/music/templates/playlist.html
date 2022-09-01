@@ -2,11 +2,60 @@
 
 {% block content %}
 
-
 <div class="d-flex justify-content-center dashboard-content px-3 pt-4  text-center">
-    <h1>Playlist</h1>
+    <!-- Account details card-->
 
-   
+    <div class="">Playlist
+        <div class="">
+            
+            <!-- Form Group (username)-->
+            <form method="POST" action="{{ url_for('music.playlist') }}">
+                {{ form.csrf_token }}
+
+                <div class="row gx-3 mb-3">
+                        <!-- Form Group (first name)-->
+                    <div class="col-md-6">
+                        {{ form.name.label(class="small mb-1")}} 
+                        {{ form.name(class="form-control")}}
+
+                    </div>
+                    
+                </div>
+                 
+                <!-- Save changes button-->
+                {{ form.submit(class="btn btn-success")}}
+            </form>
+        
+            {% for message in get_flashed_messages()%}
+                <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                  {{message}}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {%endfor%}
+
+
+            <div class="col-12 table-responsive">
+                <table id="example" class="table table-striped" style="width:100%">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Name</th>
+                            <th>Creation Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in playlist %}
+                        <tr class="table-light">
+                            <td>{{item.name}}</td>
+                            <td>{{item.creationdate}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+        
+            </div>
+        </div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}

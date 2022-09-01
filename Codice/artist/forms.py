@@ -30,26 +30,16 @@ class SongForm(FlaskForm):
     
     
     name = StringField("Name", validators=[DataRequired(),Length(max=40)])
-    cover = StringField("Cover", validators=[DataRequired(),Length(max=120)])
+    cover = StringField("Cover", validators=[Optional(),Length(max=120)])
     content=StringField("Content", validators=[DataRequired(),Length(max=120)])
+    genre=SelectField("Genre", validators=None)
+    album = SelectField("Album", validators=None)
+    
     release_date=DateField("Release Date", validators=[DataRequired()])
-    genre=SelectField("Genre")
-    
-    #album = QuerySelectField("Album",validators=[Optional()],query_factory=Album.get_albums('JackSparrow'))
-
-    album = QuerySelectField("Album")
-    #album = SelectField("Album", choices=Album.get_albums(current_user.username), validate_choice=True )
-    
-    premium = SelectField("Premium", choices=[' ','The song will be premium','The song will be available to everyone'],
+    premium = SelectField("Premium", choices=['','The song will be premium',
+                                              'The song will be available to everyone'],
                           validate_choice=True )
-    
-    #https://drive.google.com/file/d/1HMKIjUQ5g_ABZVPfVGNWh0q2o10aYoK9/view?usp=sharing
-    
-    
     
     submit = SubmitField("Upload")
     
-        
     
-    
-    ################### SISTEMARE STA MERDA

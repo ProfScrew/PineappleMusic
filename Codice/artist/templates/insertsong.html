@@ -6,11 +6,11 @@
 <div class="d-flex justify-content-center dashboard-content px-3 pt-4  text-center">
     <!-- Account details card-->
 
-    <div class="">Insert your new song {{user.username}}
+    <div class="">Insert Song
         <div class="">
             
             <!-- Form Group (username)-->
-            <form method="POST" action="{{ url_for('user.profile') }}">
+            <form method="POST" action="">
                 {{ form.csrf_token }}
                 <hr class="h-color-black mx-2">   
                 <div class="col-md-12">
@@ -19,70 +19,63 @@
                 </div>
 
                 <div class="row gx-3 mb-3">
-                        <!-- Form Group (first name)-->
-                    <div class="col-md-6">
-                        {{ form2.album.label(class="small mb-1")}} 
-                        {{ form2.album(class="form-control")}}
-
-                    </div>
-                        <!-- Form Group (last name)-->
-                    <div class="col-md-6">
-                            {{ form.surname.label(class="small mb-1")}} 
-                            {{ form.surname(class="form-control",value=user.surname)}}
-                    </div>
-                </div>
-                    <!-- Form Row        -->
-                <div class="row gx-3 mb-3">
                         <!-- Form Group (organization name)-->
 
-                    {{ form.birthdate.label(class="form-label")}} 
-                    {{ form.birthdate(class="form-control",value=user.birthdate)}}
+                    {{ form.name.label(class="form-label")}} 
+                    {{ form.name(class="form-control")}}
 
                         <!-- Form Group (location)-->
                 </div>
 
+                <div class="row gx-3 mb-3">
+                    <!-- Form Group (organization name)-->
 
-                <div class="mb-3">
-                    <label class="small mb-1" for="inputGender">Gender</label>
-                    <input class="form-control text-center" type="text" value="{{user.gender}}" readonly>
+                    {{ form.cover.label(class="form-label")}} 
+                    {{ form.cover(class="form-control")}}
+
+                    <!-- Form Group (location)-->
                 </div>
+                <div class="row gx-3 mb-3">
+                    <!-- Form Group (organization name)-->
+
+                    {{ form.content.label(class="form-label")}} 
+                    {{ form.content(class="form-control")}}
+
+                    <!-- Form Group (location)-->
+                </div>
+
+                <div class="row gx-3 mb-3">
+                        <!-- Form Group (first name)-->
+                    <div class="col-md-6">
+                        {{ form.genre.label(class="small mb-1")}} 
+                        {{ form.genre(class="form-control")}}
+
+                    </div>
+                        <!-- Form Group (last name)-->
+                    <div class="col-md-6">
+                            {{ form.album.label(class="small mb-1")}} 
+                            {{ form.album(class="form-control")}}
+                    </div>
+                </div>
+                    <!-- Form Row        -->
 
 
                     <!-- Form Row-->
                 <div class="row gx-3 mb-3">
                         <!-- Form Group (phone number)-->
                     <div class="col-md-6">
-                        {{ form.phone.label(class="small mb-1")}} 
-                        {{ form.phone(class="form-control",value=user.phone)}}
+                        {{ form.release_date.label(class="small mb-1")}} 
+                        {{ form.release_date(class="form-control")}}
                     </div>
                         <!-- Form Group (birthday)-->
                     <div class="col-md-6">
-                        {{ form.email.label(class="small mb-1")}} 
-                        {{ form.email(class="form-control",value=user.email)}}
+                        {{ form.premium.label(class="small mb-1")}} 
+                        {{ form.premium(class="form-control")}}
                     </div>
                 </div>
-
-                <div class="mb-3">
-                    {{ form.password.label(class="small mb-1")}} 
-                    <!--{{ form.password(class="form-control ",id="pass",type="password",value=user.password)}} -->
-
-                    <div class="form-group">
-                        <div class="input-group" id="show_hide_password">
-                            {{ form.password(class="form-control",value=user.password)}}
-                            <div class="input-group-addon px-2 pt-2">
-                                <a href=""><i class="fa-solid fa-eye" aria-hidden="true"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            
-
-                <!-- Save changes button-->
-                {{ form.submit(class="btn btn-primary")}}
-            </form>
         
-            <form method="POST" action="{{ url_for('user.delete') }}">
-                <button type="submit" class="btn btn-danger">Delete Account</button>
+                <!-- Save changes button-->
+                {{ form.submit(class="btn btn-success")}}
             </form>
 
             {% for message in get_flashed_messages()%}
