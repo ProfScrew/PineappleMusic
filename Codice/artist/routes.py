@@ -61,8 +61,6 @@ def insertsong():
                                     flash("Upload Failed")
         else:
             flash("Cover or content links are invalid")  
-    else:
-        flash("Not Validate")
     return render_template('insertsong.html', form = form, user = current_user,user_type=User.get_type_user(current_user.username))
 
 

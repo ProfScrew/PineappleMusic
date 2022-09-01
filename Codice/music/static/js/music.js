@@ -48,7 +48,7 @@ $(document).ready(function () {
     $('#example tbody').on('click', 'tr', function (e) {
         
         var text = e.target.nodeName;
-        if(text!="DIV"&text!="BUTTON"){
+        if(text!="DIV"&&text!="BUTTON"&&text!="INPUT"){
             var data = table.row(this).data();
             $("#coverplayer").attr("src", "https://drive.google.com/uc?export=view&id=" + data[1]);
             $("#title-song").text(data[3]);
@@ -117,3 +117,5 @@ $("#icon-volume").on("click", function () {
         }
     }
 });
+
+$('.selectpicker').val('default').selectpicker('deselectAll');
