@@ -44,7 +44,7 @@
                     <td>
                         <form method="POST" action="{{ url_for('music.search') }}">
                             {{ form.csrf_token }}
-                            {{ form.songname(value=item.idsong)}}
+                            {{ form.songid(value=item.idsong)}}
                             {{ form.playlist(class="selectpicker",multiple=True,**{"data-live-search":"true","title":"List of your playlist"})}}
                             {{ form.submit(class="btn btn-success")}}
                         </form>

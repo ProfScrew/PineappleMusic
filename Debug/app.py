@@ -13,14 +13,14 @@ engine = create_engine('postgresql://artists:PassArtists@129.152.15.83:5432/Pine
 Session = sessionmaker(bind=engine)       # factory pattern
 session = Session()
 
-for instance in session.query(User):
-    print(instance)
+#for instance in session.query(User):
+#    print(instance)
 
 
-song = Song(name='IDSOngTest', idsong=None,album=None,cover='1XjENKcGg1SZTKWLwpwVI2qgAMvALM_fO',releasedate='2022-8-10',content='1HMKIjUQ5g_ABZVPfVGNWh0q2o10aYoK9')
-session.add(song)
+
+contains=Contains('3','1')
+session.add(contains)
 session.commit()
-print(song.idsong)
 
 #quer = select(NormalListener, User).join(NormalListener.username)
 

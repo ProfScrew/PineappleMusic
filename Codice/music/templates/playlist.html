@@ -1,5 +1,7 @@
 {% extends 'menu.html' %}
-
+{% block css %}
+<script defer type="text/javascript" src="{{ url_for('music.static', filename='js/playlist.js')}}"></script>
+{% endblock %}
 {% block content %}
 
 <div class="d-flex justify-content-center dashboard-content px-3 pt-4  text-center">
@@ -8,8 +10,8 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-4"></div>
-            <div class="col-4">
+            <div class="col-2"></div>
+            <div class="col-6">
                 <h1>Create Your Playlists</h1>
                 <div>
                     <form method="POST" action="{{ url_for('music.playlist') }}">
@@ -34,7 +36,7 @@
 
 
                     <div class="col-12 table-responsive">
-                        <table id="example" class="table table-striped" style="width:100%">
+                        <table id="playlisttable" class="table table-striped" style="width:100%">
                             <thead class="table-dark">
                                 <tr>
                                     <th>Name</th>
@@ -44,8 +46,11 @@
                             <tbody>
                                 {% for item in playlist %}
                                 <tr class="table-light">
-                                    <td>{{item.name}}</td>
-                                    <td>{{item.creationdate}}</td>
+                                    <form method="POST" action="{{ url_for('music.getsongfromplaylist') }}">
+                                    {{ playlistform.csrf_token }}
+                                    <td>{{ playlistform.submit(class="btn btn-primary",value=item.name)}}{{ playlistform.playlistid(value=item.idlist)}}</td>
+                                    <td>{{item.creationdate}}{{ playlistform.name(value=item.name)}}</td>
+                                    </form>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -54,7 +59,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-4"></div>
+            <div class="col-2"></div>
         </div>
     </div>
 </div>

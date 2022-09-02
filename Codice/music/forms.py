@@ -14,7 +14,12 @@ class PlaylistForm(FlaskForm):
 
 class AddToPlaylist(FlaskForm):
     playlist = SelectMultipleField("Add to playlist")
-    songname = HiddenField("Song Name")
+    songid = HiddenField("Song Name")
+    submit = SubmitField("Add")
+    
+class GetSongsPlaylist(FlaskForm):
+    playlistid = HiddenField("id")
+    name = HiddenField("name")
     submit = SubmitField("Add")
     
     

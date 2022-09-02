@@ -361,6 +361,10 @@ class Song(Base):
         except:
             return False
     
+    def get_song_playlist(idplaylist):
+        songs=Session_artist.query(Song).join(Contains).filter(Contains.list==idplaylist).all()
+        return songs
+
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         return "<Song(name='%s', idsong='%d',album='%d' cover='%s', releaseDate='%s',content='%s')>" % (self.name, self.idsong, self.album, self.cover, self.releasedate, self.content)
@@ -557,12 +561,14 @@ class Playlist(Base):
         return playlists
 
     
-    def get_playlist_name(temp_username, playlists):
-        playlists_names = ['']
+    def get_playlist_name_id(temp_username, playlists):
+        playlists_names_id = [('','')]
         if playlists is not None:
             for i in playlists:
-                playlists_names.append(i.name)
-        return playlists_names
+                id= i.idlist
+                name=i.name
+                playlists_names_id.append((str(id),name))
+        return playlists_names_id
     
     def __repr__(self):
         return "<Playlist(name='%s', idlist='%d', creationdate='%s',author='%s')>" % (self.name, self.idlist, self.creationdate, self.author)
@@ -584,6 +590,11 @@ class Contains(Base):
     def __init__(self, song, list):
         self.song = song
         self.list = list
+
+    def create(songid,playlistid):
+        contains=Contains(songid,playlistid)
+        Session_artist.add(contains)
+        Session_artist.commit()
 
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
