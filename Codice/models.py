@@ -383,6 +383,9 @@ class NormalSong(Base):
     def __init__(self, song):
         self.song = song
 
+    def get_songs():  # provisoria###############
+        songs = Session_listener.query(NormalSong).all()
+        return songs
     # questo metodo è opzionale, serve solo per pretty printing
 
     def __repr__(self):
@@ -570,6 +573,10 @@ class Playlist(Base):
                 playlists_names_id.append((str(id),name))
         return playlists_names_id
     
+    def delete_playlist(idplaylist):
+        Session_artist.query(Playlist).filter(Playlist.idlist==idplaylist).delete()
+        Session_artist.commit()
+
     def __repr__(self):
         return "<Playlist(name='%s', idlist='%d', creationdate='%s',author='%s')>" % (self.name, self.idlist, self.creationdate, self.author)
 
@@ -596,6 +603,10 @@ class Contains(Base):
         Session_artist.add(contains)
         Session_artist.commit()
 
+    def delete_song_from_playlist(idsong,idplaylist):
+        Session_artist.query(Contains).filter(Contains.song==idsong,Contains.list==idplaylist).delete()
+        Session_artist.commit()
+        
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         return "<Contains(song='%d', list='%d')>" % (self.song, self.list)

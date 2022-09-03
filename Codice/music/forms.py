@@ -21,5 +21,13 @@ class GetSongsPlaylist(FlaskForm):
     playlistid = HiddenField("id")
     name = HiddenField("name")
     submit = SubmitField("Add")
+
+class DeleteSongFromPlaylist(FlaskForm):
+    playlistid = HiddenField("id")
+    idsong = HiddenField("name")
+    submit = SubmitField("Delete")
+class DeletePlaylist(FlaskForm):
+    playlistid = HiddenField("id")
+    submit = SubmitField("Delete")
     
     

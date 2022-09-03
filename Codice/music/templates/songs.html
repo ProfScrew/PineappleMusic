@@ -28,6 +28,9 @@
                     {% if add_to_playlist%}
                     <th>Add to Playlist</th>
                     {% endif %}
+                    {% if delete_from_playlist%}
+                    <th>Delete from playlist</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -49,6 +52,14 @@
                             {{ form.submit(class="btn btn-success")}}
                         </form>
                     </td>
+                    {% endif %}
+                    {% if delete_from_playlist%}
+                    <form method="POST" action="{{ url_for('music.getsongfromplaylist') }}">
+                        {{ delete_form.csrf_token }}
+                        {{ delete_form.idsong(value=item.idsong)}}
+                        {{ delete_form.playlistid(value=playlistid)}}
+                    <td>{{ delete_form.submit(class="btn btn-danger")}}</td>
+                    </form>
                     {% endif %}
                 </tr>
                 {% endfor %}
