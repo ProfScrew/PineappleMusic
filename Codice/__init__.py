@@ -6,7 +6,6 @@ from Codice.config import config
 from Codice.models import User
 from Codice.database import *
 
-#problema inclusione circolare
 from .auth.routes import auth
 from .user.routes import user
 from .error.routes import error
