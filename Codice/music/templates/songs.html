@@ -36,13 +36,13 @@
             <tbody>
                 {% for item in listsong %}
                 <tr class="table-light">
-                    <td><img src="https://drive.google.com/uc?export=view&id={{item.cover}}" height="50" width="50"></td>
-                    <td>{{item.cover}}</td>
-                    <td>Artist</td>
+                    <td><img src="https://drive.google.com/uc?export=view&id={{item[0].cover}}" height="50" width="50"></td>
+                    <td>{{item[0].cover}}</td>
+                    <td>{{item.username}}</td>
+                    <td>{{item[0].name}}</td>
                     <td>{{item.name}}</td>
-                    <td>Album</td>
-                    <td>Genre</td>
-                    <td>{{item.content}}</td>
+                    <td>{{item.genre}}</td>
+                    <td>{{item[0].content}}</td>
                     {% if add_to_playlist%}
                     <td>
                         <form method="POST" action="{{ url_for('music.search') }}">

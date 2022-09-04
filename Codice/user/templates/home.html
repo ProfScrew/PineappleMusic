@@ -1,80 +1,206 @@
 {% extends 'menu.html' %}
+{% block scripts %}
+<script>
+  $('#test').DataTable({});
+  $('#test2').DataTable({});
+</script>
+{% endblock %}
+
 {% block content %}
 
 <div class="container">
-    <div class="row">
-      <div class="col">
-        <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
-            <img class="card-img-top" src="#" alt="Card image cap">
-            <div class="card-body">
-              <h5 class="card-title" style="text-align: center">ROCK</h5>
-            </div>
-          </div>
-      </div>
-      <div class="col">
-        <div class="card text-white bg-secondary mb-3" style="max-width: 18rem;">
-            <img class="card-img-top" src="..." alt="Card image cap">
-            <div class="card-body">
-              <h5 class="card-title" style="text-align: center">POP</h5>
-            </div>
-          </div>
-      </div>
-      <div class="col">
-        <div class="card text-white bg-success mb-3" style="max-width: 18rem;">
-            <img class="card-img-top" src="..." alt="Card image cap">
-            <div class="card-body">
-              <h5 class="card-title" style="text-align: center">DANCE</h5>
-            </div>
-          </div>
-      </div>
-      <div class="col">
-        <div class="card text-white bg-danger mb-3" style="max-width: 18rem;">
-            <img class="card-img-top" src="..." alt="Card image cap">
-            <div class="card-body">
-              <h5 class="card-title" style="text-align: center">CLASSIC</h5>
-            </div>
-          </div>
+  <div class="row">
+    <h1 class="text-center">Home</h1>
+    <div class="col">
+      <div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+        <div class="img card-img-top"
+          style="background-image: url({{ url_for('user.static', filename='img/rock.jpg') }});"></div>
+        <div class="card-body">
+          <h5 class="card-title" style="text-align: center">ROCK</h5>
+        </div>
       </div>
     </div>
-    <div class="row">
-        <div class="col">
-          <div class="card text-white bg-warning mb-3" style="max-width: 18rem;">
-            <img class="card-img-top" src="..." alt="Card image cap">
-              <div class="card-body">
-                <h5 class="card-title" style="text-align: center">JAZZ</h5>
-              </div>
-            </div>
-        </div>
-        <div class="col">
-          <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
-            <img class="card-img-top" src="..." alt="Card image cap">
-              <div class="card-body">
-                <h5 class="card-title" style="text-align: center">RAP</h5>
-              </div>
-            </div>
-        </div>
-        <div class="col">
-          <div class="card bg-light mb-3" style="max-width: 18rem;">
-            <img class="card-img-top" src="..." alt="Card image cap">
-              <div class="card-body">
-                <h5 class="card-title" style="text-align: center">HIP HOP</h5>
-              </div>
-            </div>
-        </div>
-        <div class="col">
-          <div class="card text-white bg-info mb-3" style="max-width: 18rem;">
-            <img class="card-img-top" src="..." alt="Card image cap">
-              <div class="card-body">
-                <h5 class="card-title" style="text-align: center">COUNTRY</h5>
-              </div>
-            </div>
+    <div class="col">
+      <div class="card text-white bg-secondary mb-3" style="max-width: 18rem;">
+        <div class="img card-img-top"
+          style="background-image: url({{ url_for('user.static', filename='img/pop.jpg') }});"></div>
+        <div class="card-body">
+          <h5 class="card-title" style="text-align: center">POP</h5>
         </div>
       </div>
+    </div>
+    <div class="col">
+      <div class="card text-white bg-success mb-3" style="max-width: 18rem;">
+        <div class="img card-img-top"
+          style="background-image: url({{ url_for('user.static', filename='img/dance.jpg') }});"></div>
+        <div class="card-body">
+          <h5 class="card-title" style="text-align: center">DANCE</h5>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card text-white bg-danger mb-3" style="max-width: 18rem;">
+        <div class="img card-img-top"
+          style="background-image: url({{ url_for('user.static', filename='img/classica.jpg') }});"></div>
+        <div class="card-body">
+          <h5 class="card-title" style="text-align: center">CLASSIC</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="card text-white bg-warning mb-3" style="max-width: 18rem;">
+        <div class="img card-img-top"
+          style="background-image: url({{ url_for('user.static', filename='img/jaz.jpg') }});"></div>
+        <div class="card-body">
+          <h5 class="card-title" style="text-align: center">JAZZ</h5>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+        <div class="img card-img-top"
+          style="background-image: url({{ url_for('user.static', filename='img/rap.jpg') }});)"></div>
+        <div class="card-body">
+          <h5 class="card-title" style="text-align: center">RAP</h5>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card bg-light mb-3" style="max-width: 18rem;">
+        <div class="img card-img-top"
+          style="background-image: url({{ url_for('user.static', filename='img/hippop.jpg') }});"></div>
+        <div class="card-body">
+          <h5 class="card-title" style="text-align: center">HIP HOP</h5>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card text-white bg-info mb-3" style="max-width: 18rem;">
+        <div class="img card-img-top"
+          style="background-image: url({{ url_for('user.static', filename='img/country.jpg') }});"></div>
+        <div class="card-body">
+          <h5 class="card-title" style="text-align: center">COUNTRY</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- mettere tabelle top 5 e altre cose simili -->
+
+<div class="container-fluid song-list">
+
+  <div class="col-12">
+    <h1 class="text-center">{{page_name}}</h1>
   </div>
 
+  <audio id="playerhidden" controls autoplay hidden>
+    <source type="audio/mpeg">
+  </audio>
 
-  <!-- mettere tabelle top 5 e altre cose simili -->
-  
+  <div class="col-12 table-responsive">
+    <table id="test" class="table table-striped" style="width:100%">
+      <thead class="table-dark">
+        <tr>
+          <th>Cover</th>
+          <th>Cover Link</th>
+          <th>Artist</th>
+          <th>Name</th>
+          <th>Album</th>
+          <th>Genre</th>
+          <th>Content Link</th>
+          {% if add_to_playlist%}
+          <th>Add to Playlist</th>
+          {% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in listsong %}
+        <tr class="table-light">
+          <td><img src="https://drive.google.com/uc?export=view&id={{item.cover}}" height="50" width="50"></td>
+          <td>{{item.cover}}</td>
+          <td>Artist</td>
+          <td>{{item.name}}</td>
+          <td>Album</td>
+          <td>Genre</td>
+          <td>{{item.content}}</td>
+          {% if add_to_playlist%}
+          <td>
+            <form method="POST" action="{{ url_for('music.search') }}">
+              {{ form.csrf_token }}
+              {{ form.songid(value=item.idsong)}}
+              {{ form.playlist(class="selectpicker",multiple=True,**{"data-live-search":"true","title":"List of your
+              playlist"})}}
+              {{ form.submit(class="btn btn-success")}}
+            </form>
+          </td>
+          {% endif %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
+<div class="container-fluid song-list">
+
+  <div class="col-12">
+    <h1 class="text-center">{{page_name}}</h1>
+  </div>
+
+  <audio id="playerhidden" controls autoplay hidden>
+    <source type="audio/mpeg">
+  </audio>
+
+  <div class="col-12 table-responsive">
+    <table id="test2" class="table table-striped" style="width:100%">
+      <thead class="table-dark">
+        <tr>
+          <th>Cover</th>
+          <th>Cover Link</th>
+          <th>Artist</th>
+          <th>Name</th>
+          <th>Album</th>
+          <th>Genre</th>
+          <th>Content Link</th>
+          {% if add_to_playlist%}
+          <th>Add to Playlist</th>
+          {% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in listsong %}
+        <tr class="table-light">
+          <td><img src="https://drive.google.com/uc?export=view&id={{item.cover}}" height="50" width="50"></td>
+          <td>{{item.cover}}</td>
+          <td>Artist</td>
+          <td>{{item.name}}</td>
+          <td>Album</td>
+          <td>Genre</td>
+          <td>{{item.content}}</td>
+          {% if add_to_playlist%}
+          <td>
+            <form method="POST" action="{{ url_for('music.search') }}">
+              {{ form.csrf_token }}
+              {{ form.songid(value=item.idsong)}}
+              {{ form.playlist(class="selectpicker",multiple=True,**{"data-live-search":"true","title":"List of your
+              playlist"})}}
+              {{ form.submit(class="btn btn-success")}}
+            </form>
+          </td>
+          {% endif %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </div>
+</div>
+
 
 
 {% endblock %}

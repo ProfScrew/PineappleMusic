@@ -347,7 +347,7 @@ class Song(Base):
     #    return song
 
     def get_songs():  # provisoria###############
-        songs = Session_artist.query(Song).all()
+        songs = Session_artist.query(Song,Belong.genre,Creates.username,Album.name).join(Belong).join(Creates).join(Album).all()
         return songs
 
     def check_links(cover, content):
@@ -384,7 +384,7 @@ class NormalSong(Base):
         self.song = song
 
     def get_songs():  # provisoria###############
-        songs = Session_listener.query(NormalSong).all()
+        songs = Session_listener.query(Song,Belong.genre,Creates.username,Album.name).join(Belong).join(Creates).join(Album).join(NormalSong).all()
         return songs
     # questo metodo è opzionale, serve solo per pretty printing
 
