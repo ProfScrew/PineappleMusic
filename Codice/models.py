@@ -362,7 +362,8 @@ class Song(Base):
             return False
     
     def get_song_playlist(idplaylist):
-        songs=Session_artist.query(Song).join(Contains).filter(Contains.list==idplaylist).all()
+        songs=Session_artist.query(Song,Belong.genre,Creates.username,Album.name).join(Belong).join(Creates).join(Album).join(Contains).filter(Contains.list==idplaylist).all()
+        
         return songs
 
     # questo metodo è opzionale, serve solo per pretty printing
