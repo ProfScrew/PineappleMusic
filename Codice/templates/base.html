@@ -12,27 +12,26 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/datatable-bootstrap.css')}}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-select.css')}}">
     <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
-    
-
-	
-    <script defer type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.6.0.min.js')}}"></script>
-    <script defer type="text/javascript" src="{{ url_for('static', filename='js/popper.js')}}"></script>
-    <script defer type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js')}}"></script>
-    <script defer type="text/javascript" src="{{ url_for('static', filename='js/bootstrap-select.js')}}"></script>
-    <script defer type="text/javascript" src="{{ url_for('static', filename='js/jquery-datatable.js')}}"></script>
-    <script defer type="text/javascript" src="{{ url_for('static', filename='js/datatable-bootstrap.js')}}"></script>
-    <script defer type="text/javascript" src="{{ url_for('static', filename='js/datatable-select.js')}}"></script>
-    
-
-    <script defer type="text/javascript" src="{{ url_for('static', filename='js/script.js')}}"></script>
-    <script defer type="text/javascript" src="{{ url_for('static', filename='js/fontawesome.js')}}"></script>
 
     {% block css %}{% endblock %}
-
+    
 </head>
 
 <body>
     {% block pagebody %}{% endblock %}
-</body>
 
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.6.0.min.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/popper.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap-select.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-datatable.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/datatable-bootstrap.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/datatable-select.js')}}"></script>
+    
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/script.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/fontawesome.js')}}"></script>
+
+    {% block js %}{% endblock %}
+</body>
 </html>

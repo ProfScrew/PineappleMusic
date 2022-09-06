@@ -1,5 +1,4 @@
 
-
 $('#playpause').on('click', function () {
     if (typeof ($('#playerhidden').attr('src')) != "undefined" && $('#playerhidden').attr('src').length > 0) {
         if ($('#playpause').attr('class') == 'play-pause fas fa-play') {
@@ -22,78 +21,13 @@ $('#repeatsong').on('click', function () {
 
 });
 
-$(document).ready(function () {
-    $('#example').DataTable({
-        select: {
-            style: 'single'
-        },
-        'columnDefs': [
-            //hide the first and third column
-            { 'visible': false, 'targets': [1, 6] }
-        ]
-    });
-});
-
 function convert_to_time(audioCurrentTime) {
     var minutes = "0" + Math.floor(audioCurrentTime / 60);
     var seconds = "0" + Math.floor(audioCurrentTime - minutes * 60);
     return minutes.substr(-2) + ":" + seconds.substr(-2);
 }
 
-$(document).ready(function () {
-    
-    var table = $('#example').DataTable();
 
-    
-    $('#example tbody').on('click', 'tr', function (e) {
-        
-        var text = e.target.nodeName;
-        if(text!="DIV"&&text!="BUTTON"&&text!="INPUT"){
-            var data = table.row(this).data();
-            $("#coverplayer").attr("src", "https://drive.google.com/uc?export=view&id=" + data[1]);
-            $("#title-song").text(data[3]);
-            $("#artist-song").text(data[2]);
-            $("#playerhidden").attr("src", "https://docs.google.com/uc?export=open&id=" + data[6]);
-            $("#playerhidden").trigger("play");
-            $('#playpause').attr('class', 'fa fa-light fa-pause');
-
-            $("#playerhidden").on('loadedmetadata', function () {
-                var audioCurrentTime = document.getElementById("playerhidden").duration;
-
-                $("#time-dur").text(convert_to_time(audioCurrentTime));
-            });
-        }
-    });
-
-    $("#progress-bar-song").on("click", function (e) {
-
-
-        var pos_curr = e.pageX - $("#progress-bar-song").offset().left; //Position cursor
-        var size_bar = document.getElementById("progress-bar-song").offsetWidth;
-
-        /*alert(pos_curr+" "+size_bar);
-        alert(pos_curr*100/size_bar);*/
-        $('#time-bar').attr('style', "width:" + pos_curr * 100 / size_bar + "%;");
-        var duration = document.getElementById("playerhidden").duration;
-        document.getElementById("playerhidden").currentTime = duration / 100 * pos_curr * 100 / size_bar;
-        $("#playerhidden").trigger("play");
-    });
-
-
-    $("#progress-bar-vol").on("click", function (e) {
-
-
-        var pos_curr = e.pageX - $("#progress-bar-vol").offset().left; //Position cursor
-        var size_bar = document.getElementById("progress-bar-vol").offsetWidth;
-
-        /*alert(pos_curr+" "+size_bar);
-        alert(pos_curr*100/size_bar);*/
-        var vol = pos_curr * 100 / size_bar;
-        $('#progress-bar-vol-contr').attr('style', "width:" + parseFloat(vol.toFixed(1)) + "%;");
-        document.getElementById("playerhidden").volume = pos_curr / size_bar;
-    });
-
-});
 
 
 var interval = setInterval(function () {

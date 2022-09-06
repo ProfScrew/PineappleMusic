@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash
+from flask import Blueprint, render_template, request, flash
 from flask_login import login_required, current_user
 
 from Codice.models import *
@@ -10,8 +10,10 @@ artist = Blueprint('artist', __name__, static_folder='static',
                  template_folder='templates')
 
 
-@artist.route('/statistcs', methods=['GET'])
+@artist.route('/statistics', methods=['GET','POST'])
 def statistics():
+    var=request.data
+    print("TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",var)
     return "ciao"
 
 
