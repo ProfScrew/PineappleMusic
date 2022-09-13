@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import  StringField, PasswordField,DateField,SubmitField,SelectField,EmailField
+from wtforms import  StringField, PasswordField,DateField,SubmitField,SelectField,EmailField, HiddenField
 from wtforms_sqlalchemy.fields import QuerySelectField
 from flask_login import current_user
 from wtforms.validators import DataRequired, Length, Email, Optional
@@ -42,4 +42,19 @@ class SongForm(FlaskForm):
     
     submit = SubmitField("Upload")
     
+class AlbumForm(FlaskForm):
     
+    name = StringField("Name", validators=[DataRequired(),Length(max=40)])
+    cover = StringField("Cover", validators=[Optional(),Length(max=120)])
+    
+    submit = SubmitField("Upload")
+    
+class DeleteAlbum(FlaskForm):
+    idalbum = HiddenField("id")
+    submit = SubmitField("Delete")
+    
+class ModifyAlbum(FlaskForm):
+    idalbum = HiddenField("id")   
+    submit = SubmitField("Modify")
+    
+

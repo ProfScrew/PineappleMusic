@@ -34,7 +34,7 @@ class User(Base, UserMixin):
     gender = Column(String)
     phone = Column(Integer)
     email = Column(String)
-
+    
     def __init__(self, username, name, surname, birthdate, password, gender, phone, email):
         self.username = username
         self.name = name
@@ -44,7 +44,24 @@ class User(Base, UserMixin):
         self.gender = gender
         self.phone = phone
         self.email = email
-
+    
+    #rivedere sta merda qui sotto     
+    def load_user_auth(temp_username):
+        user= Session_guestmanager.query(User.username,
+                                         User.name,
+                                         User.surname,
+                                         User.birthdate,
+                                         User.email,
+                                         User.gender,
+                                         User.phone,
+                                         User.password,
+                                         NormalListener.username.label('normallistener'),
+                                         PremiumListener.username.label('premiumlistener'),
+                                         Artist.username.label('artist')).outerjoin(NormalListener).outerjoin(PremiumListener).outerjoin(Artist).filter(User.username == temp_username).first()
+        print(user)
+        return user
+        
+         
     def get_current_user():
         return current_user.username
 
@@ -214,6 +231,18 @@ class Artist(Base):
     def __init__(self, username):
         self.username = username
 
+    def insert_album(temp_name, temp_cover, temp_artist):
+        try:    
+            album = Album.insert_album(temp_name, temp_cover, temp_artist)
+            Session_artist.add(album)
+            Session_artist.commit()
+            return True
+        except:
+            Session_artist.rollback()
+            return False
+        
+        return 
+    
     def insert_song(temp_name, temp_album, temp_cover, temp_releasedate, temp_content, temp_username, song_genres, song_type):
         try:
 
@@ -279,6 +308,30 @@ class Album(Base):
         self.cover = cover
         self.artist = artist
 
+    def insert_album(temp_name, temp_cover, temp_artist):
+        album = Album(name=temp_name, idalbum=None, cover=temp_cover,
+                    artist=temp_artist)
+        return album
+
+    def check_artist_album_name(temp_username, temp_name):
+        album = Session_artist.query(Album).filter(
+            Album.name == temp_name).count()
+        
+        if(album>0):
+            return True
+        else:
+            return False 
+        
+    def check_cover_link(cover):
+        try:
+            request_cover = requests.get(cover)
+            if request_cover.status_code == 200:
+                return True
+            else:
+                return False
+        except:
+            return False
+    
     def get_albums(temp_username):
         albums = Session_artist.query(Album).filter(
             Album.artist == temp_username).all()
@@ -305,6 +358,17 @@ class Album(Base):
             if i.name == choice:
                 return i.idalbum
         return None
+    
+    def delete_album(temp_idalbum):
+        try:
+            album = Session_artist.query(Album).filter(
+                Album.idalbum == temp_idalbum).first()
+            Session_artist.delete(album)
+            Session_artist.commit()
+            return True
+        except:
+            Session_artist.rollback()
+            return False
 
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):

@@ -14,6 +14,7 @@ user = Blueprint('user', __name__, static_folder='static',
 @user.route('/home', methods=['GET'])
 @login_required
 def home():
+    print(current_user)
     return render_template("home.html", title="Home", user=current_user, user_type=User.get_type_user(current_user.username))
 
 

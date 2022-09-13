@@ -1,0 +1,50 @@
+{% extends 'menu.html' %}
+
+{% block content %}
+
+
+<div class="d-flex justify-content-center dashboard-content px-3 pt-4  text-center">
+    <!-- Account details card-->
+
+    <div class="">Insert Song  {{user.username}}
+        <div class="">
+            
+            <!-- Form Group (username)-->
+            <form method="POST" action="">
+                {{ form.csrf_token }}
+                <hr class="h-color-black mx-2">   
+
+                <div class="row gx-3 mb-3">
+                        <!-- Form Group (organization name)-->
+
+                    {{ form.name.label(class="form-label")}} 
+                    {{ form.name(class="form-control")}}
+
+                        <!-- Form Group (location)-->
+                </div>
+
+                <div class="row gx-3 mb-3">
+                    <!-- Form Group (organization name)-->
+
+                    {{ form.cover.label(class="form-label")}} 
+                    {{ form.cover(class="form-control")}}
+
+                    <!-- Form Group (location)-->
+                </div>
+                
+        
+                <!-- Save changes button-->
+                {{ form.submit(class="btn btn-success")}}
+            </form>
+
+            {% for message in get_flashed_messages()%}
+                <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                  {{message}}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {%endfor%}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -34,6 +34,7 @@ def create_app():
     # user loader
     def load_user(user_id):
         return User.query.get(user_id)
+        #return User.load_user_auth(user_id)
 
 
     login_manager.init_app(app)

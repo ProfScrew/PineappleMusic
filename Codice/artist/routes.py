@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash
+from flask import Blueprint, render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
 
 from Codice.models import *
@@ -18,9 +18,9 @@ def statistics():
 
 
 
-@artist.route('/insertsong', methods=['GET','POST'])
+@artist.route('/song', methods=['GET','POST'])
 @login_required
-def insertsong():
+def song():
     form = SongForm()
     form.genre.choices = Genre.list
     
@@ -58,12 +58,62 @@ def insertsong():
                             else:
                                 if Artist.insert_song(form.name.data, album, cover, form.release_date.data,
                                             form.content.data.split("/")[5],current_user.username,form.genre.data,form.premium.data):
-                                    flash("Upload Succesfull")
+                                    flash("Upload Successful")
                                 else:
                                     flash("Upload Failed")
         else:
             flash("Cover or content links are invalid")  
-    return render_template('insertsong.html', form = form, user = current_user,user_type=User.get_type_user(current_user.username))
+    return render_template('song.html', form = form, user = current_user,user_type=User.get_type_user(current_user.username))
+
+
+@artist.route('/album', methods=['GET','POST'])
+@login_required
+def album():
+    form = AlbumForm()
+    delete_album=DeleteAlbum()
+    modify_album=ModifyAlbum()
+    
+    print(current_user)
+    
+    if form.validate_on_submit():
+        if Album.check_artist_album_name(form.name.data, current_user.username):
+            flash("Album name already in use by you.")
+        else:
+            if Album.check_cover_link(form.cover.data):
+                if Artist.insert_album(form.name.data,form.cover.data.split("/")[5],current_user.username):
+                    flash("Upload Successful.")
+                else:
+                    flash("Upload Failed.")
+            else:
+                flash("Invalid cover link.")
+        
+    
+    
+    return render_template('album.html', form = form, user = current_user,
+                           user_type=User.get_type_user(current_user.username),
+                           delete_album=delete_album,modify_album=modify_album,album=Album.get_albums(current_user.username))
 
 
 
+@artist.route('/modifyalbum', methods=['GET','POST'])
+@login_required
+def modifyalbum():
+    modify_album=ModifyAlbum()
+    album_form =AlbumForm()
+    if modify_album.validate_on_submit():
+        flash(modify_album.idalbum.data)
+        flash("Album Modify.")
+        #delete
+    return render_template('song.html', form = album_form, user = current_user,user_type=User.get_type_user(current_user.username))
+
+@artist.route('/deletealbum', methods=['GET','POST'])
+@login_required
+def deletealbum():
+    delete_album=DeleteAlbum()
+    if delete_album.validate_on_submit():
+        if Album.delete_album(delete_album.idalbum.data):
+            flash("Album Deleted.")
+        else:
+            flash("Error Deleting Album.")
+        #delete
+    return redirect(url_for('artist.album'))

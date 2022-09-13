@@ -1,0 +1,90 @@
+{% extends 'menu.html' %}
+
+{% block content %}
+
+<div class="d-flex justify-content-center dashboard-content px-3 pt-4  text-center">
+    <!-- Account details card-->
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-3"></div>
+            <div class="col-6">
+                <h1>Insert Album {{user.username}}</h1>
+                <form method="POST" action="">
+                    {{ form.csrf_token }}
+                    <hr class="h-color-black mx-2">   
+    
+                    <div class="3row gx- mb-3">
+                            <!-- Form Group (organization name)-->
+    
+                        {{ form.name.label(class="form-label")}} 
+                        {{ form.name(class="form-control")}}
+    
+                            <!-- Form Group (location)-->
+                    </div>
+    
+                    <div class="3row gx-3 mb-3">
+                        <!-- Form Group (organization name)-->
+    
+                        {{ form.cover.label(class="form-label")}} 
+                        {{ form.cover(class="form-control")}}
+    
+                        <!-- Form Group (location)-->
+                    </div>
+                    
+    
+                    
+                    <!-- Save changes button-->
+                    {{ form.submit(class="btn btn-dark")}}
+                </form>
+    
+                
+            </div>
+            <div class="col-3"></div>
+
+            <div class="col-12 table-responsive">
+                <table id="playlisttable" class="table table-striped" style="width:100%">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Cover</th>
+                            <th>Name</th>
+                            <th>Modify Album</th>
+                            <th>Delete Album</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in album %}
+                        <tr class="table-light">
+                            <td><img src="https://drive.google.com/uc?export=view&id={{item.cover}}" height="50" width="50"></td>
+                            <td>{{item.name}}</td>
+                            <form method="POST" action="{{ url_for('artist.modifyalbum') }}">
+                                {{ modify_album.csrf_token }}
+                                {{modify_album.idalbum(value=item.idalbum)}}
+                                <td>{{modify_album.submit(class="btn btn-success",value="Modify")}}</td>
+                            </form>
+                            <form method="POST" action="{{ url_for('artist.deletealbum') }}">
+                                {{ delete_album.csrf_token }}
+                                {{delete_album.idalbum(value=item.idalbum)}}
+                                <td>{{delete_album.submit(class="btn btn-warning",value="Delete")}}</td>
+                            </form>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="col-6 container">
+            {% for message in get_flashed_messages()%}
+                    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                      {{message}}
+                      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+            {%endfor%}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

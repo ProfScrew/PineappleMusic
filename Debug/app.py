@@ -6,16 +6,22 @@ from sqlalchemy.orm import sessionmaker
 
 from models import *
 
+from flask import Flask
+from flask_login import LoginManager
+from flask_wtf.csrf import CSRFProtect
 
-engine = create_engine('postgresql://artists:PassArtists@129.152.15.83:5432/PineappleMusic', echo=True)
+engine = create_engine('postgresql://guest_manager:PassGuestManager@129.152.15.83:5432/PineappleMusic', echo=True)
 
 
 Session = sessionmaker(bind=engine)       # factory pattern
 session = Session()
 
-for instance in session.query(Song,Belong.genre,Creates.username,Album.name).join(Belong).join(Creates).join(Album).join(PremiumSong).all():
-    print("ciaoooooo",instance[1])
+user = session.query(User.username,User.name,User.surname,User.birthdate,User.email,User.gender,User.phone,User.password,NormalListener.username.label('normallistener'),PremiumListener.username.label('premiumlistener'),Artist.username.label('artist')).outerjoin(NormalListener).outerjoin(PremiumListener).outerjoin(Artist).filter(User.username == 'JackSparrow').first()
 
+#user = User.query.get('JackSparrow')
+
+
+print(user.username)
 
 
 

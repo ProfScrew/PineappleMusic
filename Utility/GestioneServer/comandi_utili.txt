@@ -7,6 +7,8 @@ flask run
 
 flask run --host 0.0.0.0
 
+//alternativa comando flask 
+FLASK_APP=__init__.py FLASK_DEBUG=1 TEMPLATES_AUTO_RELOAD=1 flask run --host 0.0.0.0
 
 //comandi postgresql
 systemctl start postgresql
