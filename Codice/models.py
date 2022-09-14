@@ -35,6 +35,8 @@ class User(Base, UserMixin):
     phone = Column(Integer)
     email = Column(String)
     
+    #account = None
+    
     def __init__(self, username, name, surname, birthdate, password, gender, phone, email):
         self.username = username
         self.name = name
@@ -44,23 +46,9 @@ class User(Base, UserMixin):
         self.gender = gender
         self.phone = phone
         self.email = email
-    
-    #rivedere sta merda qui sotto     
-    def load_user_auth(temp_username):
-        user= Session_guestmanager.query(User.username,
-                                         User.name,
-                                         User.surname,
-                                         User.birthdate,
-                                         User.email,
-                                         User.gender,
-                                         User.phone,
-                                         User.password,
-                                         NormalListener.username.label('normallistener'),
-                                         PremiumListener.username.label('premiumlistener'),
-                                         Artist.username.label('artist')).outerjoin(NormalListener).outerjoin(PremiumListener).outerjoin(Artist).filter(User.username == temp_username).first()
-        print(user)
-        return user
         
+    
+    
          
     def get_current_user():
         return current_user.username
@@ -76,14 +64,19 @@ class User(Base, UserMixin):
 
     def get_type_user(temp_username):
 
-        if Session_guestmanager.query(NormalListener).filter(NormalListener.username == temp_username).count() == 1:
-            return 1
-        elif Session_guestmanager.query(PremiumListener).filter(PremiumListener.username == temp_username).count() == 1:
-            return 2
-        elif Session_guestmanager.query(Artist).filter(Artist.username == temp_username).count() == 1:
-            return 3
-        else:
-            raise Exception("User not in any list")
+        try:
+            if Session_guestmanager.query(NormalListener).filter(NormalListener.username == temp_username).count() == 1:
+                return 1
+            elif Session_guestmanager.query(PremiumListener).filter(PremiumListener.username == temp_username).count() == 1:
+                return 2
+            elif Session_guestmanager.query(Artist).filter(Artist.username == temp_username).count() == 1:
+                return 3
+            else:
+                return 0
+        except:
+            Session_guestmanager.rollback()
+
+
 
     def get_type_user_session(temp_username):
 
@@ -95,6 +88,15 @@ class User(Base, UserMixin):
         elif type_user == 3:
             return Session_artist
 
+    def get_type_user_session_from_number(temp_username, type_user):
+
+        if type_user == 1:
+            return Session_listener
+        elif type_user == 2:
+            return Session_premiumlistener
+        elif type_user == 3:
+            return Session_artist
+    
     def get_user(temp_session_db, username):
         user = temp_session_db.query(User).filter(
             User.username == username).first()
@@ -314,9 +316,7 @@ class Album(Base):
         return album
 
     def check_artist_album_name(temp_username, temp_name):
-        album = Session_artist.query(Album).filter(
-            Album.name == temp_name).count()
-        
+        album = Session_artist.query(Album).filter(and_( Album.artist == temp_username, Album.name == temp_name)).count()
         if(album>0):
             return True
         else:
@@ -336,6 +336,11 @@ class Album(Base):
         albums = Session_artist.query(Album).filter(
             Album.artist == temp_username).all()
         return albums
+    
+    def get_albums_id(temp_idalbum):
+        albums = Session_artist.query(Album).filter(
+            Album.idalbum == temp_idalbum).first()
+        return albums
 
     def get_albums_name(temp_username, albums):
         list_albums = ['']
@@ -344,7 +349,7 @@ class Album(Base):
                 list_albums.append(i.name)
             return list_albums
         return list_albums
-
+    
     def extract_cover_album(list_albums, choice):
         try:
             for i in list_albums:
@@ -358,6 +363,31 @@ class Album(Base):
             if i.name == choice:
                 return i.idalbum
         return None
+    
+    def modify_album(temp_idalbum, temp_name, temp_cover, temp_artist):
+        try:
+            if temp_cover == '':
+                if not Album.check_artist_album_name(temp_artist,temp_name):#modifica nome
+                    query = update(Album).where(Album.idalbum == temp_idalbum).values(name = temp_name)
+                else:
+                    return False
+            else:
+                if not Album.check_cover_link(temp_cover):
+                    return False
+                album = Session_artist.query(Album).filter(Album.idalbum == temp_idalbum).first()
+                if temp_name == album.name:#modifica cover
+                    query = update(Album).where(Album.idalbum == temp_idalbum).values(cover = temp_cover.split("/")[5])
+                else:#modifica tutto
+                    if not Album.check_artist_album_name(temp_artist,temp_name):
+                        query = update(Album).where(Album.idalbum == temp_idalbum).values(cover = temp_cover.split("/")[5], name = temp_name)
+                    else:
+                        return False
+            Session_artist.execute(query)
+            Session_artist.commit()
+            return True
+        except:
+            Session_artist.rollback()
+            return False
     
     def delete_album(temp_idalbum):
         try:

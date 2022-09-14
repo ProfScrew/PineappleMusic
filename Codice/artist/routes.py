@@ -63,7 +63,7 @@ def song():
                                     flash("Upload Failed")
         else:
             flash("Cover or content links are invalid")  
-    return render_template('song.html', form = form, user = current_user,user_type=User.get_type_user(current_user.username))
+    return render_template('song.html', form = form, user = current_user)
 
 
 @artist.route('/album', methods=['GET','POST'])
@@ -90,23 +90,35 @@ def album():
     
     
     return render_template('album.html', form = form, user = current_user,
-                           user_type=User.get_type_user(current_user.username),
-                           delete_album=delete_album,modify_album=modify_album,album=Album.get_albums(current_user.username))
+                           delete_album=delete_album,
+                           modify_album=modify_album,
+                           album=Album.get_albums(current_user.username))
 
 
 
-@artist.route('/modifyalbum', methods=['GET','POST'])
+@artist.route('/modifyalbum', methods=['GET'])
+@login_required
+def modifyalbum_redirect():
+    return redirect(url_for('artist.album'))
+
+@artist.route('/modifyalbum', methods=['POST'])
 @login_required
 def modifyalbum():
     modify_album=ModifyAlbum()
-    album_form =AlbumForm()
-    if modify_album.validate_on_submit():
-        flash(modify_album.idalbum.data)
-        flash("Album Modify.")
-        #delete
-    return render_template('song.html', form = album_form, user = current_user,user_type=User.get_type_user(current_user.username))
+    album_form =ModifyAlbumForm()
+    if album_form.validate_on_submit():
+        if album_form.name.data == Album.get_albums_id(album_form.idalbum.data).name and album_form.cover.data == '':
+            flash("No nodification made")
+            return redirect(url_for('artist.album'))
+        else:
+            if Album.modify_album(album_form.idalbum.data,album_form.name.data,album_form.cover.data,current_user.username):
+                flash("Successful modification.")
+                return redirect(url_for('artist.album'))
+            else:
+                flash("Error Modification")  
+    return render_template('modifyalbum.html', form = album_form, album = Album.get_albums_id(modify_album.idalbum.data), user = current_user)
 
-@artist.route('/deletealbum', methods=['GET','POST'])
+@artist.route('/deletealbum', methods=['POST'])
 @login_required
 def deletealbum():
     delete_album=DeleteAlbum()

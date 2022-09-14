@@ -29,12 +29,12 @@
             <li><a href="{{url_for('user.profile')}}" class="text-decoration-none px-3 py-2 d-block"><i
                         class="fa-solid fa-user"></i>Profile</a></li>
             
-            {% if user_type == 1%}
+            {% if user.type_account == 1%}
                 <li><a href="{{url_for('user.premium')}}" class="text-decoration-none px-3 py-2 d-block">
                     <i class="fa-solid fa-star"></i>Premium</a></li>
             {% endif%}
 
-            {% if user_type == 3%}
+            {% if user.type_account == 3%}
                 <li><a href="{{url_for('artist.album')}}" class="text-decoration-none px-3 py-2 d-block">
                     <i class="fa-solid fa-compact-disc"></i>Album</a></li>
                 

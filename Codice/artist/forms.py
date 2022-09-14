@@ -49,6 +49,14 @@ class AlbumForm(FlaskForm):
     
     submit = SubmitField("Upload")
     
+class ModifyAlbumForm(FlaskForm):
+    
+    idalbum = HiddenField("id") 
+    name = StringField("Name", validators=[DataRequired(),Length(max=40)])
+    cover = StringField("Cover", validators=[Optional(),Length(max=120)])
+    
+    submit = SubmitField("Upload")
+    
 class DeleteAlbum(FlaskForm):
     idalbum = HiddenField("id")
     submit = SubmitField("Delete")

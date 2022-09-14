@@ -14,22 +14,20 @@ user = Blueprint('user', __name__, static_folder='static',
 @user.route('/home', methods=['GET'])
 @login_required
 def home():
-    print(current_user)
-    return render_template("home.html", title="Home", user=current_user, user_type=User.get_type_user(current_user.username))
+    return render_template("home.html", title="Home", user=current_user)
 
 
 @user.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
     form = ModifyProfileForm()
-
     if form.validate_on_submit():
         if form.password.data == '':
             check_password = False
         else:
             check_password = True
             form.password.data = User.encrypt_password(form.password.data)
-        if User.update_user(User.get_type_user_session(current_user.username),
+        if User.update_user(current_user.type_session,
                             current_user.username, form.name.data,
                             form.surname.data, form.birthdate.data,
                             form.password.data, form.phone.data, form.email.data,
@@ -39,7 +37,7 @@ def profile():
         else:
             flash('Update Failed')
 
-    return render_template("profile.html", title="Profile", user=current_user, form=form, user_type=User.get_type_user(current_user.username))
+    return render_template("profile.html", title="Profile", user=current_user, form=form)
 
 
 @user.route('/delete', methods=['POST'])
@@ -65,4 +63,4 @@ def premium():
                 flash("Ugrade Succesful. YOU ROCK!")
             else:
                 flash("Upgrade Failed.")
-    return render_template("premium.html", title="Premium Account", user=current_user, form=form, user_type=User.get_type_user(current_user.username))
+    return render_template("premium.html", title="Premium Account", user=current_user, form=form)
