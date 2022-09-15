@@ -3,7 +3,7 @@ from flask_login import  login_required,current_user
 
 from Codice.models import *
 from Codice.database import *
-from .forms import DeletePlaylist, DeleteSongFromPlaylist, PlaylistForm,AddToPlaylist,GetSongsPlaylist
+from .forms import DeletePlaylist, DeleteSongFromPlaylist, PlaylistForm,AddToPlaylist,GetSongsPlaylist,GetSongsGenres
 
 
 # Blueprint Configuration
@@ -63,7 +63,30 @@ def getsongfromplaylist():
         return render_template("songs.html",user=current_user,page_name="Playlist",
                 listsong=song,delete_from_playlist=True,delete_form=delete_form,playlistid=form.playlistid.data)
 
-@music.route('/getsongfromplaylist', methods=['GET'])
 @login_required
+@music.route('/getsongfromplaylist', methods=['GET'])
 def getsongfromplaylist_redirect():
     return redirect(url_for('music.playlist'))
+
+@login_required
+@music.route('/getsongfromgenre', methods=['POST'])
+def getsongfromgenre():
+    form=AddToPlaylist()
+    genre_form=GetSongsGenres()
+    session=User.get_type_user_session(current_user.username)
+
+    if genre_form.validate_on_submit():
+        if current_user.type_account==1:
+            song=NormalSong.get_songs(genre_form.genre.data)
+        else:
+            song=Song.get_songs(genre_form.genre.data)
+
+        playlist = Playlist.get_playlist_user(session,current_user.username)
+        form.playlist.choices=Playlist.get_playlist_name_id(session,playlist)
+        
+        if form.validate_on_submit():
+            for idl in form.playlist.data:
+                Contains.create(form.songid.data, idl)
+        
+        return render_template("songs.html",user=current_user,page_name="Search Songs",add_to_playlist=True,
+                            listsong=song,playlist=playlist,form=form)

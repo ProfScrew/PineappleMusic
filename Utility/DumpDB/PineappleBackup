@@ -5,7 +5,7 @@
 -- Dumped from database version 12.2 (Debian 12.2-2.pgdg100+1)
 -- Dumped by pg_dump version 12.1
 
--- Started on 2022-08-28 13:59:40 UTC
+-- Started on 2022-09-15 21:44:46 UTC
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -20,7 +20,7 @@ SET row_security = off;
 
 DROP DATABASE "PineappleMusic";
 --
--- TOC entry 3020 (class 1262 OID 16384)
+-- TOC entry 3027 (class 1262 OID 16384)
 -- Name: PineappleMusic; Type: DATABASE; Schema: -; Owner: admin
 --
 
@@ -47,7 +47,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- TOC entry 202 (class 1259 OID 17433)
+-- TOC entry 202 (class 1259 OID 16837)
 -- Name: albums; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -62,7 +62,22 @@ CREATE TABLE public.albums (
 ALTER TABLE public.albums OWNER TO admin;
 
 --
--- TOC entry 203 (class 1259 OID 17436)
+-- TOC entry 218 (class 1259 OID 24591)
+-- Name: albums_idalbum_seq; Type: SEQUENCE; Schema: public; Owner: admin
+--
+
+ALTER TABLE public.albums ALTER COLUMN idalbum ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.albums_idalbum_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 203 (class 1259 OID 16840)
 -- Name: artists; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -74,7 +89,7 @@ CREATE TABLE public.artists (
 ALTER TABLE public.artists OWNER TO admin;
 
 --
--- TOC entry 204 (class 1259 OID 17439)
+-- TOC entry 204 (class 1259 OID 16843)
 -- Name: belong; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -87,7 +102,7 @@ CREATE TABLE public.belong (
 ALTER TABLE public.belong OWNER TO admin;
 
 --
--- TOC entry 205 (class 1259 OID 17442)
+-- TOC entry 205 (class 1259 OID 16846)
 -- Name: contains; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -100,7 +115,7 @@ CREATE TABLE public.contains (
 ALTER TABLE public.contains OWNER TO admin;
 
 --
--- TOC entry 206 (class 1259 OID 17445)
+-- TOC entry 206 (class 1259 OID 16849)
 -- Name: creates; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -113,7 +128,7 @@ CREATE TABLE public.creates (
 ALTER TABLE public.creates OWNER TO admin;
 
 --
--- TOC entry 207 (class 1259 OID 17448)
+-- TOC entry 207 (class 1259 OID 16852)
 -- Name: genres; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -125,7 +140,7 @@ CREATE TABLE public.genres (
 ALTER TABLE public.genres OWNER TO admin;
 
 --
--- TOC entry 208 (class 1259 OID 17451)
+-- TOC entry 208 (class 1259 OID 16855)
 -- Name: normallisteners; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -137,7 +152,7 @@ CREATE TABLE public.normallisteners (
 ALTER TABLE public.normallisteners OWNER TO admin;
 
 --
--- TOC entry 209 (class 1259 OID 17454)
+-- TOC entry 209 (class 1259 OID 16858)
 -- Name: normalsongs; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -149,14 +164,14 @@ CREATE TABLE public.normalsongs (
 ALTER TABLE public.normalsongs OWNER TO admin;
 
 --
--- TOC entry 210 (class 1259 OID 17457)
+-- TOC entry 210 (class 1259 OID 16861)
 -- Name: playlists; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.playlists (
     name character varying(20) NOT NULL,
     idlist integer NOT NULL,
-    creationdate date NOT NULL,
+    creationdate date DEFAULT now() NOT NULL,
     author character varying(40) NOT NULL
 );
 
@@ -164,7 +179,22 @@ CREATE TABLE public.playlists (
 ALTER TABLE public.playlists OWNER TO admin;
 
 --
--- TOC entry 211 (class 1259 OID 17460)
+-- TOC entry 217 (class 1259 OID 24577)
+-- Name: playlists_idlist_seq; Type: SEQUENCE; Schema: public; Owner: admin
+--
+
+ALTER TABLE public.playlists ALTER COLUMN idlist ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.playlists_idlist_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 211 (class 1259 OID 16864)
 -- Name: premiumlisteners; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -176,20 +206,19 @@ CREATE TABLE public.premiumlisteners (
 ALTER TABLE public.premiumlisteners OWNER TO admin;
 
 --
--- TOC entry 212 (class 1259 OID 17463)
+-- TOC entry 212 (class 1259 OID 16867)
 -- Name: premiumsongs; Type: TABLE; Schema: public; Owner: admin
 --
 
 CREATE TABLE public.premiumsongs (
-    song integer NOT NULL,
-    expirydate date
+    song integer NOT NULL
 );
 
 
 ALTER TABLE public.premiumsongs OWNER TO admin;
 
 --
--- TOC entry 213 (class 1259 OID 17466)
+-- TOC entry 213 (class 1259 OID 16870)
 -- Name: songs; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -206,7 +235,7 @@ CREATE TABLE public.songs (
 ALTER TABLE public.songs OWNER TO admin;
 
 --
--- TOC entry 214 (class 1259 OID 17469)
+-- TOC entry 214 (class 1259 OID 16873)
 -- Name: songs_idsong_seq; Type: SEQUENCE; Schema: public; Owner: admin
 --
 
@@ -221,7 +250,7 @@ ALTER TABLE public.songs ALTER COLUMN idsong ADD GENERATED ALWAYS AS IDENTITY (
 
 
 --
--- TOC entry 215 (class 1259 OID 17471)
+-- TOC entry 215 (class 1259 OID 16875)
 -- Name: statistics; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -236,7 +265,7 @@ CREATE TABLE public.statistics (
 ALTER TABLE public.statistics OWNER TO admin;
 
 --
--- TOC entry 216 (class 1259 OID 17474)
+-- TOC entry 216 (class 1259 OID 16878)
 -- Name: users; Type: TABLE; Schema: public; Owner: admin
 --
 
@@ -257,15 +286,17 @@ CREATE TABLE public.users (
 ALTER TABLE public.users OWNER TO admin;
 
 --
--- TOC entry 3000 (class 0 OID 17433)
+-- TOC entry 3005 (class 0 OID 16837)
 -- Dependencies: 202
 -- Data for Name: albums; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
+INSERT INTO public.albums (idalbum, name, cover, artist) OVERRIDING SYSTEM VALUE VALUES (5, 'Barbarossa', '1XjENKcGg1SZTKWLwpwVI2qgAMvALM_fO', 'JackSparrow');
+INSERT INTO public.albums (idalbum, name, cover, artist) OVERRIDING SYSTEM VALUE VALUES (7, 'Riding Hard', '1XjENKcGg1SZTKWLwpwVI2qgAMvALM_fO', 'JackSparrow');
 
 
 --
--- TOC entry 3001 (class 0 OID 17436)
+-- TOC entry 3006 (class 0 OID 16840)
 -- Dependencies: 203
 -- Data for Name: artists; Type: TABLE DATA; Schema: public; Owner: admin
 --
@@ -273,35 +304,43 @@ ALTER TABLE public.users OWNER TO admin;
 INSERT INTO public.artists (username) VALUES ('ricc');
 INSERT INTO public.artists (username) VALUES ('coms');
 INSERT INTO public.artists (username) VALUES ('test');
+INSERT INTO public.artists (username) VALUES ('Noemi01');
 INSERT INTO public.artists (username) VALUES ('JackSparrow');
 
 
 --
--- TOC entry 3002 (class 0 OID 17439)
+-- TOC entry 3007 (class 0 OID 16843)
 -- Dependencies: 204
 -- Data for Name: belong; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
+INSERT INTO public.belong (song, genre) VALUES (20, 'Rock');
+INSERT INTO public.belong (song, genre) VALUES (22, 'Rock');
+INSERT INTO public.belong (song, genre) VALUES (23, 'Metal');
 
 
 --
--- TOC entry 3003 (class 0 OID 17442)
+-- TOC entry 3008 (class 0 OID 16846)
 -- Dependencies: 205
 -- Data for Name: contains; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
+INSERT INTO public.contains (song, list) VALUES (22, 21);
 
 
 --
--- TOC entry 3004 (class 0 OID 17445)
+-- TOC entry 3009 (class 0 OID 16849)
 -- Dependencies: 206
 -- Data for Name: creates; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
+INSERT INTO public.creates (song, username) VALUES (20, 'JackSparrow');
+INSERT INTO public.creates (song, username) VALUES (22, 'JackSparrow');
+INSERT INTO public.creates (song, username) VALUES (23, 'JackSparrow');
 
 
 --
--- TOC entry 3005 (class 0 OID 17448)
+-- TOC entry 3010 (class 0 OID 16852)
 -- Dependencies: 207
 -- Data for Name: genres; Type: TABLE DATA; Schema: public; Owner: admin
 --
@@ -317,31 +356,38 @@ INSERT INTO public.genres (name) VALUES ('Latin');
 
 
 --
--- TOC entry 3006 (class 0 OID 17451)
+-- TOC entry 3011 (class 0 OID 16855)
 -- Dependencies: 208
 -- Data for Name: normallisteners; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
+INSERT INTO public.normallisteners (username) VALUES ('io');
+INSERT INTO public.normallisteners (username) VALUES ('Ale');
 
 
 --
--- TOC entry 3007 (class 0 OID 17454)
+-- TOC entry 3012 (class 0 OID 16858)
 -- Dependencies: 209
 -- Data for Name: normalsongs; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
+INSERT INTO public.normalsongs (song) VALUES (22);
+INSERT INTO public.normalsongs (song) VALUES (23);
 
 
 --
--- TOC entry 3008 (class 0 OID 17457)
+-- TOC entry 3013 (class 0 OID 16861)
 -- Dependencies: 210
 -- Data for Name: playlists; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
+INSERT INTO public.playlists (name, idlist, creationdate, author) OVERRIDING SYSTEM VALUE VALUES ('Stefano', 19, '2022-09-05', 'Stefano');
+INSERT INTO public.playlists (name, idlist, creationdate, author) OVERRIDING SYSTEM VALUE VALUES ('Panda', 20, '2022-09-06', 'Ale');
+INSERT INTO public.playlists (name, idlist, creationdate, author) OVERRIDING SYSTEM VALUE VALUES ('Alfa', 21, '2022-09-13', 'JackSparrow');
 
 
 --
--- TOC entry 3009 (class 0 OID 17460)
+-- TOC entry 3014 (class 0 OID 16864)
 -- Dependencies: 211
 -- Data for Name: premiumlisteners; Type: TABLE DATA; Schema: public; Owner: admin
 --
@@ -351,28 +397,27 @@ INSERT INTO public.premiumlisteners (username) VALUES ('Stefano');
 
 
 --
--- TOC entry 3010 (class 0 OID 17463)
+-- TOC entry 3015 (class 0 OID 16867)
 -- Dependencies: 212
 -- Data for Name: premiumsongs; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
+INSERT INTO public.premiumsongs (song) VALUES (20);
 
 
 --
--- TOC entry 3011 (class 0 OID 17466)
+-- TOC entry 3016 (class 0 OID 16870)
 -- Dependencies: 213
 -- Data for Name: songs; Type: TABLE DATA; Schema: public; Owner: admin
 --
 
-INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Testing', 2, NULL, '1XjENKcGg1SZTKWLwpwVI2qgAMvALM_fO', '2022-08-10', '1HMKIjUQ5g_ABZVPfVGNWh0q2o10aYoK9');
-INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Freedom', 3, NULL, '1YY7aBmn4EIWusCfEQyxKoiczuE6szLgi', '2021-12-03', '1bqeJB6_UWzQc4tzNUD0e-q955y2q1YJ0');
-INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Firework', 4, NULL, '14kOIeeZeSvcpol9hLe3ivYPdmIrTQcL2', '2022-04-22', '18VMmQ4JIsbmiehEh10O8Jv4rC8otV3fL');
-INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Godzilla', 5, NULL, '1pzTQQR0Sj1N8psMHnWO4X8oDvxmkwCYw', '2022-04-22', '15Z4Vr26WLIHPqV8SoIWp2rVFNZPa-39u');
-INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Monster', 6, NULL, '1pzTQQR0Sj1N8psMHnWO4X8oDvxmkwCYw', '2022-04-05', '1bWAzd5sOU38zU8ikl8U36534jq2Ycw93');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Pirate', 20, NULL, '1XjENKcGg1SZTKWLwpwVI2qgAMvALM_fO', '2022-09-01', '1HMKIjUQ5g_ABZVPfVGNWh0q2o10aYoK9');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Riding', 22, 7, '1XjENKcGg1SZTKWLwpwVI2qgAMvALM_fO', '2022-09-01', '1HMKIjUQ5g_ABZVPfVGNWh0q2o10aYoK9');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Neil', 23, 5, '1XjENKcGg1SZTKWLwpwVI2qgAMvALM_fO', '2022-09-01', '1HMKIjUQ5g_ABZVPfVGNWh0q2o10aYoK9');
 
 
 --
--- TOC entry 3013 (class 0 OID 17471)
+-- TOC entry 3018 (class 0 OID 16875)
 -- Dependencies: 215
 -- Data for Name: statistics; Type: TABLE DATA; Schema: public; Owner: admin
 --
@@ -380,7 +425,7 @@ INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVER
 
 
 --
--- TOC entry 3014 (class 0 OID 17474)
+-- TOC entry 3019 (class 0 OID 16878)
 -- Dependencies: 216
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: admin
 --
@@ -390,20 +435,41 @@ INSERT INTO public.users (username, name, surname, birthdate, password, gender, 
 INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('ricc', 'riccardo', 'comellato', '2022-08-25', 'pbkdf2:sha256:260000$jaeoPJb6L4dmdqmV$e91cee6a9339297fcb5a66306a8d03974777a962aa1849f776681d57ae2b1555', 'M', 123456, 'aaa@aaa.com');
 INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('coms', 'riccardo', 'comellato', '2022-08-23', 'pbkdf2:sha256:260000$e4IjMXr15ukup1pf$242af63f2c2ba6631e796a1e520a4ae6a1e49d95c5a16d87a1bca58f2a30b001', 'M', 123987, 'a@a.com');
 INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('test', 'test', 'test', '2022-08-01', 'pbkdf2:sha256:260000$nNvr0RKWpYFY8DIG$0a574b7d5ba04c3ed04e79a5028a43616f986adedac4d598cd6522f7c08b3e30', 'M', 123456, 'testing@gmail.com');
-INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('JackSparrow', 'Jack', 'Sparrow', '2022-08-01', 'pbkdf2:sha256:260000$5l4Qt3pxugOK46FB$528f8fba8f2d01bc3562fbf3741d903c403ba578510220390800bb5d3319bf70', 'M', 123456, 'Captain@Jack.Sparrow');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('io', 'io', 'io', '2022-09-21', 'pbkdf2:sha256:260000$UvBNFquhuyxawnP7$667b3bd6e4093e6dfff35a38ead1787f971070b410b81a399a09555931cfc414', 'M', 456456, 'r@r.com');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('Noemi01', 'Noemi Maria', 'Pastrello', '2001-05-30', 'pbkdf2:sha256:260000$0J30PzsxLismpMMa$1b36e5f807ac0906e02326653b3d737997b3602c717d0b36c2b726b9aff9ea9f', 'F', 377220, 'noemimaria.pastrello@gmail.com');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('Ale', 'Alessia ', 'Scaggiante ', '2002-04-08', 'pbkdf2:sha256:260000$DkcyinLpORTAWDih$b0447aa80d251cf54a80617ce68e59896b7331e52bb6c0f53204a32dc41edfd1', 'F', 345646, 'alessiascaggianteee@gmail.com');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('JackSparrow', 'Jack', 'Sparrow', '2022-09-01', 'pbkdf2:sha256:260000$OlVuiYEi4Ta6DAD2$a4985a83a3e98e85373e29b5888ac22bb4f68732fbe09ec397c068c3360f9850', 'M', 123456, 'Captain@Jack.Sparrow');
 
 
 --
--- TOC entry 3035 (class 0 OID 0)
+-- TOC entry 3042 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: albums_idalbum_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
+--
+
+SELECT pg_catalog.setval('public.albums_idalbum_seq', 8, true);
+
+
+--
+-- TOC entry 3043 (class 0 OID 0)
+-- Dependencies: 217
+-- Name: playlists_idlist_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
+--
+
+SELECT pg_catalog.setval('public.playlists_idlist_seq', 21, true);
+
+
+--
+-- TOC entry 3044 (class 0 OID 0)
 -- Dependencies: 214
 -- Name: songs_idsong_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
 --
 
-SELECT pg_catalog.setval('public.songs_idsong_seq', 6, true);
+SELECT pg_catalog.setval('public.songs_idsong_seq', 23, true);
 
 
 --
--- TOC entry 2832 (class 2606 OID 17480)
+-- TOC entry 2837 (class 2606 OID 16884)
 -- Name: albums albums_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -412,7 +478,7 @@ ALTER TABLE ONLY public.albums
 
 
 --
--- TOC entry 2834 (class 2606 OID 17482)
+-- TOC entry 2839 (class 2606 OID 16886)
 -- Name: artists artists_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -421,7 +487,7 @@ ALTER TABLE ONLY public.artists
 
 
 --
--- TOC entry 2836 (class 2606 OID 17484)
+-- TOC entry 2841 (class 2606 OID 16888)
 -- Name: belong belong_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -430,7 +496,7 @@ ALTER TABLE ONLY public.belong
 
 
 --
--- TOC entry 2838 (class 2606 OID 17486)
+-- TOC entry 2843 (class 2606 OID 16890)
 -- Name: contains contains_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -439,7 +505,7 @@ ALTER TABLE ONLY public.contains
 
 
 --
--- TOC entry 2840 (class 2606 OID 17488)
+-- TOC entry 2845 (class 2606 OID 16892)
 -- Name: creates creates_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -448,7 +514,7 @@ ALTER TABLE ONLY public.creates
 
 
 --
--- TOC entry 2842 (class 2606 OID 17490)
+-- TOC entry 2847 (class 2606 OID 16894)
 -- Name: genres genres_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -457,7 +523,7 @@ ALTER TABLE ONLY public.genres
 
 
 --
--- TOC entry 2844 (class 2606 OID 17492)
+-- TOC entry 2849 (class 2606 OID 16896)
 -- Name: normallisteners normallisteners_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -466,7 +532,7 @@ ALTER TABLE ONLY public.normallisteners
 
 
 --
--- TOC entry 2846 (class 2606 OID 17494)
+-- TOC entry 2851 (class 2606 OID 16898)
 -- Name: normalsongs normalsongs_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -475,7 +541,7 @@ ALTER TABLE ONLY public.normalsongs
 
 
 --
--- TOC entry 2848 (class 2606 OID 17496)
+-- TOC entry 2853 (class 2606 OID 16900)
 -- Name: playlists playlists_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -484,7 +550,7 @@ ALTER TABLE ONLY public.playlists
 
 
 --
--- TOC entry 2850 (class 2606 OID 17498)
+-- TOC entry 2855 (class 2606 OID 16902)
 -- Name: premiumlisteners premiumlisteners_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -493,7 +559,7 @@ ALTER TABLE ONLY public.premiumlisteners
 
 
 --
--- TOC entry 2852 (class 2606 OID 17500)
+-- TOC entry 2857 (class 2606 OID 16904)
 -- Name: premiumsongs premiumsongs_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -502,7 +568,7 @@ ALTER TABLE ONLY public.premiumsongs
 
 
 --
--- TOC entry 2854 (class 2606 OID 17502)
+-- TOC entry 2859 (class 2606 OID 16906)
 -- Name: songs songs_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -511,7 +577,7 @@ ALTER TABLE ONLY public.songs
 
 
 --
--- TOC entry 2856 (class 2606 OID 17504)
+-- TOC entry 2861 (class 2606 OID 16908)
 -- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -520,7 +586,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 2858 (class 2606 OID 17506)
+-- TOC entry 2863 (class 2606 OID 16910)
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -529,7 +595,7 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 2859 (class 2606 OID 17507)
+-- TOC entry 2864 (class 2606 OID 16911)
 -- Name: albums albums_artist_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -538,7 +604,7 @@ ALTER TABLE ONLY public.albums
 
 
 --
--- TOC entry 2860 (class 2606 OID 17512)
+-- TOC entry 2865 (class 2606 OID 16916)
 -- Name: artists artists_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -547,7 +613,7 @@ ALTER TABLE ONLY public.artists
 
 
 --
--- TOC entry 2861 (class 2606 OID 17517)
+-- TOC entry 2866 (class 2606 OID 16921)
 -- Name: belong belong_genre_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -556,7 +622,7 @@ ALTER TABLE ONLY public.belong
 
 
 --
--- TOC entry 2862 (class 2606 OID 17522)
+-- TOC entry 2867 (class 2606 OID 16926)
 -- Name: belong belong_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -565,7 +631,7 @@ ALTER TABLE ONLY public.belong
 
 
 --
--- TOC entry 2863 (class 2606 OID 17527)
+-- TOC entry 2868 (class 2606 OID 16931)
 -- Name: contains contains_list_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -574,7 +640,7 @@ ALTER TABLE ONLY public.contains
 
 
 --
--- TOC entry 2864 (class 2606 OID 17532)
+-- TOC entry 2869 (class 2606 OID 16936)
 -- Name: contains contains_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -583,7 +649,7 @@ ALTER TABLE ONLY public.contains
 
 
 --
--- TOC entry 2865 (class 2606 OID 17537)
+-- TOC entry 2870 (class 2606 OID 16941)
 -- Name: creates creates_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -592,7 +658,7 @@ ALTER TABLE ONLY public.creates
 
 
 --
--- TOC entry 2866 (class 2606 OID 17542)
+-- TOC entry 2871 (class 2606 OID 16946)
 -- Name: creates creates_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -601,7 +667,7 @@ ALTER TABLE ONLY public.creates
 
 
 --
--- TOC entry 2867 (class 2606 OID 17547)
+-- TOC entry 2872 (class 2606 OID 16951)
 -- Name: normallisteners normallisteners_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -610,7 +676,7 @@ ALTER TABLE ONLY public.normallisteners
 
 
 --
--- TOC entry 2868 (class 2606 OID 17552)
+-- TOC entry 2873 (class 2606 OID 16956)
 -- Name: normalsongs normalsongs_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -619,7 +685,7 @@ ALTER TABLE ONLY public.normalsongs
 
 
 --
--- TOC entry 2869 (class 2606 OID 17557)
+-- TOC entry 2874 (class 2606 OID 16961)
 -- Name: playlists playlists_author_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -628,7 +694,7 @@ ALTER TABLE ONLY public.playlists
 
 
 --
--- TOC entry 2870 (class 2606 OID 17562)
+-- TOC entry 2875 (class 2606 OID 16966)
 -- Name: premiumlisteners premiumlisteners_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -637,7 +703,7 @@ ALTER TABLE ONLY public.premiumlisteners
 
 
 --
--- TOC entry 2871 (class 2606 OID 17567)
+-- TOC entry 2876 (class 2606 OID 16971)
 -- Name: premiumsongs premiumsongs_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -646,7 +712,7 @@ ALTER TABLE ONLY public.premiumsongs
 
 
 --
--- TOC entry 2872 (class 2606 OID 17572)
+-- TOC entry 2877 (class 2606 OID 16976)
 -- Name: songs songs_album_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -655,7 +721,7 @@ ALTER TABLE ONLY public.songs
 
 
 --
--- TOC entry 2873 (class 2606 OID 17577)
+-- TOC entry 2878 (class 2606 OID 16981)
 -- Name: statistics statistics_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
 --
 
@@ -664,7 +730,7 @@ ALTER TABLE ONLY public.statistics
 
 
 --
--- TOC entry 3021 (class 0 OID 0)
+-- TOC entry 3028 (class 0 OID 0)
 -- Dependencies: 202
 -- Name: TABLE albums; Type: ACL; Schema: public; Owner: admin
 --
@@ -676,7 +742,7 @@ GRANT SELECT,DELETE ON TABLE public.albums TO delete_manager;
 
 
 --
--- TOC entry 3022 (class 0 OID 0)
+-- TOC entry 3029 (class 0 OID 0)
 -- Dependencies: 203
 -- Name: TABLE artists; Type: ACL; Schema: public; Owner: admin
 --
@@ -689,7 +755,7 @@ GRANT SELECT,DELETE ON TABLE public.artists TO delete_manager;
 
 
 --
--- TOC entry 3023 (class 0 OID 0)
+-- TOC entry 3030 (class 0 OID 0)
 -- Dependencies: 204
 -- Name: TABLE belong; Type: ACL; Schema: public; Owner: admin
 --
@@ -701,7 +767,7 @@ GRANT SELECT,DELETE ON TABLE public.belong TO delete_manager;
 
 
 --
--- TOC entry 3024 (class 0 OID 0)
+-- TOC entry 3031 (class 0 OID 0)
 -- Dependencies: 205
 -- Name: TABLE contains; Type: ACL; Schema: public; Owner: admin
 --
@@ -714,7 +780,7 @@ GRANT SELECT,DELETE ON TABLE public.contains TO delete_manager;
 
 
 --
--- TOC entry 3025 (class 0 OID 0)
+-- TOC entry 3032 (class 0 OID 0)
 -- Dependencies: 206
 -- Name: TABLE creates; Type: ACL; Schema: public; Owner: admin
 --
@@ -726,7 +792,7 @@ GRANT SELECT,DELETE ON TABLE public.creates TO delete_manager;
 
 
 --
--- TOC entry 3026 (class 0 OID 0)
+-- TOC entry 3033 (class 0 OID 0)
 -- Dependencies: 207
 -- Name: TABLE genres; Type: ACL; Schema: public; Owner: admin
 --
@@ -737,7 +803,7 @@ GRANT SELECT ON TABLE public.genres TO listeners;
 
 
 --
--- TOC entry 3027 (class 0 OID 0)
+-- TOC entry 3034 (class 0 OID 0)
 -- Dependencies: 208
 -- Name: TABLE normallisteners; Type: ACL; Schema: public; Owner: admin
 --
@@ -748,7 +814,7 @@ GRANT SELECT,DELETE ON TABLE public.normallisteners TO delete_manager;
 
 
 --
--- TOC entry 3028 (class 0 OID 0)
+-- TOC entry 3035 (class 0 OID 0)
 -- Dependencies: 209
 -- Name: TABLE normalsongs; Type: ACL; Schema: public; Owner: admin
 --
@@ -760,7 +826,7 @@ GRANT SELECT,DELETE ON TABLE public.normalsongs TO delete_manager;
 
 
 --
--- TOC entry 3029 (class 0 OID 0)
+-- TOC entry 3036 (class 0 OID 0)
 -- Dependencies: 210
 -- Name: TABLE playlists; Type: ACL; Schema: public; Owner: admin
 --
@@ -772,7 +838,7 @@ GRANT SELECT,DELETE ON TABLE public.playlists TO delete_manager;
 
 
 --
--- TOC entry 3030 (class 0 OID 0)
+-- TOC entry 3037 (class 0 OID 0)
 -- Dependencies: 211
 -- Name: TABLE premiumlisteners; Type: ACL; Schema: public; Owner: admin
 --
@@ -783,7 +849,7 @@ GRANT SELECT,DELETE ON TABLE public.premiumlisteners TO delete_manager;
 
 
 --
--- TOC entry 3031 (class 0 OID 0)
+-- TOC entry 3038 (class 0 OID 0)
 -- Dependencies: 212
 -- Name: TABLE premiumsongs; Type: ACL; Schema: public; Owner: admin
 --
@@ -794,7 +860,7 @@ GRANT SELECT,DELETE ON TABLE public.premiumsongs TO delete_manager;
 
 
 --
--- TOC entry 3032 (class 0 OID 0)
+-- TOC entry 3039 (class 0 OID 0)
 -- Dependencies: 213
 -- Name: TABLE songs; Type: ACL; Schema: public; Owner: admin
 --
@@ -806,7 +872,7 @@ GRANT SELECT,DELETE ON TABLE public.songs TO delete_manager;
 
 
 --
--- TOC entry 3033 (class 0 OID 0)
+-- TOC entry 3040 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: TABLE statistics; Type: ACL; Schema: public; Owner: admin
 --
@@ -818,7 +884,7 @@ GRANT SELECT,DELETE ON TABLE public.statistics TO delete_manager;
 
 
 --
--- TOC entry 3034 (class 0 OID 0)
+-- TOC entry 3041 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: TABLE users; Type: ACL; Schema: public; Owner: admin
 --
@@ -830,7 +896,7 @@ GRANT SELECT,DELETE,UPDATE ON TABLE public.users TO listeners;
 GRANT SELECT,DELETE ON TABLE public.users TO delete_manager;
 
 
--- Completed on 2022-08-28 13:59:49 UTC
+-- Completed on 2022-09-15 21:44:53 UTC
 
 --
 -- PostgreSQL database dump complete

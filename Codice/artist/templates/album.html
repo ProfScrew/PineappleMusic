@@ -10,7 +10,9 @@
         <div class="row">
             <div class="col-3"></div>
             <div class="col-6">
-                <h1>Insert Album {{user.username}}</h1>
+                <h1>Album {{user.username}}</h1>
+                <br>
+                <h4>Create New Album</h4>
                 <form method="POST" action="">
                     {{ form.csrf_token }}
                     <hr class="h-color-black mx-2">   
@@ -43,6 +45,8 @@
             </div>
             <div class="col-3"></div>
 
+            <br>
+            <h4>Manage Album</h4>
             <div class="col-12 table-responsive">
                 <table id="playlisttable" class="table table-striped" style="width:100%">
                     <thead class="table-dark">

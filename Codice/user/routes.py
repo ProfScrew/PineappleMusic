@@ -4,6 +4,7 @@ from flask_login import login_required, logout_user, current_user
 from Codice.auth.routes import auth
 from Codice.database import *
 from Codice.user.forms import CrediCardForm, ModifyProfileForm
+from Codice.music.forms import GetSongsGenres
 from Codice.models import *
 
 # Blueprint Configuration
@@ -14,7 +15,8 @@ user = Blueprint('user', __name__, static_folder='static',
 @user.route('/home', methods=['GET'])
 @login_required
 def home():
-    return render_template("home.html", title="Home", user=current_user)
+    form_genre=GetSongsGenres()
+    return render_template("home.html", title="Home", form_genre=form_genre,user=current_user)
 
 
 @user.route('/profile', methods=['GET', 'POST'])
