@@ -36,7 +36,7 @@
     
                     
                     <!-- Save changes button-->
-                    {{ form.submit(class="btn btn-dark")}}
+                    {{ form.submit(class="btn btn-success")}}
                 </form>
     
                 
@@ -61,12 +61,12 @@
                             <form method="POST" action="{{ url_for('artist.modifyalbum') }}">
                                 {{ modify_album.csrf_token }}
                                 {{modify_album.idalbum(value=item.idalbum)}}
-                                <td>{{modify_album.submit(class="btn btn-success",value="Modify")}}</td>
+                                <td>{{modify_album.submit(class="btn btn-primary",value="Modify")}}</td>
                             </form>
                             <form method="POST" action="{{ url_for('artist.deletealbum') }}">
                                 {{ delete_album.csrf_token }}
                                 {{delete_album.idalbum(value=item.idalbum)}}
-                                <td>{{delete_album.submit(class="btn btn-warning",value="Delete")}}</td>
+                                <td>{{delete_album.submit(class="btn btn-danger",value="Delete")}}</td>
                             </form>
                         </tr>
                         {% endfor %}

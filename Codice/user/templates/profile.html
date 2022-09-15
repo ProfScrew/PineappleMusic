@@ -82,7 +82,7 @@
             </form>
         
             <form method="POST" action="{{ url_for('user.delete') }}">
-                <button type="submit" class="btn btn-warning">Delete Account</button>
+                <button type="submit" class="btn btn-danger">Delete Account</button>
             </form>
 
             {% for message in get_flashed_messages()%}
