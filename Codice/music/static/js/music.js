@@ -13,6 +13,40 @@ $('#playpause').on('click', function () {
 
 });
 
+$('#backsong').on('click', function () {
+    if (typeof ($('#playerhidden').attr('src')) != "undefined" && $('#playerhidden').attr('src').length > 0){
+        backsong=$("#songnumber").val()-1;
+        if(backsong<0)
+            backsong=$("#maxsongnumber").val()-1;
+        
+        $("#coverplayer").attr("src", "https://drive.google.com/uc?export=view&id=" +$($($("#listsong[value='"+backsong+"']").parent().parent()).find("input")[0]).val());
+        $("#title-song").text($($($("#listsong[value='"+backsong+"']").parent().parent()).find("td")[2]).text());
+        $("#artist-song").text($($($("#listsong[value='"+backsong+"']").parent().parent()).find("td")[1]).text());
+        $("#songnumber").val(backsong);
+        $("#playerhidden").attr("src", "https://docs.google.com/uc?export=open&id=" + $($($("#listsong[value='"+backsong+"']").parent().parent()).find("input")[2]).val());
+/*
+        alert($($($("#listsong[value='"+backsong+"']").parent().parent()).find("input")[0]).val());
+        alert($($($("#listsong[value='"+backsong+"']").parent().parent()).find("input")[2]).val());
+        alert($($($("#listsong[value='"+backsong+"']").parent().parent()).find("td")[1]).text());
+        alert($($($("#listsong[value='"+backsong+"']").parent().parent()).find("td")[2]).text());*/
+    }
+});
+
+$('#nextsong').on('click', function () {
+    if (typeof ($('#playerhidden').attr('src')) != "undefined" && $('#playerhidden').attr('src').length > 0){
+        nextsong=$("#songnumber").val();
+        nextsong++;
+        if(nextsong==$("#maxsongnumber").val())
+            nextsong=0;
+
+        $("#coverplayer").attr("src", "https://drive.google.com/uc?export=view&id=" +$($($("#listsong[value='"+nextsong+"']").parent().parent()).find("input")[0]).val());
+        $("#title-song").text($($($("#listsong[value='"+nextsong+"']").parent().parent()).find("td")[2]).text());
+        $("#artist-song").text($($($("#listsong[value='"+nextsong+"']").parent().parent()).find("td")[1]).text());
+        $("#songnumber").val(nextsong);
+        $("#playerhidden").attr("src", "https://docs.google.com/uc?export=open&id=" + $($($("#listsong[value='"+nextsong+"']").parent().parent()).find("input")[2]).val());
+    }
+});
+
 $('#repeatsong').on('click', function () {
     if (typeof ($('#playerhidden').attr('src')) != "undefined" && $('#playerhidden').attr('src').length > 0) {
         document.getElementById("playerhidden").currentTime = 0;

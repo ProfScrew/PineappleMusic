@@ -21,6 +21,7 @@
                 $("#coverplayer").attr("src", "https://drive.google.com/uc?export=view&id=" + $($(this).find("input")[0]).val());
                 $("#title-song").text(data[2]);
                 $("#artist-song").text(data[1]);
+                $("#songnumber").val($($(this).find("input")[3]).val());
                 $("#playerhidden").attr("src", "https://docs.google.com/uc?export=open&id=" + $($(this).find("input")[2]).val());
                 $("#playerhidden").trigger("play");
                 $('#playpause').attr('class', 'fa fa-light fa-pause');
@@ -85,6 +86,7 @@
     <audio id="playerhidden" controls autoplay hidden>
         <source type="audio/mpeg">
     </audio>
+    <input type="hidden" id="songnumber">
 
     <div class="col-12 table-responsive">
         <table id="example" class="table table-striped" style="width:100%">
@@ -104,12 +106,15 @@
                 </tr>
             </thead>
             <tbody>
+                {% set i = namespace(value=0) %}
                 {% for item in listsong %}
                 <tr class="table-light">
                     <td><img src="https://drive.google.com/uc?export=view&id={{item[0].cover}}" height="50" width="50">
                         <input type="hidden" value="{{item[0].cover}}">
                         <input type="hidden" value="{{item[0].idsong}}">
                         <input type="hidden" value="{{item[0].content}}">
+                        <input type="hidden" id='listsong' value="{{i.value}}">
+                        {% set i.value = i.value + 1 %}
                     </td>
                     <input type="hidden" value="{{item[0].cover}}">
                     <input type="hidden" value="{{item[0].idsong}}">
@@ -144,6 +149,7 @@
 
     </div>
 </div>
+<input type="hidden" id="maxsongnumber" value="{{i.value}}">
 
 
 <div class="music-player col-10">
@@ -163,9 +169,9 @@
     </div>
     <div class="progress-controller">
         <div class="control-buttons">
-            <i class="fas fa-step-backward"></i>
+            <i class="fas fa-step-backward" id="backsong"></i>
             <i class="play-pause fas fa-play" id="playpause"></i>
-            <i class="fas fa-step-forward"></i>
+            <i class="fas fa-step-forward" id="nextsong"></i>
             <i class="fas fa-undo-alt" id="repeatsong"></i>
         </div>
         <div class="progress-container">
