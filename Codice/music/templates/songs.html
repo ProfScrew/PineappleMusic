@@ -19,8 +19,8 @@
             if (text != "DIV" && text != "BUTTON" && text != "INPUT") {
                 var data = table.row(this).data();
                 $("#coverplayer").attr("src", "https://drive.google.com/uc?export=view&id=" + $($(this).find("input")[0]).val());
-                $("#title-song").text(data[4]);
-                $("#artist-song").text(data[3]);
+                $("#title-song").text(data[2]);
+                $("#artist-song").text(data[1]);
                 $("#playerhidden").attr("src", "https://docs.google.com/uc?export=open&id=" + $($(this).find("input")[2]).val());
                 $("#playerhidden").trigger("play");
                 $('#playpause').attr('class', 'fa fa-light fa-pause');
