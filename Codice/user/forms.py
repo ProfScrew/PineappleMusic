@@ -1,5 +1,3 @@
-from calendar import month
-from unicodedata import name
 from flask_wtf import FlaskForm
 from wtforms import  StringField, PasswordField,DateField,SubmitField,EmailField, SelectField
 from wtforms.validators import DataRequired, Length, Email, Optional

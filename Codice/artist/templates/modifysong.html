@@ -18,13 +18,20 @@
     
                     <div class="row gx-3 mb-3">
                             <!-- Form Group (organization name)-->
+                        {{ form.idsong(value=song.idsong)}}
+
     
                         {{ form.name.label(class="form-label")}} 
-                        {{ form.name(class="form-control")}}
+                        {{ form.name(class="form-control", value=song.name)}}
     
                             <!-- Form Group (location)-->
                     </div>
-    
+                    
+                    <div>
+                        <img src="https://drive.google.com/uc?export=view&id={{song.cover}}" height="200" width="200">
+                    </div>
+
+
                     <div class="row gx-3 mb-3">
                         <!-- Form Group (organization name)-->
     
@@ -33,6 +40,14 @@
     
                         <!-- Form Group (location)-->
                     </div>
+
+                    <div class="row gx-3 mb-3">
+                        <audio controls>
+                            <source src="https://drive.google.com/uc?export=view&id={{song.content}}" type="audio/mpeg"> 
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
+                    
                     <div class="row gx-3 mb-3">
                         <!-- Form Group (organization name)-->
     
@@ -63,7 +78,7 @@
                             <!-- Form Group (phone number)-->
                         <div class="col-md-6">
                             {{ form.release_date.label(class="small mb-1")}} 
-                            {{ form.release_date(class="form-control")}}
+                            {{ form.release_date(class="form-control", value=song.releasedate)}}
                         </div>
                             <!-- Form Group (birthday)-->
                         <div class="col-md-6">
@@ -77,41 +92,7 @@
                 </form>
                 
             </div>
-            <div class="col-3"></div>
-
-            <br>
-            <h4>Manage Song</h4>
-            <div class="col-12 table-responsive">
-                <table id="playlisttable" class="table table-striped" style="width:100%">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Cover</th>
-                            <th>Name</th>
-                            <th>Modify Song</th>
-                            <th>Delete Song</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in songs %}
-                        <tr class="table-light">
-                            <td><img src="https://drive.google.com/uc?export=view&id={{item.cover}}" height="50" width="50"></td>
-                            <td>{{item.name}}</td>
-                            <form method="POST" action="{{ url_for('artist.modifysong') }}">
-                                {{ modify_song.csrf_token }}
-                                {{modify_song.idsong(value=item.idsong)}}
-                                <td>{{modify_song.submit(class="btn btn-primary",value="Modify")}}</td>
-                            </form>
-                            <form method="POST" action="{{ url_for('artist.deletesong') }}">
-                                {{ delete_song.csrf_token }}
-                                {{delete_song.idsong(value=item.idsong)}}
-                                <td>{{delete_song.submit(class="btn btn-danger",value="Delete")}}</td>
-                            </form>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-
-            </div>
+            
             <div class="col-6 container">
             {% for message in get_flashed_messages()%}
                     <div class="alert alert-primary alert-dismissible fade show" role="alert">

@@ -66,3 +66,27 @@ class ModifyAlbum(FlaskForm):
     submit = SubmitField("Modify")
     
 
+
+class ModifySong(FlaskForm):
+    idsong = HiddenField("id")   
+    submit = SubmitField("Modify")
+    
+class ModifySongForm(FlaskForm): #da modificare
+    
+    idsong = HiddenField("id")
+    name = StringField("Name", validators=[DataRequired(),Length(max=40)])
+    cover = StringField("Cover", validators=[Optional(),Length(max=120)])
+    content=StringField("Content", validators=[Optional(),Length(max=120)])
+    genre=SelectField("Genre", validators=None)
+    album = SelectField("Album", validators=None)
+    
+    release_date=DateField("Release Date", validators=[DataRequired()])
+    premium = SelectField("Premium", choices=['','The song will be premium',
+                                              'The song will be available to everyone'],
+                          validate_choice=True )
+    
+    submit = SubmitField("Upload")
+    
+class DeleteSong(FlaskForm):
+    idsong = HiddenField("id")
+    submit = SubmitField("Delete")

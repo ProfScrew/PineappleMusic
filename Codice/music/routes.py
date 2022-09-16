@@ -90,3 +90,8 @@ def getsongfromgenre():
         
         return render_template("songs.html",user=current_user,page_name="Search Songs",add_to_playlist=True,
                             listsong=song,playlist=playlist,form=form)
+
+@login_required
+@music.route('/getsongfromgenre', methods=['GET'])
+def getsongfromgenre_redirect():
+    return redirect(url_for('user.home'))

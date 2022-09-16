@@ -82,6 +82,7 @@
             </form>
         
             <form method="POST" action="{{ url_for('user.delete') }}">
+                {{ form.csrf_token }}
                 <button type="submit" class="btn btn-danger">Delete Account</button>
             </form>
 

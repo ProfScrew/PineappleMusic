@@ -1,12 +1,6 @@
 {% extends 'menu.html' %}
 {% block js %}
-<script>
-  $('#test').DataTable({});
-  $('#test2').DataTable({});
-  $(".card").click(function () {
-    $(this).find("form").submit();
-  });
-</script>
+<script type="text/javascript" src="{{ url_for('user.static', filename='js/script.js')}}"></script>
 {% endblock %}
 
 {% block content %}

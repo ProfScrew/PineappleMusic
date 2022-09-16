@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required, logout_user, current_user
 
-from Codice.auth.routes import auth
 from Codice.database import *
 from Codice.user.forms import CrediCardForm, ModifyProfileForm
 from Codice.music.forms import GetSongsGenres
@@ -38,7 +37,6 @@ def profile():
             return redirect(url_for('user.profile'))
         else:
             flash('Update Failed')
-
     return render_template("profile.html", title="Profile", user=current_user, form=form)
 
 

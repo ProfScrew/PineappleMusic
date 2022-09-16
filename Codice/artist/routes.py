@@ -22,17 +22,20 @@ def statistics():
 @login_required
 def song():
     form = SongForm()
+    modify_song=ModifySong()
+    delete_song=DeleteSong()
+    
+    
     form.genre.choices = Genre.list
     
     #albums managment
     list_albums = Album.get_albums(current_user.username)
     list_albums_names = Album.get_albums_name(current_user.username,list_albums)
     form.album.choices = list_albums_names
+    songs= Song.get_songs_artist(current_user.username)
     
     if form.validate_on_submit():
-        flash("Valid :/")
         if Song.check_links(form.cover.data, form.content.data):
-            
             if (form.cover.data == None) and (form.album.data == ''):
                 flash("Insert a cover.")
             else:
@@ -42,15 +45,13 @@ def song():
                     if form.premium.data == '':
                         flash("Select Exclusivity")
                     else:
-                        if form.album.data == '':
-                            #no album
-                            if Artist.insert_song(form.name.data, None, form.cover.data, form.release_date.data.split("/")[5],
+                        if form.album.data == '':#no album
+                            if Artist.insert_song(form.name.data, None, form.cover.data.split("/")[5], form.release_date.data,
                                             form.content.data.split("/")[5],current_user.username,form.genre.data,form.premium.data):
                                 flash("Upload Succesfull")
                             else:
                                 flash("Upload Failed")
-                        else:
-                            #album
+                        else:#album
                             album = Album.extract_id_album(list_albums,form.album.data)
                             cover = Album.extract_cover_album(list_albums, form.album.data)
                             if album == None or cover == None:
@@ -62,8 +63,8 @@ def song():
                                 else:
                                     flash("Upload Failed")
         else:
-            flash("Cover or content links are invalid")  
-    return render_template('song.html', form = form, user = current_user)
+            flash("Cover or content links are invalid")
+    return render_template('song.html', form = form, user = current_user,songs=songs,modify_song=modify_song,delete_song=delete_song)
 
 
 @artist.route('/album', methods=['GET','POST'])
@@ -129,3 +130,26 @@ def deletealbum():
             flash("Error Deleting Album.")
         #delete
     return redirect(url_for('artist.album'))
+
+@artist.route('/modifysong', methods=['GET','POST'])
+@login_required
+def modifysong():
+    song = ModifySong()
+    form = ModifySongForm()
+    song_info = Song.get_song_id(song.idsong.data)
+    
+    
+    
+    return render_template('modifysong.html', form = form, user = current_user, song = song_info)
+
+@artist.route('/deletesong', methods=['POST'])
+@login_required
+def deletesong():
+    delete_song = DeleteSong()
+    if delete_song.validate_on_submit():
+        if Song.delete_song(delete_song.idsong.data):
+            flash("Delete successful.")
+        else:
+            flash("Error song delete.")
+    return redirect(url_for('artist.song'))
+

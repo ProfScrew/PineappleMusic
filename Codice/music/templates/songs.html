@@ -8,31 +8,25 @@
         $('#example').DataTable({
             select: {
                 style: 'single'
-            },
-            'columnDefs': [
-                //hide the first and third column
-                { 'visible': false, 'targets': [1, 2, 7] }
-            ]
+            }
         });
 
         var table = $('#example').DataTable();
-
 
         $('#example tbody').on('click', 'tr', function (e) {
 
             var text = e.target.nodeName;
             if (text != "DIV" && text != "BUTTON" && text != "INPUT") {
                 var data = table.row(this).data();
-                $("#coverplayer").attr("src", "https://drive.google.com/uc?export=view&id=" + data[1]);
+                $("#coverplayer").attr("src", "https://drive.google.com/uc?export=view&id=" + $($(this).find("input")[0]).val());
                 $("#title-song").text(data[4]);
                 $("#artist-song").text(data[3]);
-                $("#playerhidden").attr("src", "https://docs.google.com/uc?export=open&id=" + data[7]);
+                $("#playerhidden").attr("src", "https://docs.google.com/uc?export=open&id=" + $($(this).find("input")[2]).val());
                 $("#playerhidden").trigger("play");
                 $('#playpause').attr('class', 'fa fa-light fa-pause');
 
                 $("#playerhidden").on('loadedmetadata', function () {
                     var audioCurrentTime = document.getElementById("playerhidden").duration;
-
                     $("#time-dur").text(convert_to_time(audioCurrentTime));
                 });
 
@@ -45,7 +39,7 @@
                         "Content-Type": "application/json"
                     },
                     url: "/artist/statistics",
-                    data: JSON.stringify({ "idsong": data[2] }),
+                    data: JSON.stringify({ "idsong": $($(this).find("input")[1]).val() }),
                     success: function (response) {
                         console.log(response);
                     },
@@ -59,13 +53,8 @@
         });
 
         $("#progress-bar-song").on("click", function (e) {
-
-
             var pos_curr = e.pageX - $("#progress-bar-song").offset().left; //Position cursor
             var size_bar = document.getElementById("progress-bar-song").offsetWidth;
-
-            /*alert(pos_curr+" "+size_bar);
-            alert(pos_curr*100/size_bar);*/
             $('#time-bar').attr('style', "width:" + pos_curr * 100 / size_bar + "%;");
             var duration = document.getElementById("playerhidden").duration;
             document.getElementById("playerhidden").currentTime = duration / 100 * pos_curr * 100 / size_bar;
@@ -74,19 +63,15 @@
 
 
         $("#progress-bar-vol").on("click", function (e) {
-
-
             var pos_curr = e.pageX - $("#progress-bar-vol").offset().left; //Position cursor
             var size_bar = document.getElementById("progress-bar-vol").offsetWidth;
-
-            /*alert(pos_curr+" "+size_bar);
-            alert(pos_curr*100/size_bar);*/
             var vol = pos_curr * 100 / size_bar;
             $('#progress-bar-vol-contr').attr('style', "width:" + parseFloat(vol.toFixed(1)) + "%;");
             document.getElementById("playerhidden").volume = pos_curr / size_bar;
         });
 
-    });</script>
+    });
+</script>
 
 {% endblock %}
 
@@ -106,13 +91,10 @@
             <thead class="table-dark">
                 <tr>
                     <th>Cover</th>
-                    <th>Cover Link</th>
-                    <th>Song id</th>
                     <th>Artist</th>
                     <th>Name</th>
                     <th>Album</th>
                     <th>Genre</th>
-                    <th>Content Link</th>
                     {% if add_to_playlist%}
                     <th>Add to Playlist</th>
                     {% endif %}
@@ -125,14 +107,16 @@
                 {% for item in listsong %}
                 <tr class="table-light">
                     <td><img src="https://drive.google.com/uc?export=view&id={{item[0].cover}}" height="50" width="50">
+                        <input type="hidden" value="{{item[0].cover}}">
+                        <input type="hidden" value="{{item[0].idsong}}">
+                        <input type="hidden" value="{{item[0].content}}">
                     </td>
-                    <td>{{item[0].cover}}</td>
-                    <td>{{item[0].idsong}}</td>
+                    <input type="hidden" value="{{item[0].cover}}">
+                    <input type="hidden" value="{{item[0].idsong}}">
                     <td>{{item.username}}</td>
                     <td>{{item[0].name}}</td>
                     <td>{{item.name}}</td>
                     <td>{{item.genre}}</td>
-                    <td>{{item[0].content}}</td>
                     {% if add_to_playlist%}
                     <td>
                         <form method="POST" action="{{ url_for('music.search') }}">
@@ -166,7 +150,7 @@
     <div class="song-bar" n>
         <div class="song-infos">
             <div class="image-container">
-                <img id="coverplayer" src="{{ url_for('static', filename='img/pm/pineapplemusicsmall.ico')}}" style='height: 100%; width: 100%; object-fit: contain' alt="cover" />
+                <img id="coverplayer" src="{{ url_for('static', filename='img/pineapplemusic.ico')}}" style='height: 100%; width: 100%; object-fit: contain' alt="cover" />
             </div>
             <div class="song-description">
                 <p class="title" id="title-song">

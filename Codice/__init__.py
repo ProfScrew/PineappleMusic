@@ -3,7 +3,7 @@ from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 
 from Codice.config import config
-from Codice.models import NormalListener, User
+from Codice.models import User
 from Codice.database import *
 
 from .auth.routes import auth
