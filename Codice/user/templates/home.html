@@ -8,112 +8,21 @@
 <div class="container">
   <div class="row">
     <h1 class="text-center">Home</h1>
+    {% for item in genres %}
     <div class="col-lg-3 col-6">
-      <div class="card card-music text-white bg-primary mb-3" type="submit" style="max-width: 18rem;">
+      <div class="card card-music text-white bg-success mb-3" type="submit" style="max-width: 18rem;">
         <form method="POST" action="{{ url_for('music.getsongfromgenre') }}">
         {{ form_genre.csrf_token }}
-        {{ form_genre.genre(value='Rock')}}
+        {{ form_genre.genre(value='{{item.name}}')}}
         <div class="img card-img-top"
-          style="background-image: url({{ url_for('user.static', filename='img/rock.jpg') }});"></div>
+          style="background-image: url(https://drive.google.com/uc?export=view&id={{item.cover}})"></div>
         <div class="card-body">
-          <h5 class="card-title" style="text-align: center">ROCK</h5>
+          <h5 class="card-title" style="text-align: center">{{item.name}}</h5>
         </div>
         </form>
       </div>
     </div>
-    <div class="col-lg-3 col-6">
-      <div class="card card-music text-white bg-secondary mb-3" style="max-width: 18rem;">
-        <form method="POST" action="{{ url_for('music.getsongfromgenre') }}">
-          {{ form_genre.csrf_token }}
-          {{ form_genre.genre(value='Pop')}}
-        <div class="img card-img-top"
-          style="background-image: url({{ url_for('user.static', filename='img/pop.jpg') }});"></div>
-        <div class="card-body">
-          <h5 class="card-title" style="text-align: center">POP</h5>
-        </div>
-        </form>
-      </div>
-    </div>
-    <div class="col-lg-3 col-6">
-      <div class="card card-music text-white bg-success mb-3" style="max-width: 18rem;">
-        <form method="POST" action="{{ url_for('music.getsongfromgenre') }}">
-          {{ form_genre.csrf_token }}
-          {{ form_genre.genre(value='Metal')}}
-        <div class="img card-img-top"
-          style="background-image: url({{ url_for('user.static', filename='img/metal.jpg') }});"></div>
-        <div class="card-body">
-          <h5 class="card-title" style="text-align: center">METAL</h5>
-        </div>
-        </form>
-      </div>
-    </div>
-    <div class="col-lg-3 col-6">
-      <div class="card card-music text-white bg-danger mb-3" style="max-width: 18rem;">
-        <form method="POST" action="{{ url_for('music.getsongfromgenre') }}">
-          {{ form_genre.csrf_token }}
-          {{ form_genre.genre(value='Classic')}}
-        <div class="img card-img-top"
-          style="background-image: url({{ url_for('user.static', filename='img/classica.jpg') }});"></div>
-        <div class="card-body">
-          <h5 class="card-title" style="text-align: center">CLASSIC</h5>
-        </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-lg-3 col-6">
-      <div class="card card-music text-white bg-warning mb-3" style="max-width: 18rem;">
-        <form method="POST" action="{{ url_for('music.getsongfromgenre') }}">
-          {{ form_genre.csrf_token }}
-          {{ form_genre.genre(value='Jazz')}}
-        <div class="img card-img-top"
-          style="background-image: url({{ url_for('user.static', filename='img/jazz.jpg') }});"></div>
-        <div class="card-body">
-          <h5 class="card-title" style="text-align: center">JAZZ</h5>
-        </div>
-        </form>
-      </div>
-    </div>
-    <div class="col-lg-3 col-6">
-      <div class="card card-music text-white bg-dark mb-3" style="max-width: 18rem;">
-        <form method="POST" action="{{ url_for('music.getsongfromgenre') }}">
-          {{ form_genre.csrf_token }}
-          {{ form_genre.genre(value='Rap')}}
-        <div class="img card-img-top"
-          style="background-image: url({{ url_for('user.static', filename='img/rap.jpg') }});)"></div>
-        <div class="card-body">
-          <h5 class="card-title" style="text-align: center">RAP</h5>
-        </div>
-        </form>
-      </div>
-    </div>
-    <div class="col-lg-3 col-6">
-      <div class="card card-music bg-light mb-3" style="max-width: 18rem;">
-        <form method="POST" action="{{ url_for('music.getsongfromgenre') }}">
-          {{ form_genre.csrf_token }}
-          {{ form_genre.genre(value='Reggae')}}
-        <div class="img card-img-top"
-          style="background-image: url({{ url_for('user.static', filename='img/reggae.jpg') }});"></div>
-        <div class="card-body">
-          <h5 class="card-title" style="text-align: center">REGGAE</h5>
-        </div>
-        </form>
-      </div>
-    </div>
-    <div class="col-lg-3 col-6">
-      <div class="card card-music text-white bg-info mb-3" style="max-width: 18rem;">
-        <form method="POST" action="{{ url_for('music.getsongfromgenre') }}">
-          {{ form_genre.csrf_token }}
-          {{ form_genre.genre(value='Latin')}}
-        <div class="img card-img-top"
-          style="background-image: url({{ url_for('user.static', filename='img/latin.jpg') }});"></div>
-        <div class="card-body">
-          <h5 class="card-title" style="text-align: center">LATIN</h5>
-        </div>
-        </form>
-      </div>
-    </div>
+    {% endfor %}
   </div>
 </div>
 

@@ -1,3 +1,5 @@
+from enum import Flag
+from platform import release
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
@@ -349,12 +351,18 @@ class Album(Base):
             Album.idalbum == temp_idalbum).first()
         return albums
 
-    def get_albums_name(temp_username, albums):
+    def get_albums_name(temp_username, albums, choice):
         list_albums = ['']
-        if albums is not None:
+        if albums is not None:      #list used in select field by artist
             for i in albums:
                 list_albums.append(i.name)
-            return list_albums
+            if choice != None:      #song has already an album so choice is automaticaly selected in the select field
+                choice_query = Album.get_albums_id(choice)
+                forcondition = (b for b in range(len(list_albums)) if choice_query.name == list_albums[b])
+                for b in forcondition:
+                    list_albums[0] = list_albums[b]
+                    list_albums.pop(b)
+                    list_albums.append('')
         return list_albums
     
     def extract_cover_album(list_albums, choice):
@@ -443,6 +451,56 @@ class Song(Base):
                     releasedate=temp_releasedate, content=temp_content)
         return song
 
+    def switch_exclusivity(temp_premium, temp_idsong):#session artist dentro
+        if temp_premium == 1:
+            query = PremiumSong(song=temp_idsong)
+            Session_artist.add(query)
+            query = NormalSong(song=temp_idsong)
+            Session_artist.delete(query)
+        elif temp_premium == 2:
+            query = NormalSong(song=temp_idsong)
+            Session_artist.add(query)
+            query = PremiumSong(song=temp_idsong)
+            Session_artist.delete(query)
+            
+
+    def modify_song(temp_idsong,temp_name,temp_album,temp_cover,temp_content,temp_releasedate, temp_genre, temp_premium):
+        try:
+            if temp_name != None:
+                query = update(Song).where(Song.idsong == temp_idsong).values(name=temp_name)
+                Session_artist.add(query)
+            
+            if temp_album != None:
+                query = update(Song).where(Song.idsong == temp_idsong).values(album=temp_album)
+                Session_artist.add(query)
+            
+            if temp_cover != None:
+                query = update(Song).where(Song.idsong == temp_idsong).values(cover = temp_cover)
+                Session_artist.add(query)
+                
+            if temp_content != None:
+                query = update(Song).where(Song.idsong == temp_idsong).values(content = temp_content)
+                Session_artist.add(query)
+            
+            if temp_genre != None: #diverso
+                query = update(Belong).where(Belong.idsong == temp_idsong).values(genre = temp_genre)
+                Session_artist.add(query)
+            
+            if temp_releasedate != None:
+                query = update(Song).where(Song.idsong == temp_idsong).values(releasedate = temp_releasedate)
+                Session_artist.add(query)
+            
+            if temp_premium != None:
+                Song.switch_exclusivity(temp_premium)
+            
+            Session_artist.commit()
+            return True
+        except:
+            Session_artist.rollback()
+            return False
+    
+    
+    
     # def get_song_with_artist_genres():
     #
     #    return song
@@ -565,6 +623,7 @@ class Genre(Base):
     __tablename__ = 'genres'                   # obbligatorio
 
     name = Column(String, primary_key=True)
+    cover = Column(String)
 
     list = ['', 'Rock', 'Pop', 'Metal', 'Rap',
             'Classic', 'Jazz', 'Reggae', 'Latin']
@@ -572,6 +631,11 @@ class Genre(Base):
     def __init__(self, name):
         self.name = name
 
+    def get_genres():
+        return Session_artist.query(Genre).all()
+
+    
+    
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         return "<Genre(name='%s')>" % (self.name)
@@ -615,6 +679,20 @@ class Belong(Base):
         self.genre = genre
         self.song = song
 
+    def get_genre_list(temp_song_id): ###rivedere funzione
+        list_new = Genre.list
+        
+        entry = Session_artist.query(Belong).filter(Belong.song == temp_song_id).first()
+        check = False
+        forcondition = (b for b in range(len(list_new)) if entry.genre == list_new[b])
+        for b in forcondition:
+            check = True
+            list_new[0] = list_new[b]
+            list_new.pop(b)
+            list_new.append('')
+        if check : list_new.pop(b)
+        return list_new
+    
     ##########################################################################################################
     # questo metodo è opzionale, serve solo per pretty printing
 

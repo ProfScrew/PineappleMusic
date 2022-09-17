@@ -11,6 +11,7 @@ from .user.routes import user
 from .error.routes import error
 from .artist.routes import artist
 from .music.routes import music
+from .homepage.routes import homepage
 
 def create_app():
     # initializing the webapp
@@ -51,6 +52,7 @@ def create_app():
     csrf.init_app(app)
 
     with app.app_context():
+        app.register_blueprint(homepage)
         app.register_blueprint(auth, url_prefix='/auth')
         app.register_blueprint(user, url_prefix='/user')
         app.register_blueprint(error, url_prefix='/error')

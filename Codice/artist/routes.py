@@ -30,7 +30,7 @@ def song():
     
     #albums managment
     list_albums = Album.get_albums(current_user.username)
-    list_albums_names = Album.get_albums_name(current_user.username,list_albums)
+    list_albums_names = Album.get_albums_name(temp_username= current_user.username,albums= list_albums, choice = None)
     form.album.choices = list_albums_names
     songs= Song.get_songs_artist(current_user.username)
     
@@ -138,7 +138,17 @@ def modifysong():
     form = ModifySongForm()
     song_info = Song.get_song_id(song.idsong.data)
     
+    #genre choice
+    form.genre.choices = Belong.get_genre_list(song.idsong.data)
     
+    #album managment
+    list_albums = Album.get_albums(current_user.username)
+    list_albums_names = Album.get_albums_name(current_user.username,list_albums,song_info.album)
+    form.album.choices = list_albums_names
+    
+    if form.validate_on_submit():
+        #modify song con campy giusti
+        print("")
     
     return render_template('modifysong.html', form = form, user = current_user, song = song_info)
 
