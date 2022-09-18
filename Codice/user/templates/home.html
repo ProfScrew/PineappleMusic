@@ -13,7 +13,7 @@
       <div class="card card-music text-white bg-success mb-3" type="submit" style="max-width: 18rem;">
         <form method="POST" action="{{ url_for('music.getsongfromgenre') }}">
         {{ form_genre.csrf_token }}
-        {{ form_genre.genre(value='{{item.name}}')}}
+        {{ form_genre.genre(value=item.name)}}
         <div class="img card-img-top"
           style="background-image: url(https://drive.google.com/uc?export=view&id={{item.cover}})"></div>
         <div class="card-body">
