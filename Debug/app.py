@@ -3,6 +3,7 @@ import sqlalchemy
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+#from Codice.database import Session_artist
 
 from models import *
 
@@ -10,18 +11,22 @@ from flask import Flask
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 
-engine = create_engine('postgresql://guest_manager:PassGuestManager@129.152.15.83:5432/PineappleMusic', echo=True)
+engine = create_engine('postgresql://artists:PassArtists@129.152.15.83:5432/PineappleMusic', echo=True)
 
 
 Session = sessionmaker(bind=engine)       # factory pattern
 session = Session()
 
-user = session.query(User.username,User.name,User.surname,User.birthdate,User.email,User.gender,User.phone,User.password,NormalListener.username.label('normallistener'),PremiumListener.username.label('premiumlistener'),Artist.username.label('artist')).outerjoin(NormalListener).outerjoin(PremiumListener).outerjoin(Artist).filter(User.username == 'JackSparrow').first()
+#user = session.query(User.username,User.name,User.surname,User.birthdate,User.email,User.gender,User.phone,User.password,NormalListener.username.label('normallistener'),PremiumListener.username.label('premiumlistener'),Artist.username.label('artist')).outerjoin(NormalListener).outerjoin(PremiumListener).outerjoin(Artist).filter(User.username == 'JackSparrow').first()
 
 #user = User.query.get('JackSparrow')
 
+query = update(Song).where(Song.idsong == 23).values(name = 'Neila')
+                
+session.add(query)
 
-print(user.username)
+session.commit()
+
 
 
 

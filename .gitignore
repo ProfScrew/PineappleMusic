@@ -1,6 +1,5 @@
 Utility/DumpDB/LocalLastPineappleMusic
 
-
 Codice/__pycache__
 Codice/auth/__pycache__
 Codice/artist/__pycache__
@@ -9,3 +8,7 @@ Codice/music/__pycache__
 Codice/error/__pycache__
 Codice/user/__pycache__
 Debug/__pycache__
+Codice/homepage/__pycache__
+
+
+Codice/localconfig.py

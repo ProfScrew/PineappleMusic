@@ -24,8 +24,6 @@ def song():
     form = SongForm()
     modify_song=ModifySong()
     delete_song=DeleteSong()
-    
-    
     form.genre.choices = Genre.list
     
     #albums managment
@@ -87,9 +85,7 @@ def album():
                     flash("Upload Failed.")
             else:
                 flash("Invalid cover link.")
-        
-    
-    
+                
     return render_template('album.html', form = form, user = current_user,
                            delete_album=delete_album,
                            modify_album=modify_album,
@@ -148,8 +144,56 @@ def modifysong():
     
     if form.validate_on_submit():
         #modify song con campy giusti
-        print("")
-    
+        #verificare se codificato singolarmente
+        album = 2
+        if form.name.data == song_info.name:#name
+            form.name.data = None        
+        
+        if form.genre.data == form.genre.choices[0]:#genre 
+            form.genre.data = None
+            
+        if form.premium.data == '':#premium
+            form.premium.data = None
+        elif form.premium.data == 'The song will be premium':
+            if not PremiumSong.check_song:
+                form.premium.data = 1
+            else:
+                form.premium.data = None
+        else:
+            if not NormalSong.check_song:
+                form.premium.data = 2
+            else:
+                form.premium.data = None
+                
+        if form.content.data == '':#content
+            form.content.data = None
+        
+        if form.cover.data == '':#cover
+            form.cover.data = None
+        else:
+            album = Album.check_link(form.cover.data)
+        
+        if form.album.data == list_albums_names[0]:#album
+            form.album.data = None
+        elif form.album.data == '':
+            form.album.data = -1
+        else:
+            form.album.data = Album.extract_id_album(list_albums, form.album.data)
+            album = Album.get_albums_id(form.album.data)
+            form.cover.data = album.cover
+            album = True
+        if album == False: #checking cover,content and if ok calling update
+            flash("Error Cover Link.")
+        elif (not Album.check_link(form.content.data)) and (form.content.data != None) :
+            flash("Error Content Link.")
+        else:
+            if album != True and form.cover.data != None:
+                form.cover.data =form.cover.data.split("/")[5]
+            if Song.modify_song(song_info.idsong,form.name.data,form.album.data,form.cover.data,
+                                form.content.data,form.release_date.data,form.genre.data,form.premium.data):
+                flash("Modification Successful")
+            else:
+                flash("Error loading modification.")
     return render_template('modifysong.html', form = form, user = current_user, song = song_info)
 
 @artist.route('/deletesong', methods=['POST'])

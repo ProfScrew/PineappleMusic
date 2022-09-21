@@ -1,9 +1,11 @@
-from enum import Flag
+
 from platform import release
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.exc import PendingRollbackError, IntegrityError
+
+from sqlalchemy.sql.expression import update
 
 from flask_login import UserMixin
 from flask import flash
@@ -331,9 +333,9 @@ class Album(Base):
         else:
             return False 
         
-    def check_cover_link(cover):
+    def check_link(temp_link):
         try:
-            request_cover = requests.get(cover)
+            request_cover = requests.get(temp_link)
             if request_cover.status_code == 200:
                 return True
             else:
@@ -387,7 +389,7 @@ class Album(Base):
                 else:
                     return False
             else:
-                if not Album.check_cover_link(temp_cover):
+                if not Album.check_link(temp_cover):
                     return False
                 album = Session_artist.query(Album).filter(Album.idalbum == temp_idalbum).first()
                 if temp_name == album.name:#modifica cover
@@ -452,47 +454,61 @@ class Song(Base):
         return song
 
     def switch_exclusivity(temp_premium, temp_idsong):#session artist dentro
-        if temp_premium == 1:
-            query = PremiumSong(song=temp_idsong)
-            Session_artist.add(query)
+        if temp_premium == 1:   #add premium remove normal
             query = NormalSong(song=temp_idsong)
             Session_artist.delete(query)
-        elif temp_premium == 2:
-            query = NormalSong(song=temp_idsong)
+            query = PremiumSong(song=temp_idsong)
             Session_artist.add(query)
+            
+        elif temp_premium == 2: #add normal remove premium
             query = PremiumSong(song=temp_idsong)
             Session_artist.delete(query)
+            query = NormalSong(song=temp_idsong)
+            Session_artist.add(query)
+            
             
 
     def modify_song(temp_idsong,temp_name,temp_album,temp_cover,temp_content,temp_releasedate, temp_genre, temp_premium):
-        try:
-            if temp_name != None:
-                query = update(Song).where(Song.idsong == temp_idsong).values(name=temp_name)
-                Session_artist.add(query)
+        try:#need to clean this part and maybe revision, probably no efficien and might have integrity problem
             
-            if temp_album != None:
-                query = update(Song).where(Song.idsong == temp_idsong).values(album=temp_album)
-                Session_artist.add(query)
+            #session.query(User).filter(User.username == 'JackSparrow').update({User.username: 'CaptainJackSparrow'})
+            query_update = []
+
+            if temp_name != None:
+                
+                query_update.append(update(Song).where(Song.idsong == temp_idsong).values(name = temp_name))
+                
+                #Session_artist.update(query)
+            
+            if temp_album == -1:
+                query_update.append(update(Song).where(Song.idsong == temp_idsong).values(album=None))
+                #Session_artist.add(query)
+            elif temp_album != None:
+                query_update.append(update(Song).where(Song.idsong == temp_idsong).values(album=temp_album))
+                #Session_artist.add(query)
+            
             
             if temp_cover != None:
-                query = update(Song).where(Song.idsong == temp_idsong).values(cover = temp_cover)
-                Session_artist.add(query)
+                query_update.append(update(Song).where(Song.idsong == temp_idsong).values(cover = temp_cover))
+                #Session_artist.add(query)
                 
             if temp_content != None:
-                query = update(Song).where(Song.idsong == temp_idsong).values(content = temp_content)
-                Session_artist.add(query)
-            
-            if temp_genre != None: #diverso
-                query = update(Belong).where(Belong.idsong == temp_idsong).values(genre = temp_genre)
-                Session_artist.add(query)
+                query_update.append(update(Song).where(Song.idsong == temp_idsong).values(content = temp_content))
+                #Session_artist.add(query)
+            if temp_genre != None: #diverso                #<----qui si trova errore(boh)
+                query_update.append(update(Belong).where(Belong.idsong == temp_idsong).values(genre = temp_genre))
+                #Session_artist.add(query)
             
             if temp_releasedate != None:
-                query = update(Song).where(Song.idsong == temp_idsong).values(releasedate = temp_releasedate)
-                Session_artist.add(query)
+                query_update.append(update(Song).where(Song.idsong == temp_idsong).values(releasedate = temp_releasedate))
+                #Session_artist.add(query)
+               
+            for i in query_update:
+                Session_artist.execute(i)
             
             if temp_premium != None:
                 Song.switch_exclusivity(temp_premium)
-            
+                
             Session_artist.commit()
             return True
         except:
@@ -562,6 +578,10 @@ class NormalSong(Base):
     def __init__(self, song):
         self.song = song
 
+    def check_song(temp_song):
+        return Session_artist.query(NormalSong.song).filter(NormalSong.song == temp_song).first() is not None
+         
+    
     def get_songs(genre=''):  # provisoria###############
         if genre=='':
             songs = Session_listener.query(Song,Belong.genre,Creates.username,Album.name).join(Belong).join(Creates).outerjoin(Album).join(NormalSong).all()
@@ -587,6 +607,9 @@ class PremiumSong(Base):
     def __init__(self, song):
         self.song = song
 
+    def check_song(temp_song):
+        return Session_artist.query(PremiumSong.song).filter(PremiumSong.song == temp_song).first() is not None
+    
     # questo metodo è opzionale, serve solo per pretty printing
 
     def __repr__(self):
@@ -680,8 +703,7 @@ class Belong(Base):
         self.song = song
 
     def get_genre_list(temp_song_id): ###rivedere funzione
-        list_new = Genre.list
-        
+        list_new = Genre.list.copy()
         entry = Session_artist.query(Belong).filter(Belong.song == temp_song_id).first()
         check = False
         forcondition = (b for b in range(len(list_new)) if entry.genre == list_new[b])
@@ -690,7 +712,7 @@ class Belong(Base):
             list_new[0] = list_new[b]
             list_new.pop(b)
             list_new.append('')
-        if check : list_new.pop(b)
+        if check : list_new.pop(len(list_new)-1 )
         return list_new
     
     ##########################################################################################################
