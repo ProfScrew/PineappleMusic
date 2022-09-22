@@ -192,6 +192,7 @@ def modifysong():
             if Song.modify_song(song_info.idsong,form.name.data,form.album.data,form.cover.data,
                                 form.content.data,form.release_date.data,form.genre.data,form.premium.data):
                 flash("Modification Successful")
+                return redirect(url_for('artist.song'))
             else:
                 flash("Error loading modification.")
     return render_template('modifysong.html', form = form, user = current_user, song = song_info)

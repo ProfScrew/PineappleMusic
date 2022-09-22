@@ -469,40 +469,23 @@ class Song(Base):
             
 
     def modify_song(temp_idsong,temp_name,temp_album,temp_cover,temp_content,temp_releasedate, temp_genre, temp_premium):
-        try:#need to clean this part and maybe revision, probably no efficien and might have integrity problem
-            
-            #session.query(User).filter(User.username == 'JackSparrow').update({User.username: 'CaptainJackSparrow'})
+        try:
             query_update = []
-
             if temp_name != None:
-                
                 query_update.append(update(Song).where(Song.idsong == temp_idsong).values(name = temp_name))
-                
-                #Session_artist.update(query)
-            
             if temp_album == -1:
                 query_update.append(update(Song).where(Song.idsong == temp_idsong).values(album=None))
-                #Session_artist.add(query)
             elif temp_album != None:
                 query_update.append(update(Song).where(Song.idsong == temp_idsong).values(album=temp_album))
-                #Session_artist.add(query)
-            
-            
             if temp_cover != None:
                 query_update.append(update(Song).where(Song.idsong == temp_idsong).values(cover = temp_cover))
-                #Session_artist.add(query)
-                
             if temp_content != None:
                 query_update.append(update(Song).where(Song.idsong == temp_idsong).values(content = temp_content))
-                #Session_artist.add(query)
-            if temp_genre != None: #diverso                #<----qui si trova errore(boh)
-                query_update.append(update(Belong).where(Belong.idsong == temp_idsong).values(genre = temp_genre))
-                #Session_artist.add(query)
-            
             if temp_releasedate != None:
                 query_update.append(update(Song).where(Song.idsong == temp_idsong).values(releasedate = temp_releasedate))
-                #Session_artist.add(query)
-               
+            if temp_genre != None:
+                query_update.append(update(Belong).where(Belong.song == temp_idsong).values(genre = temp_genre))
+             
             for i in query_update:
                 Session_artist.execute(i)
             
@@ -664,7 +647,6 @@ class Genre(Base):
         return "<Genre(name='%s')>" % (self.name)
 
 # verso artist
-
 
 '''
 class Relate(Base):
