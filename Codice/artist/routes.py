@@ -10,11 +10,10 @@ artist = Blueprint('artist', __name__, static_folder='static',
                  template_folder='templates')
 
 
-@artist.route('/statistics', methods=['GET','POST'])
+@artist.route('/statistics', methods=['GET'])
 def statistics():
-    var=request.data
-    print("TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",var)
-    return "ciao"
+    views=Statistic.get_statistics(current_user.username)
+    return render_template('statistics.html', user = current_user,views=views)
 
 
 

@@ -1,0 +1,28 @@
+CREATE TABLE public.records
+(
+    "user" character varying(40) NOT NULL,
+    song integer NOT NULL,
+    vote boolean NOT NULL,
+    PRIMARY KEY ("user", song),
+    CONSTRAINT "user" FOREIGN KEY ("user")
+        REFERENCES public.users (username) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+        NOT VALID,
+    CONSTRAINT song FOREIGN KEY (song)
+        REFERENCES public.songs (idsong) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE
+        NOT VALID
+);
+
+ALTER TABLE IF EXISTS public.records
+    OWNER to admin;
+
+GRANT INSERT, SELECT, UPDATE, DELETE, TRIGGER ON TABLE public.records TO artists;
+
+GRANT DELETE, SELECT, TRIGGER ON TABLE public.records TO delete_manager;
+
+GRANT INSERT, SELECT, UPDATE, DELETE, TRIGGER ON TABLE public.records TO listeners;
+
+GRANT INSERT, SELECT, UPDATE, DELETE, TRIGGER ON TABLE public.records TO premium_listeners;

@@ -6,7 +6,7 @@ Login page https://pineapplemusicit.herokuapp.com/auth/signin
 Idee da implementare:
 
 - 1 rivedere statistiche upvote downvote
-
+- 1 aggiungere indici per velocizare funzionamento
 
 - 2 javascript ottimizare
 - 2 genere su database con cover ed estrarre da li

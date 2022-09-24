@@ -1,5 +1,7 @@
-from flask import Blueprint, render_template, flash,redirect,url_for
+from flask import Blueprint, render_template, flash,redirect,url_for,request
 from flask_login import  login_required,current_user
+
+import json
 
 from Codice.models import *
 from Codice.database import *
@@ -9,6 +11,19 @@ from .forms import DeletePlaylist, DeleteSongFromPlaylist, PlaylistForm,AddToPla
 # Blueprint Configuration
 music = Blueprint('music', __name__, static_folder='static',
                  template_folder='templates')
+
+@music.route('/views', methods=['GET','POST'])
+def views():
+    var=request.data
+    data = json.loads(var)
+    
+    if data["view"] == "true":
+        
+        Statistic.increase_views(int(data["idsong"]),Session_listener)
+        print("AAAAAAAAAAAAAAAAAAAAAAAAAA")
+    
+    print("TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",var)
+    return "ciao"
 
 @login_required
 @music.route('/search', methods=['GET','POST'])
@@ -22,6 +37,8 @@ def search():
 
     playlist = Playlist.get_playlist_user(session,current_user.username)
     form.playlist.choices=Playlist.get_playlist_name_id(session,playlist)
+    
+    
     
     if form.validate_on_submit():
         for idl in form.playlist.data:

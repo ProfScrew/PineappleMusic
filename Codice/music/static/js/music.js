@@ -24,11 +24,6 @@ $('#backsong').on('click', function () {
         $("#artist-song").text($($($("#listsong[value='"+backsong+"']").parent().parent()).find("td")[1]).text());
         $("#songnumber").val(backsong);
         $("#playerhidden").attr("src", "https://docs.google.com/uc?export=open&id=" + $($($("#listsong[value='"+backsong+"']").parent().parent()).find("input")[2]).val());
-/*
-        alert($($($("#listsong[value='"+backsong+"']").parent().parent()).find("input")[0]).val());
-        alert($($($("#listsong[value='"+backsong+"']").parent().parent()).find("input")[2]).val());
-        alert($($($("#listsong[value='"+backsong+"']").parent().parent()).find("td")[1]).text());
-        alert($($($("#listsong[value='"+backsong+"']").parent().parent()).find("td")[2]).text());*/
     }
 });
 
@@ -67,7 +62,6 @@ function convert_to_time(audioCurrentTime) {
 var interval = setInterval(function () {
     var audio = document.getElementById("playerhidden").duration;
     if (typeof ($('#playerhidden').attr('src')) != "undefined" && $('#playerhidden').attr('src').length > 0 && !isNaN(audio)) {
-        //console.log(document.getElementById("playerhidden").currentTime+" "+document.getElementById("playerhidden").duration);
         $('#time-bar').attr('style', "width:" + document.getElementById("playerhidden").currentTime * 100 / document.getElementById("playerhidden").duration + "%;");
         $("#time-att").text(convert_to_time(document.getElementById("playerhidden").currentTime));
     }

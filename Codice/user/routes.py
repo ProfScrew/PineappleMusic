@@ -44,7 +44,7 @@ def profile():
 @user.route('/delete', methods=['POST'])
 @login_required
 def delete():
-    User.delete_user(Session_deletemanager, current_user.username)
+    User.delete_user(current_user.username)
     logout_user()
     flash('Your account was deleted.')
     return redirect(url_for('auth.signin'))

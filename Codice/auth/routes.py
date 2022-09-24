@@ -25,7 +25,7 @@ def signin():
                     return redirect(url_for('user.home'))
                 else:
                     flash("Song Not Found. Your Account was deleted. Register again and insert your first song.")
-                    User.delete_user(Session_deletemanager,form.username.data)
+                    User.delete_user(form.username.data)
             elif artist_check == 0:
                 flash("Artist. Login failed try again.")
             else:

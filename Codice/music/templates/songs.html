@@ -16,7 +16,9 @@
         $('#example tbody').on('click', 'tr', function (e) {
 
             var text = e.target.nodeName;
-            if (text != "DIV" && text != "BUTTON" && text != "INPUT") {
+            var view="false";
+
+            if (text != "DIV" && text != "BUTTON" && text != "INPUT"&& text != "I") {
                 var data = table.row(this).data();
                 $("#coverplayer").attr("src", "https://drive.google.com/uc?export=view&id=" + $($(this).find("input")[0]).val());
                 $("#title-song").text(data[2]);
@@ -31,6 +33,30 @@
                     $("#time-dur").text(convert_to_time(audioCurrentTime));
                 });
 
+                view="true";
+
+            }
+
+            if(text=="I"){
+                if ($(e.target).attr('class') == 'voteUp fa-regular fa-thumbs-up') {
+                    $(e.target).attr('class', 'voteUp fa-solid fa-thumbs-up');
+                    $(e.target).attr('vote','up');
+                    e.target.parentElement.children[2].classList='voteDown fa-regular fa-thumbs-down';
+                    e.target.parentElement.children[2].setAttribute('vote','null');
+                } else if($(e.target).attr('class') == 'voteUp fa-solid fa-thumbs-up'){
+                    $(e.target).attr('class', 'voteUp fa-regular fa-thumbs-up');
+                    $(e.target).attr('vote','null');
+                } else if($(e.target).attr('class') == 'voteDown fa-regular fa-thumbs-down') {
+                    $(e.target).attr('class', 'voteDown fa-solid fa-thumbs-down');
+                    $(e.target).attr('vote','down');
+                    e.target.parentElement.children[0].classList='voteUp fa-regular fa-thumbs-up';
+                    e.target.parentElement.children[0].setAttribute('vote','null');
+                } else {
+                    $(e.target).attr('class', 'voteDown fa-regular fa-thumbs-down');
+                    $(e.target).attr('vote','null');
+                }
+            }
+
                 var csrf_token = "{{ csrf_token() }}";
 
                 $.ajax({
@@ -39,8 +65,8 @@
                         "X-CSRFToken": csrf_token,
                         "Content-Type": "application/json"
                     },
-                    url: "/artist/statistics",
-                    data: JSON.stringify({ "idsong": $($(this).find("input")[1]).val() }),
+                    url: "/music/views",
+                    data: JSON.stringify({ "idsong": $($(this).find("input")[1]).val(),"upvote":  $($(this).find(".voteUp")).attr("vote"),"downvote":  $($(this).find(".voteDown")).attr("vote"),"view":view}),
                     success: function (response) {
                         console.log(response);
                     },
@@ -50,8 +76,9 @@
                     }
                 });
 
-            }
         });
+
+        
 
         $("#progress-bar-song").on("click", function (e) {
             var pos_curr = e.pageX - $("#progress-bar-song").offset().left; //Position cursor
@@ -59,7 +86,6 @@
             $('#time-bar').attr('style', "width:" + pos_curr * 100 / size_bar + "%;");
             var duration = document.getElementById("playerhidden").duration;
             document.getElementById("playerhidden").currentTime = duration / 100 * pos_curr * 100 / size_bar;
-            $("#playerhidden").trigger("play");
         });
 
 
@@ -97,6 +123,7 @@
                     <th>Name</th>
                     <th>Album</th>
                     <th>Genre</th>
+                    <th>Vote</th>
                     {% if add_to_playlist%}
                     <th>Add to Playlist</th>
                     {% endif %}
@@ -122,6 +149,7 @@
                     <td>{{item[0].name}}</td>
                     <td>{{item.name}}</td>
                     <td>{{item.genre}}</td>
+                    <td><i class="voteUp fa-regular fa-thumbs-up"></i> <p>    </p> <i class="voteDown fa-regular fa-thumbs-down" ></i></td>
                     {% if add_to_playlist%}
                     <td>
                         <form method="POST" action="{{ url_for('music.search') }}">
@@ -134,6 +162,7 @@
                         </form>
                     </td>
                     {% endif %}
+                    
                     {% if delete_from_playlist%}
                     <form method="POST" action="{{ url_for('music.getsongfromplaylist') }}">
                         {{ delete_form.csrf_token }}
