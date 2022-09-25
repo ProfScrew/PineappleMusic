@@ -1,4 +1,6 @@
 {% extends "base.html" %}
 {% block pagebody %}
-<center><button type="button" class="btn btn-success" onclick="location.href = '{{ url_for("auth.signin") }}';">Success</button></center>
+<div id="particles-js">
+    <center><button type="button" class="btn btn-success" onclick="location.href = '{{ url_for("auth.signin") }}';">Success</button></center>
+</div>
 {% endblock %}
