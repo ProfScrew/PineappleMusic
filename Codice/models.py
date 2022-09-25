@@ -405,12 +405,19 @@ class Album(Base):
                 album = Session_artist.query(Album).filter(Album.idalbum == temp_idalbum).first()
                 if temp_name == album.name:#modifica cover
                     query = update(Album).where(Album.idalbum == temp_idalbum).values(cover = temp_cover.split("/")[5])
+                    #Song.change_cover_album(temp_idalbum, temp_cover.split("/")[5])
                 else:#modifica tutto
                     if not Album.check_artist_album_name(temp_artist,temp_name):
                         query = update(Album).where(Album.idalbum == temp_idalbum).values(cover = temp_cover.split("/")[5], name = temp_name)
+                        #
                     else:
                         return False
+                    
             Session_artist.execute(query)
+            
+            if temp_cover != '':
+                Song.change_cover_album(temp_idalbum, temp_cover.split("/")[5])
+            
             Session_artist.commit()
             return True
         except:
@@ -510,6 +517,10 @@ class Song(Base):
             return False
     
     
+    def change_cover_album(temp_album, temp_cover):
+        query = update(Song).where(Song.album == temp_album).values(cover = temp_cover)
+        Session_artist.execute(query)
+        return
     
     # def get_song_with_artist_genres():
     #

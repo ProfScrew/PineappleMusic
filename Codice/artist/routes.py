@@ -32,7 +32,7 @@ def song():
     songs= Song.get_songs_artist(current_user.username)
     
     if form.validate_on_submit():
-        if Song.check_links(form.cover.data, form.content.data):
+        if Album.check_link(form.content.data):
             if (form.cover.data == None) and (form.album.data == ''):
                 flash("Insert a cover.")
             else:
@@ -43,11 +43,15 @@ def song():
                         flash("Select Exclusivity")
                     else:
                         if form.album.data == '':#no album
-                            if Artist.insert_song(form.name.data, None, form.cover.data.split("/")[5], form.release_date.data,
-                                            form.content.data.split("/")[5],current_user.username,form.genre.data,form.premium.data):
-                                flash("Upload Succesfull")
+                            if Album.check_link(form.cover.data):    
+                                if Artist.insert_song(form.name.data, None, form.cover.data.split("/")[5], form.release_date.data,
+                                                form.content.data.split("/")[5],current_user.username,form.genre.data,form.premium.data):
+                                    flash("Upload Succesfull")
+                                    redirect(url_for('artist.song'))
+                                else:
+                                    flash("Upload Failed")
                             else:
-                                flash("Upload Failed")
+                                flash("Cover not Inserted")
                         else:#album
                             album = Album.extract_id_album(list_albums,form.album.data)
                             cover = Album.extract_cover_album(list_albums, form.album.data)
@@ -57,6 +61,7 @@ def song():
                                 if Artist.insert_song(form.name.data, album, cover, form.release_date.data,
                                             form.content.data.split("/")[5],current_user.username,form.genre.data,form.premium.data):
                                     flash("Upload Successful")
+                                    redirect(url_for('artist.song'))
                                 else:
                                     flash("Upload Failed")
         else:
@@ -77,7 +82,7 @@ def album():
         if Album.check_artist_album_name(form.name.data, current_user.username):
             flash("Album name already in use by you.")
         else:
-            if Album.check_cover_link(form.cover.data):
+            if Album.check_link(form.cover.data):
                 if Artist.insert_album(form.name.data,form.cover.data.split("/")[5],current_user.username):
                     flash("Upload Successful.")
                 else:
