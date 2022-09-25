@@ -1,0 +1,22 @@
+
+{% extends "base.html" %}
+{% block pagebody %}
+
+<div class="container-fluid" id="particles-js">
+    <div class="position-fixed ">
+        <div class="card" style="width: 18rem;">
+            <img class="mb-4" src="/static/img/pineapplemusic.ico" alt="logo" width="72" height="100">
+            <div class="card-body">
+              <h5 class="card-title">Card title</h5>
+              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <button type="button" class="btn btn-success" onclick="location.href = '/auth/signin';">Login</button>
+            </div>
+          </div>
+        
+    </div>
+    
+    <canvas class="particles-js-canvas-el" style="width: 100%; height: 100%;" width="1896" height="42"></canvas>
+
+</div>
+
+{% endblock %}
