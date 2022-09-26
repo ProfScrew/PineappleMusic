@@ -1,12 +1,23 @@
 
+import imp
 import sqlalchemy
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
+
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import scoped_session
+from requests import Session
+from config import config
+
+engine_artist = create_engine(config['ARTIST_DB'], echo=True)
+Session = scoped_session(sessionmaker(bind=engine_artist))
+Session_artist = Session()
 # USERS
 
 Base = declarative_base()                      # tabella = classe che eredita da Base
+Base.query = Session.query_property()
 class User(Base): 
     __tablename__ = 'users'                   # obbligatorio
 
@@ -106,7 +117,7 @@ class Song(Base):
     
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
-        return "<Song(name='%s', idsong='%d',album='%d' cover='%s', releaseDate='%s',content='%s')>" % (self.name, self.idsong, self.album, self.cover, self.releasedate, self.content)
+        return "<Song(name='%s', idsong='%d',album='%s' cover='%s', releaseDate='%s',content='%s')>" % (self.name, self.idsong, self.album, self.cover, self.releasedate, self.content)
 
 
 # NORMALSONGS
@@ -246,3 +257,25 @@ class Contains(Base):
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         return "<Contains(song='%d', list='%d')>" % (self.song, self.list)
+
+
+class Record(Base):
+    __tablename__ = 'records'                   # obbligatorio
+    
+    user = Column(String, ForeignKey(User.username), primary_key=True)
+    song = Column(Integer, ForeignKey(Song.idsong), primary_key=True)
+    vote = Column(Boolean)
+    
+    users = relationship(User, backref="users")
+    songs = relationship(Song, backref="songs")
+
+    def __init__(self,user, song, vote):
+        self.user = user
+        self.song = song
+        self.vote = vote
+
+   
+
+    # questo metodo è opzionale, serve solo per pretty printing
+    def __repr__(self):
+        return "<Statistic(user='%s', song='%d', vote='%r')>" % (self.user, self.song, self.vote)

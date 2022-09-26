@@ -18,7 +18,6 @@ from flask_login import current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from Codice.database import Session_artist, Session_deletemanager, Session_guestmanager, Session_listener, Session_premiumlistener, Session
-from Debug.models import Belong, Genre
 
 
 Base = declarative_base()
@@ -526,12 +525,14 @@ class Song(Base):
     #
     #    return song
 
-    def get_songs(genre=''):  # provisoria###############
+    def get_songs(temp_user, genre=''):  # provisoria###############
         if genre=='':
-            songs = Session_artist.query(Song,Belong.genre,Creates.username,Album.name).join(Belong).join(Creates).outerjoin(Album).all()
+            song_user = Session_artist.query(Record).filter(Record.user == temp_user).subquery()
+            songs = Session_artist.query(Song,Belong.genre,Creates.username,Album.name,song_user).join(Belong).join(Creates).outerjoin(Album).outerjoin(song_user).all()
         else:
-            songs = Session_artist.query(Song,Belong.genre,Creates.username,Album.name).join(Belong).join(Creates).outerjoin(Album).filter(Belong.genre==genre).all()
-            Session_artist.commit()
+            song_user = Session_artist.query(Record).filter(Record.user == temp_user).subquery()
+            songs = Session_artist.query(Song,Belong.genre,Creates.username,Album.name,song_user).join(Belong).join(Creates).outerjoin(Album).outerjoin(song_user).filter(Belong.genre==genre).all()
+        Session_artist.commit()
         return songs
 
     def get_songs_artist(temp_artist):
@@ -555,8 +556,9 @@ class Song(Base):
         except:
             return False
     
-    def get_song_playlist(idplaylist):
-        songs=Session_artist.query(Song,Belong.genre,Creates.username,Album.name).join(Belong).join(Creates).outerjoin(Album).join(Contains).filter(Contains.list==idplaylist).all()
+    def get_song_playlist(temp_user,idplaylist):
+        song_user = Session_artist.query(Record).filter(Record.user == temp_user).subquery()
+        songs=Session_artist.query(Song,Belong.genre,Creates.username,Album.name,song_user).join(Belong).join(Creates).outerjoin(Album).join(Contains).outerjoin(song_user).filter(Contains.list==idplaylist).all()
         Session_artist.commit()
         return songs
 
@@ -594,12 +596,14 @@ class NormalSong(Base):
         return temp
          
     
-    def get_songs(genre=''):  # provisoria###############
+    def get_songs(temp_user, genre=''):  # provisoria###############
         if genre=='':
-            songs = Session_listener.query(Song,Belong.genre,Creates.username,Album.name).join(Belong).join(Creates).outerjoin(Album).join(NormalSong).all()
+            song_user = Session_artist.query(Record).filter(Record.user == temp_user).subquery()
+            songs = Session_listener.query(Song,Belong.genre,Creates.username,Album.name,song_user).join(Belong).join(Creates).outerjoin(Album).join(NormalSong).outerjoin(song_user).all()
         else:
-            songs = Session_listener.query(Song,Belong.genre,Creates.username,Album.name).join(Belong).join(Creates).outerjoin(Album).join(NormalSong).filter(Belong.genre==genre).all()
-            Session_listener.commit()
+            song_user = Session_artist.query(Record).filter(Record.user == temp_user).subquery()
+            songs = Session_listener.query(Song,Belong.genre,Creates.username,Album.name,song_user).join(Belong).join(Creates).outerjoin(Album).join(NormalSong).outerjoin(song_user).filter(Belong.genre==genre).all()
+        Session_listener.commit()
         return songs
     # questo metodo è opzionale, serve solo per pretty printing
 
@@ -649,6 +653,27 @@ class Record(Base):
         self.user = user
         self.song = song
         self.vote = vote
+
+    
+    
+    def insert(temp_user, temp_song, temp_vote, temp_session_db):
+        try:
+            record = Record(temp_user,temp_song,temp_vote)
+            temp_session_db.add(record)
+            temp_session_db.commit()
+        except:
+            temp_session_db.rollback()
+        return
+    def delete(temp_user, temp_song, temp_session_db):
+        try:
+            record = temp_session_db.query(Record).filter(and_(Record.user == temp_user, Record.song == temp_song)).first()
+            if record != None:
+                temp_session_db.delete(record)
+            temp_session_db.commit()
+            return 
+        except:
+            temp_session_db.rollback()
+            return 
 
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):

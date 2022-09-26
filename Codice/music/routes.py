@@ -16,14 +16,28 @@ music = Blueprint('music', __name__, static_folder='static',
 def views():
     var=request.data
     data = json.loads(var)
+    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAa", var)
+    #if data["upvote"] == "up":
+    #    print("AAAAAAAAAAAAAAAAAAAAAAAA")
     
     if data["view"] == "true":
+        Statistic.increase_views(int(data["idsong"]),current_user.type_session)
+        print("AAAAAAAAAAAAAAAAAAAAAAAAAA")  
+    elif "upvote" in data:
         
-        Statistic.increase_views(int(data["idsong"]),Session_listener)
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAA")
-    
-    print("TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT",var)
-    return "ciao"
+        if data["upvote"] == "up":
+            like = True
+            Record.delete(current_user.username, int(data["idsong"]),current_user.type_session)
+            Record.insert(current_user.username, int(data["idsong"]), like,current_user.type_session)  
+        elif data["downvote"] == "down":
+            like = False
+            Record.delete(current_user.username, int(data["idsong"]), current_user.type_session)
+            Record.insert(current_user.username, int(data["idsong"]), like, current_user.type_session)  
+        elif data["upvote"] == "null" and data["downvote"] == "null":
+            Record.delete(current_user.username, int(data["idsong"]), current_user.type_session)
+        
+    return "ok"
+
 
 @login_required
 @music.route('/search', methods=['GET','POST'])
@@ -33,7 +47,7 @@ def search():
     if current_user.type_account==1:
         song=NormalSong.get_songs()
     else:
-        song=Song.get_songs()
+        song=Song.get_songs(current_user.username)
 
     playlist = Playlist.get_playlist_user(session,current_user.username)
     form.playlist.choices=Playlist.get_playlist_name_id(session,playlist)
@@ -76,7 +90,7 @@ def getsongfromplaylist():
         if delete_form.validate_on_submit():
             Contains.delete_song_from_playlist(delete_form.idsong.data,delete_form.playlistid.data)
 
-        song=Song.get_song_playlist(form.playlistid.data)
+        song=Song.get_song_playlist(current_user.username,form.playlistid.data)
         return render_template("songs.html",user=current_user,page_name="Playlist",
                 listsong=song,delete_from_playlist=True,delete_form=delete_form,playlistid=form.playlistid.data)
 
@@ -94,9 +108,9 @@ def getsongfromgenre():
 
     if genre_form.validate_on_submit():
         if current_user.type_account==1:
-            song=NormalSong.get_songs(genre_form.genre.data)
+            song=NormalSong.get_songs(current_user.username,genre_form.genre.data)
         else:
-            song=Song.get_songs(genre_form.genre.data)
+            song=Song.get_songs(current_user.username, genre_form.genre.data)
 
         playlist = Playlist.get_playlist_user(session,current_user.username)
         form.playlist.choices=Playlist.get_playlist_name_id(session,playlist)

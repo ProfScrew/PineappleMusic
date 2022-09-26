@@ -149,7 +149,13 @@
                     <td>{{item[0].name}}</td>
                     <td>{{item.name}}</td>
                     <td>{{item.genre}}</td>
-                    <td><i class="voteUp fa-regular fa-thumbs-up"></i> <p>    </p> <i class="voteDown fa-regular fa-thumbs-down" ></i></td>
+                    {% if item[6]==True %}
+                        <td><i class="voteUp fa-solid fa-thumbs-up" vote="up"></i> <p>    </p> <i class="voteDown fa-regular fa-thumbs-down" vote="null" ></i></td>
+                    {% elif item[6]==False %}
+                        <td><i class="voteUp fa-regular fa-thumbs-up" vote="null"></i> <p>    </p>    <i class="voteDown fa-solid fa-thumbs-down" vote="down"></i></td>
+                    {% else %}
+                        <td><i class="voteUp fa-regular fa-thumbs-up" vote="null"></i> <p>    </p> <i class="voteDown fa-regular fa-thumbs-down" vote="null"></i></td>
+                    {% endif %}
                     {% if add_to_playlist%}
                     <td>
                         <form method="POST" action="{{ url_for('music.search') }}">

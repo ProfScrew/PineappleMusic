@@ -3,6 +3,11 @@ import sqlalchemy
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+
+from flask import Flask
+from flask_login import LoginManager
+from flask_wtf.csrf import CSRFProtect
+
 #from Codice.database import Session_artist
 
 from models import *
@@ -14,6 +19,7 @@ from flask_wtf.csrf import CSRFProtect
 engine = create_engine('postgresql://artists:PassArtists@129.152.15.83:5432/PineappleMusic', echo=True)
 
 
+
 Session = sessionmaker(bind=engine)       # factory pattern
 session = Session()
 
@@ -21,13 +27,39 @@ session = Session()
 
 #user = User.query.get('JackSparrow')
 
-query = update(Song).where(Song.idsong == 23).values(name = 'Neila')
-                
-session.add(query)
 
-session.commit()
+#songs = session.query(Song,Belong.genre,Creates.username,Album.name,Record).join(Belong).join(Creates).outerjoin(Album).outerjoin(Record).all()
+#songs = session.query(Song).all()
+#for i in songs:
+#    print(i)
 
 
+
+#record = session.query(Record).filter(Record.user == 'JackSparrow').subquery()
+#songs = Song.query.outerjoin(record)
+#print("AAAAAAAAAAAAAA ",songs)
+
+#song = session.query(Song,Record).outerjoin(Record).all()
+#record = session.query(Song, Record).outerjoin(Record).filter(Record.user == 'JackSparrow').all()
+#query = song.union(record)
+songsjack = session.query(Record).filter(Record.user == 'JackSparrow').subquery()
+
+    
+query = session.query(songsjack,Song).outerjoin(songsjack).limit(3).all()
+
+
+
+
+
+for i in query:
+    print(i[2])
+
+#   last_orders = db.session.query(
+#       Order.customer_id, db.func.max(Order.order_date).label('last_order_date')
+#   ).group_by(Order.customer_id).subquery()
+#   query = Order.query.join(
+#       last_orders, Order.customer_id == last_orders.c.customer_id
+#   ).order_by(last_orders.c.last_order_date.desc(), Order.order_date.desc())
 
 
 #quer = select(NormalListener, User).join(NormalListener.username)
