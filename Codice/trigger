@@ -1,0 +1,23 @@
+CREATE OR REPLACE FUNCTION delete_vote()
+RETURNS TRIGGER AS
+$func$
+BEGIN
+IF old.vote='true' then
+    UPDATE statistics
+    SET upvote = upvote - 1
+    WHERE song = old.song;
+    RETURN NEW;
+ELSE
+    UPDATE statistics
+    SET downvote = downvote - 1
+    WHERE song = old.song;
+    RETURN NEW;
+END IF;
+END
+$func$ LANGUAGE plpgsql;
+
+CREATE TRIGGER delete_statistics_vote
+AFTER DELETE 
+ON records
+FOR EACH ROW
+EXECUTE PROCEDURE delete_vote();

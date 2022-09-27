@@ -1,0 +1,1410 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 13.7 (Ubuntu 13.7-0ubuntu0.21.10.1)
+-- Dumped by pg_dump version 14.5 (Ubuntu 14.5-0ubuntu0.22.04.1)
+
+-- Started on 2022-09-27 22:58:07 CEST
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+DROP DATABASE "PineappleMusic";
+--
+-- TOC entry 3280 (class 1262 OID 18156)
+-- Name: PineappleMusic; Type: DATABASE; Schema: -; Owner: admin
+--
+
+CREATE DATABASE "PineappleMusic" WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE = 'en_US.UTF-8';
+
+
+ALTER DATABASE "PineappleMusic" OWNER TO admin;
+
+\connect "PineappleMusic"
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 219 (class 1255 OID 18331)
+-- Name: delete_vote(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.delete_vote() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF old.vote='true' then
+    UPDATE statistics
+    SET upvote = upvote - 1
+    WHERE song = old.song;
+    RETURN NEW;
+ELSE
+    UPDATE statistics
+    SET downvote = downvote - 1
+    WHERE song = old.song;
+    RETURN NEW;
+END IF;
+END
+$$;
+
+
+ALTER FUNCTION public.delete_vote() OWNER TO admin;
+
+--
+-- TOC entry 218 (class 1255 OID 18328)
+-- Name: update_vote(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.update_vote() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF new.vote='true' then
+    UPDATE statistics
+    SET upvote = upvote + 1
+    WHERE song = new.song;
+    RETURN NEW;
+ELSE
+    UPDATE statistics
+    SET downvote = downvote + 1
+    WHERE song = new.song;
+    RETURN NEW;
+END IF;
+END
+$$;
+
+
+ALTER FUNCTION public.update_vote() OWNER TO admin;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 200 (class 1259 OID 18157)
+-- Name: albums; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.albums (
+    idalbum integer NOT NULL,
+    name character varying(40) NOT NULL,
+    cover character varying(40),
+    artist character varying(40) NOT NULL
+);
+
+
+ALTER TABLE public.albums OWNER TO admin;
+
+--
+-- TOC entry 201 (class 1259 OID 18160)
+-- Name: albums_idalbum_seq; Type: SEQUENCE; Schema: public; Owner: admin
+--
+
+ALTER TABLE public.albums ALTER COLUMN idalbum ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.albums_idalbum_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 202 (class 1259 OID 18162)
+-- Name: artists; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.artists (
+    username character varying(40) NOT NULL
+);
+
+
+ALTER TABLE public.artists OWNER TO admin;
+
+--
+-- TOC entry 203 (class 1259 OID 18165)
+-- Name: belong; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.belong (
+    song integer NOT NULL,
+    genre character varying(20) NOT NULL
+);
+
+
+ALTER TABLE public.belong OWNER TO admin;
+
+--
+-- TOC entry 204 (class 1259 OID 18168)
+-- Name: contains; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.contains (
+    song integer NOT NULL,
+    list integer NOT NULL
+);
+
+
+ALTER TABLE public.contains OWNER TO admin;
+
+--
+-- TOC entry 205 (class 1259 OID 18171)
+-- Name: creates; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.creates (
+    song integer NOT NULL,
+    username character varying(40) NOT NULL
+);
+
+
+ALTER TABLE public.creates OWNER TO admin;
+
+--
+-- TOC entry 206 (class 1259 OID 18174)
+-- Name: genres; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.genres (
+    name character varying(20) NOT NULL,
+    cover character varying(40)
+);
+
+
+ALTER TABLE public.genres OWNER TO admin;
+
+--
+-- TOC entry 207 (class 1259 OID 18177)
+-- Name: normallisteners; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.normallisteners (
+    username character varying(40) NOT NULL
+);
+
+
+ALTER TABLE public.normallisteners OWNER TO admin;
+
+--
+-- TOC entry 208 (class 1259 OID 18180)
+-- Name: normalsongs; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.normalsongs (
+    song integer NOT NULL
+);
+
+
+ALTER TABLE public.normalsongs OWNER TO admin;
+
+--
+-- TOC entry 209 (class 1259 OID 18183)
+-- Name: playlists; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.playlists (
+    name character varying(20) NOT NULL,
+    idlist integer NOT NULL,
+    creationdate date DEFAULT now() NOT NULL,
+    author character varying(40) NOT NULL
+);
+
+
+ALTER TABLE public.playlists OWNER TO admin;
+
+--
+-- TOC entry 210 (class 1259 OID 18187)
+-- Name: playlists_idlist_seq; Type: SEQUENCE; Schema: public; Owner: admin
+--
+
+ALTER TABLE public.playlists ALTER COLUMN idlist ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.playlists_idlist_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 211 (class 1259 OID 18189)
+-- Name: premiumlisteners; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.premiumlisteners (
+    username character varying(40) NOT NULL
+);
+
+
+ALTER TABLE public.premiumlisteners OWNER TO admin;
+
+--
+-- TOC entry 212 (class 1259 OID 18192)
+-- Name: premiumsongs; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.premiumsongs (
+    song integer NOT NULL
+);
+
+
+ALTER TABLE public.premiumsongs OWNER TO admin;
+
+--
+-- TOC entry 213 (class 1259 OID 18195)
+-- Name: records; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.records (
+    "user" character varying(40) NOT NULL,
+    song integer NOT NULL,
+    vote boolean NOT NULL
+);
+
+
+ALTER TABLE public.records OWNER TO admin;
+
+--
+-- TOC entry 214 (class 1259 OID 18198)
+-- Name: songs; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.songs (
+    name character varying(40) NOT NULL,
+    idsong integer NOT NULL,
+    album integer,
+    cover character varying(40),
+    releasedate date NOT NULL,
+    content character varying(40)
+);
+
+
+ALTER TABLE public.songs OWNER TO admin;
+
+--
+-- TOC entry 215 (class 1259 OID 18201)
+-- Name: songs_idsong_seq; Type: SEQUENCE; Schema: public; Owner: admin
+--
+
+ALTER TABLE public.songs ALTER COLUMN idsong ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.songs_idsong_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
+
+--
+-- TOC entry 216 (class 1259 OID 18203)
+-- Name: statistics; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.statistics (
+    song integer NOT NULL,
+    upvote integer NOT NULL,
+    downvote integer NOT NULL,
+    views integer NOT NULL
+);
+
+
+ALTER TABLE public.statistics OWNER TO admin;
+
+--
+-- TOC entry 217 (class 1259 OID 18206)
+-- Name: users; Type: TABLE; Schema: public; Owner: admin
+--
+
+CREATE TABLE public.users (
+    username character varying(40) NOT NULL,
+    name character varying(20) NOT NULL,
+    surname character varying(20) NOT NULL,
+    birthdate date NOT NULL,
+    password character varying(128) NOT NULL,
+    gender character(1) NOT NULL,
+    phone integer NOT NULL,
+    email character varying(40) NOT NULL,
+    CONSTRAINT users_gender_check CHECK (((gender = 'F'::bpchar) OR (gender = 'M'::bpchar))),
+    CONSTRAINT users_password_check CHECK ((length((password)::text) >= 8))
+);
+
+
+ALTER TABLE public.users OWNER TO admin;
+
+--
+-- TOC entry 3257 (class 0 OID 18157)
+-- Dependencies: 200
+-- Data for Name: albums; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+INSERT INTO public.albums (idalbum, name, cover, artist) OVERRIDING SYSTEM VALUE VALUES (9, 'test', '14kOIeeZeSvcpol9hLe3ivYPdmIrTQcL2', 'StefanoArtist');
+INSERT INTO public.albums (idalbum, name, cover, artist) OVERRIDING SYSTEM VALUE VALUES (5, 'Barbarossa', '1L7oR9xH6tRfl-dhFV7ahTI-cdZ4xQHYs', 'JackSparrow');
+INSERT INTO public.albums (idalbum, name, cover, artist) OVERRIDING SYSTEM VALUE VALUES (7, 'Riding Hard', '1JUTxghD_6MzjzmAmD3VTDxO8ujk0RvOO', 'JackSparrow');
+INSERT INTO public.albums (idalbum, name, cover, artist) OVERRIDING SYSTEM VALUE VALUES (10, 'No Ambition', '1o3DzMkQjSvV073XkaWehezls8GLfn3Mx', 'Mozart');
+INSERT INTO public.albums (idalbum, name, cover, artist) OVERRIDING SYSTEM VALUE VALUES (11, 'Game On', '1L7oR9xH6tRfl-dhFV7ahTI-cdZ4xQHYs', 'Beethoven');
+INSERT INTO public.albums (idalbum, name, cover, artist) OVERRIDING SYSTEM VALUE VALUES (12, 'Cookie cutter', '1fKgC5GT2a_rgu1Fz3qjQECH7PYMdnfl8', 'StatusQuo');
+INSERT INTO public.albums (idalbum, name, cover, artist) OVERRIDING SYSTEM VALUE VALUES (13, 'Final Breath', '1BSWFIbALup5ZSqzuUeUNZtl8ETqBF9CC', 'RegaeArtist');
+INSERT INTO public.albums (idalbum, name, cover, artist) OVERRIDING SYSTEM VALUE VALUES (14, 'Crap', '13HBSHLosp_gAz5wtZxrMhS7CRtbQnAxU', 'HGArtist');
+INSERT INTO public.albums (idalbum, name, cover, artist) OVERRIDING SYSTEM VALUE VALUES (15, 'Commercial Break', '13TOHRlg1b5e3LHDNjqGp1T2YRvIpora5', 'JazzArtist');
+INSERT INTO public.albums (idalbum, name, cover, artist) OVERRIDING SYSTEM VALUE VALUES (16, 'Bonus', '18hMe9IfTjARWnfsCY0Mno2jnQ6dx_5eY', 'UnkownBrain');
+INSERT INTO public.albums (idalbum, name, cover, artist) OVERRIDING SYSTEM VALUE VALUES (17, 'Blue Moon', '1SxciHeJ8OXh3EHcWyjig0UHGk0S9CSNA', 'Tobu');
+INSERT INTO public.albums (idalbum, name, cover, artist) OVERRIDING SYSTEM VALUE VALUES (18, 'S-Squad', '1qwKCkTsIwYugGLwuFiSsG2AA4wVj7VHb', 'SArtists');
+INSERT INTO public.albums (idalbum, name, cover, artist) OVERRIDING SYSTEM VALUE VALUES (20, 'Electro', '11TEN7OGw_ZUNVMOn9e3rMOBcUbmtqua9', 'Elektronomia');
+INSERT INTO public.albums (idalbum, name, cover, artist) OVERRIDING SYSTEM VALUE VALUES (21, 'Eternity', '1VMxvDGPYItF2PnVIUcgLYQQOUoeIEkWe', 'Cartoon');
+
+
+--
+-- TOC entry 3259 (class 0 OID 18162)
+-- Dependencies: 202
+-- Data for Name: artists; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+INSERT INTO public.artists (username) VALUES ('Noemi01');
+INSERT INTO public.artists (username) VALUES ('JackSparrow');
+INSERT INTO public.artists (username) VALUES ('StefanoArtist');
+INSERT INTO public.artists (username) VALUES ('comellato');
+INSERT INTO public.artists (username) VALUES ('io');
+INSERT INTO public.artists (username) VALUES ('Mozart');
+INSERT INTO public.artists (username) VALUES ('Beethoven');
+INSERT INTO public.artists (username) VALUES ('Brahmss');
+INSERT INTO public.artists (username) VALUES ('StatusQuo');
+INSERT INTO public.artists (username) VALUES ('RegaeArtist');
+INSERT INTO public.artists (username) VALUES ('HGArtist');
+INSERT INTO public.artists (username) VALUES ('JazzArtist');
+INSERT INTO public.artists (username) VALUES ('UnkownBrain');
+INSERT INTO public.artists (username) VALUES ('Tobu');
+INSERT INTO public.artists (username) VALUES ('SArtists');
+INSERT INTO public.artists (username) VALUES ('Elektronomia');
+INSERT INTO public.artists (username) VALUES ('Cartoon');
+INSERT INTO public.artists (username) VALUES ('OtherArtists');
+
+
+--
+-- TOC entry 3260 (class 0 OID 18165)
+-- Dependencies: 203
+-- Data for Name: belong; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+INSERT INTO public.belong (song, genre) VALUES (20, 'Rock');
+INSERT INTO public.belong (song, genre) VALUES (24, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (25, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (26, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (27, 'Latin');
+INSERT INTO public.belong (song, genre) VALUES (33, 'Metal');
+INSERT INTO public.belong (song, genre) VALUES (34, 'Classic');
+INSERT INTO public.belong (song, genre) VALUES (35, 'Classic');
+INSERT INTO public.belong (song, genre) VALUES (36, 'Classic');
+INSERT INTO public.belong (song, genre) VALUES (40, 'Classic');
+INSERT INTO public.belong (song, genre) VALUES (41, 'Classic');
+INSERT INTO public.belong (song, genre) VALUES (42, 'Classic');
+INSERT INTO public.belong (song, genre) VALUES (43, 'Classic');
+INSERT INTO public.belong (song, genre) VALUES (44, 'Classic');
+INSERT INTO public.belong (song, genre) VALUES (45, 'Classic');
+INSERT INTO public.belong (song, genre) VALUES (46, 'Classic');
+INSERT INTO public.belong (song, genre) VALUES (47, 'Classic');
+INSERT INTO public.belong (song, genre) VALUES (49, 'Classic');
+INSERT INTO public.belong (song, genre) VALUES (50, 'Classic');
+INSERT INTO public.belong (song, genre) VALUES (51, 'Classic');
+INSERT INTO public.belong (song, genre) VALUES (53, 'Classic');
+INSERT INTO public.belong (song, genre) VALUES (55, 'Classic');
+INSERT INTO public.belong (song, genre) VALUES (57, 'Rock');
+INSERT INTO public.belong (song, genre) VALUES (58, 'Rock');
+INSERT INTO public.belong (song, genre) VALUES (59, 'Rock');
+INSERT INTO public.belong (song, genre) VALUES (60, 'Rock');
+INSERT INTO public.belong (song, genre) VALUES (62, 'Reggae');
+INSERT INTO public.belong (song, genre) VALUES (63, 'Reggae');
+INSERT INTO public.belong (song, genre) VALUES (64, 'Reggae');
+INSERT INTO public.belong (song, genre) VALUES (65, 'Reggae');
+INSERT INTO public.belong (song, genre) VALUES (66, 'Reggae');
+INSERT INTO public.belong (song, genre) VALUES (67, 'Reggae');
+INSERT INTO public.belong (song, genre) VALUES (69, 'Rap');
+INSERT INTO public.belong (song, genre) VALUES (70, 'Rap');
+INSERT INTO public.belong (song, genre) VALUES (72, 'Jazz');
+INSERT INTO public.belong (song, genre) VALUES (73, 'Jazz');
+INSERT INTO public.belong (song, genre) VALUES (74, 'Jazz');
+INSERT INTO public.belong (song, genre) VALUES (75, 'Jazz');
+INSERT INTO public.belong (song, genre) VALUES (76, 'Jazz');
+INSERT INTO public.belong (song, genre) VALUES (78, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (79, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (80, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (82, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (83, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (84, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (85, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (87, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (88, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (89, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (90, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (92, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (93, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (94, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (96, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (97, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (99, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (100, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (101, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (102, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (103, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (104, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (105, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (106, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (107, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (108, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (109, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (110, 'Pop');
+INSERT INTO public.belong (song, genre) VALUES (111, 'Pop');
+
+
+--
+-- TOC entry 3261 (class 0 OID 18168)
+-- Dependencies: 204
+-- Data for Name: contains; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+INSERT INTO public.contains (song, list) VALUES (24, 22);
+INSERT INTO public.contains (song, list) VALUES (25, 22);
+INSERT INTO public.contains (song, list) VALUES (27, 25);
+INSERT INTO public.contains (song, list) VALUES (20, 21);
+INSERT INTO public.contains (song, list) VALUES (20, 29);
+INSERT INTO public.contains (song, list) VALUES (26, 29);
+
+
+--
+-- TOC entry 3262 (class 0 OID 18171)
+-- Dependencies: 205
+-- Data for Name: creates; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+INSERT INTO public.creates (song, username) VALUES (20, 'JackSparrow');
+INSERT INTO public.creates (song, username) VALUES (24, 'StefanoArtist');
+INSERT INTO public.creates (song, username) VALUES (25, 'StefanoArtist');
+INSERT INTO public.creates (song, username) VALUES (26, 'StefanoArtist');
+INSERT INTO public.creates (song, username) VALUES (27, 'JackSparrow');
+INSERT INTO public.creates (song, username) VALUES (33, 'io');
+INSERT INTO public.creates (song, username) VALUES (34, 'JackSparrow');
+INSERT INTO public.creates (song, username) VALUES (35, 'JackSparrow');
+INSERT INTO public.creates (song, username) VALUES (36, 'JackSparrow');
+INSERT INTO public.creates (song, username) VALUES (40, 'Mozart');
+INSERT INTO public.creates (song, username) VALUES (41, 'Mozart');
+INSERT INTO public.creates (song, username) VALUES (42, 'Mozart');
+INSERT INTO public.creates (song, username) VALUES (43, 'Mozart');
+INSERT INTO public.creates (song, username) VALUES (44, 'Mozart');
+INSERT INTO public.creates (song, username) VALUES (45, 'Mozart');
+INSERT INTO public.creates (song, username) VALUES (46, 'Mozart');
+INSERT INTO public.creates (song, username) VALUES (47, 'Mozart');
+INSERT INTO public.creates (song, username) VALUES (49, 'Beethoven');
+INSERT INTO public.creates (song, username) VALUES (50, 'Beethoven');
+INSERT INTO public.creates (song, username) VALUES (51, 'Beethoven');
+INSERT INTO public.creates (song, username) VALUES (53, 'Beethoven');
+INSERT INTO public.creates (song, username) VALUES (55, 'Brahmss');
+INSERT INTO public.creates (song, username) VALUES (57, 'StatusQuo');
+INSERT INTO public.creates (song, username) VALUES (58, 'StatusQuo');
+INSERT INTO public.creates (song, username) VALUES (59, 'StatusQuo');
+INSERT INTO public.creates (song, username) VALUES (60, 'StatusQuo');
+INSERT INTO public.creates (song, username) VALUES (62, 'RegaeArtist');
+INSERT INTO public.creates (song, username) VALUES (63, 'RegaeArtist');
+INSERT INTO public.creates (song, username) VALUES (64, 'RegaeArtist');
+INSERT INTO public.creates (song, username) VALUES (65, 'RegaeArtist');
+INSERT INTO public.creates (song, username) VALUES (66, 'RegaeArtist');
+INSERT INTO public.creates (song, username) VALUES (67, 'RegaeArtist');
+INSERT INTO public.creates (song, username) VALUES (69, 'HGArtist');
+INSERT INTO public.creates (song, username) VALUES (70, 'HGArtist');
+INSERT INTO public.creates (song, username) VALUES (72, 'JazzArtist');
+INSERT INTO public.creates (song, username) VALUES (73, 'JazzArtist');
+INSERT INTO public.creates (song, username) VALUES (74, 'JazzArtist');
+INSERT INTO public.creates (song, username) VALUES (75, 'JazzArtist');
+INSERT INTO public.creates (song, username) VALUES (76, 'JazzArtist');
+INSERT INTO public.creates (song, username) VALUES (78, 'UnkownBrain');
+INSERT INTO public.creates (song, username) VALUES (79, 'UnkownBrain');
+INSERT INTO public.creates (song, username) VALUES (80, 'UnkownBrain');
+INSERT INTO public.creates (song, username) VALUES (82, 'Tobu');
+INSERT INTO public.creates (song, username) VALUES (83, 'Tobu');
+INSERT INTO public.creates (song, username) VALUES (84, 'Tobu');
+INSERT INTO public.creates (song, username) VALUES (85, 'Tobu');
+INSERT INTO public.creates (song, username) VALUES (87, 'SArtists');
+INSERT INTO public.creates (song, username) VALUES (88, 'SArtists');
+INSERT INTO public.creates (song, username) VALUES (89, 'SArtists');
+INSERT INTO public.creates (song, username) VALUES (90, 'SArtists');
+INSERT INTO public.creates (song, username) VALUES (92, 'Elektronomia');
+INSERT INTO public.creates (song, username) VALUES (93, 'Elektronomia');
+INSERT INTO public.creates (song, username) VALUES (94, 'Elektronomia');
+INSERT INTO public.creates (song, username) VALUES (96, 'Cartoon');
+INSERT INTO public.creates (song, username) VALUES (97, 'Cartoon');
+INSERT INTO public.creates (song, username) VALUES (99, 'OtherArtists');
+INSERT INTO public.creates (song, username) VALUES (100, 'OtherArtists');
+INSERT INTO public.creates (song, username) VALUES (101, 'OtherArtists');
+INSERT INTO public.creates (song, username) VALUES (102, 'OtherArtists');
+INSERT INTO public.creates (song, username) VALUES (103, 'OtherArtists');
+INSERT INTO public.creates (song, username) VALUES (104, 'OtherArtists');
+INSERT INTO public.creates (song, username) VALUES (105, 'OtherArtists');
+INSERT INTO public.creates (song, username) VALUES (106, 'OtherArtists');
+INSERT INTO public.creates (song, username) VALUES (107, 'OtherArtists');
+INSERT INTO public.creates (song, username) VALUES (108, 'OtherArtists');
+INSERT INTO public.creates (song, username) VALUES (109, 'OtherArtists');
+INSERT INTO public.creates (song, username) VALUES (110, 'OtherArtists');
+INSERT INTO public.creates (song, username) VALUES (111, 'OtherArtists');
+
+
+--
+-- TOC entry 3263 (class 0 OID 18174)
+-- Dependencies: 206
+-- Data for Name: genres; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+INSERT INTO public.genres (name, cover) VALUES ('Classic', '1NneeXbtj-JbHpa0a920o5yq92rIQbnZL');
+INSERT INTO public.genres (name, cover) VALUES ('Jazz', '13GUb_d7QiGy7Y3wmrucFhOpQAyyKTfrS');
+INSERT INTO public.genres (name, cover) VALUES ('Latin', '1PXd_u68ka_7QnVkG8fS_qG4vyYuLdo8s');
+INSERT INTO public.genres (name, cover) VALUES ('Pop', '1ECNhaDcSMjM2B2A0ejv1MRkP6AMwU1jx');
+INSERT INTO public.genres (name, cover) VALUES ('Metal', '1d6ZDjWB_aB2RgIbY2aVEAgazSk4j8h8T');
+INSERT INTO public.genres (name, cover) VALUES ('Rap', '14nrCItrwLdWa2pnmkagXR5CyLcHK0XqM');
+INSERT INTO public.genres (name, cover) VALUES ('Rock', '1HTDmzgWA62eBcVJU7x-X1iw8BjBW_KWy');
+INSERT INTO public.genres (name, cover) VALUES ('Reggae', '19Vt43QvMMY-F2cJj_vwBpVxN4lBsyfxm');
+
+
+--
+-- TOC entry 3264 (class 0 OID 18177)
+-- Dependencies: 207
+-- Data for Name: normallisteners; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+INSERT INTO public.normallisteners (username) VALUES ('Ale');
+INSERT INTO public.normallisteners (username) VALUES ('Barbossa');
+INSERT INTO public.normallisteners (username) VALUES ('riccardo');
+
+
+--
+-- TOC entry 3265 (class 0 OID 18180)
+-- Dependencies: 208
+-- Data for Name: normalsongs; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+INSERT INTO public.normalsongs (song) VALUES (27);
+INSERT INTO public.normalsongs (song) VALUES (33);
+INSERT INTO public.normalsongs (song) VALUES (34);
+INSERT INTO public.normalsongs (song) VALUES (35);
+INSERT INTO public.normalsongs (song) VALUES (36);
+INSERT INTO public.normalsongs (song) VALUES (40);
+INSERT INTO public.normalsongs (song) VALUES (41);
+INSERT INTO public.normalsongs (song) VALUES (42);
+INSERT INTO public.normalsongs (song) VALUES (43);
+INSERT INTO public.normalsongs (song) VALUES (44);
+INSERT INTO public.normalsongs (song) VALUES (45);
+INSERT INTO public.normalsongs (song) VALUES (46);
+INSERT INTO public.normalsongs (song) VALUES (47);
+INSERT INTO public.normalsongs (song) VALUES (49);
+INSERT INTO public.normalsongs (song) VALUES (50);
+INSERT INTO public.normalsongs (song) VALUES (51);
+INSERT INTO public.normalsongs (song) VALUES (53);
+INSERT INTO public.normalsongs (song) VALUES (57);
+INSERT INTO public.normalsongs (song) VALUES (58);
+INSERT INTO public.normalsongs (song) VALUES (62);
+INSERT INTO public.normalsongs (song) VALUES (63);
+INSERT INTO public.normalsongs (song) VALUES (64);
+INSERT INTO public.normalsongs (song) VALUES (65);
+INSERT INTO public.normalsongs (song) VALUES (66);
+INSERT INTO public.normalsongs (song) VALUES (67);
+INSERT INTO public.normalsongs (song) VALUES (72);
+INSERT INTO public.normalsongs (song) VALUES (73);
+INSERT INTO public.normalsongs (song) VALUES (74);
+INSERT INTO public.normalsongs (song) VALUES (75);
+INSERT INTO public.normalsongs (song) VALUES (76);
+INSERT INTO public.normalsongs (song) VALUES (78);
+INSERT INTO public.normalsongs (song) VALUES (79);
+INSERT INTO public.normalsongs (song) VALUES (80);
+INSERT INTO public.normalsongs (song) VALUES (87);
+INSERT INTO public.normalsongs (song) VALUES (88);
+INSERT INTO public.normalsongs (song) VALUES (89);
+INSERT INTO public.normalsongs (song) VALUES (90);
+INSERT INTO public.normalsongs (song) VALUES (92);
+INSERT INTO public.normalsongs (song) VALUES (93);
+INSERT INTO public.normalsongs (song) VALUES (94);
+INSERT INTO public.normalsongs (song) VALUES (96);
+INSERT INTO public.normalsongs (song) VALUES (97);
+INSERT INTO public.normalsongs (song) VALUES (99);
+INSERT INTO public.normalsongs (song) VALUES (100);
+INSERT INTO public.normalsongs (song) VALUES (101);
+INSERT INTO public.normalsongs (song) VALUES (102);
+INSERT INTO public.normalsongs (song) VALUES (103);
+INSERT INTO public.normalsongs (song) VALUES (104);
+INSERT INTO public.normalsongs (song) VALUES (105);
+INSERT INTO public.normalsongs (song) VALUES (106);
+INSERT INTO public.normalsongs (song) VALUES (107);
+INSERT INTO public.normalsongs (song) VALUES (108);
+INSERT INTO public.normalsongs (song) VALUES (109);
+INSERT INTO public.normalsongs (song) VALUES (110);
+INSERT INTO public.normalsongs (song) VALUES (111);
+
+
+--
+-- TOC entry 3266 (class 0 OID 18183)
+-- Dependencies: 209
+-- Data for Name: playlists; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+INSERT INTO public.playlists (name, idlist, creationdate, author) OVERRIDING SYSTEM VALUE VALUES ('Panda', 20, '2022-09-06', 'Ale');
+INSERT INTO public.playlists (name, idlist, creationdate, author) OVERRIDING SYSTEM VALUE VALUES ('Alfa', 21, '2022-09-13', 'JackSparrow');
+INSERT INTO public.playlists (name, idlist, creationdate, author) OVERRIDING SYSTEM VALUE VALUES ('Beta', 22, '2022-09-16', 'JackSparrow');
+INSERT INTO public.playlists (name, idlist, creationdate, author) OVERRIDING SYSTEM VALUE VALUES ('NormalList', 25, '2022-09-16', 'Barbossa');
+INSERT INTO public.playlists (name, idlist, creationdate, author) OVERRIDING SYSTEM VALUE VALUES ('test', 26, '2022-09-16', 'Stefano');
+INSERT INTO public.playlists (name, idlist, creationdate, author) OVERRIDING SYSTEM VALUE VALUES ('Cool List', 29, '2022-09-25', 'Matrix');
+
+
+--
+-- TOC entry 3268 (class 0 OID 18189)
+-- Dependencies: 211
+-- Data for Name: premiumlisteners; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+INSERT INTO public.premiumlisteners (username) VALUES ('Matrix');
+INSERT INTO public.premiumlisteners (username) VALUES ('Stefano');
+
+
+--
+-- TOC entry 3269 (class 0 OID 18192)
+-- Dependencies: 212
+-- Data for Name: premiumsongs; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+INSERT INTO public.premiumsongs (song) VALUES (20);
+INSERT INTO public.premiumsongs (song) VALUES (24);
+INSERT INTO public.premiumsongs (song) VALUES (25);
+INSERT INTO public.premiumsongs (song) VALUES (26);
+INSERT INTO public.premiumsongs (song) VALUES (55);
+INSERT INTO public.premiumsongs (song) VALUES (59);
+INSERT INTO public.premiumsongs (song) VALUES (60);
+INSERT INTO public.premiumsongs (song) VALUES (69);
+INSERT INTO public.premiumsongs (song) VALUES (70);
+INSERT INTO public.premiumsongs (song) VALUES (82);
+INSERT INTO public.premiumsongs (song) VALUES (83);
+INSERT INTO public.premiumsongs (song) VALUES (84);
+INSERT INTO public.premiumsongs (song) VALUES (85);
+
+
+--
+-- TOC entry 3270 (class 0 OID 18195)
+-- Dependencies: 213
+-- Data for Name: records; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+
+
+--
+-- TOC entry 3271 (class 0 OID 18198)
+-- Dependencies: 214
+-- Data for Name: songs; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Roar', 25, 9, '14kOIeeZeSvcpol9hLe3ivYPdmIrTQcL2', '2022-09-16', '1QS8OPRfRvwISkbmJnxenIqssfMRhkW6r');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Firework', 26, 9, '14kOIeeZeSvcpol9hLe3ivYPdmIrTQcL2', '2022-09-16', '18VMmQ4JIsbmiehEh10O8Jv4rC8otV3fL');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Rondo Alla Turca', 40, 10, '1o3DzMkQjSvV073XkaWehezls8GLfn3Mx', '2022-09-01', '1xsw3WMPMYJzegqBwIjOCocysB60XdP1s');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Marriage Of Figaro', 41, 10, '1o3DzMkQjSvV073XkaWehezls8GLfn3Mx', '2022-09-01', '11RRu4AW5KtzEaunSFsl5eKIoDTYVYQQ1');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('String Quartet No.19 C', 42, 10, '1o3DzMkQjSvV073XkaWehezls8GLfn3Mx', '2022-09-01', '1mPrY2NYkHbf0rxV5pR-pAf_yQ9d5js9f');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('String Quartet No.15 D', 43, 10, '1o3DzMkQjSvV073XkaWehezls8GLfn3Mx', '2022-09-01', '1m_bdGcDnRzzUXnYN2cAeIcJ3if4DMdmK');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Requiem', 44, 10, '1o3DzMkQjSvV073XkaWehezls8GLfn3Mx', '2022-09-01', '1KebJfOn-l_I9Ny4uZjLdFAPsqSHAg8VS');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Lacrimosa', 45, 10, '1o3DzMkQjSvV073XkaWehezls8GLfn3Mx', '2022-09-01', '12GhWpBsaCfS-quZasTVPtzSa7_lPc2NR');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('The Magic Flute', 46, 10, '1o3DzMkQjSvV073XkaWehezls8GLfn3Mx', '2022-09-01', '1SR-6M3S034Zrc0pTTPeewcq9XfdVp9En');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Eine Kleine Nachtmusk', 47, 10, '1o3DzMkQjSvV073XkaWehezls8GLfn3Mx', '2022-09-01', '1EkCZqqy9Vk13frKYAw6-Ezejx3EoR0we');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Moonlight Sonata', 49, 11, '1L7oR9xH6tRfl-dhFV7ahTI-cdZ4xQHYs', '2022-09-01', '1SI8P7nPULasp8YZjbnXSCyzF296IgMf8');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('String Quartet No. 6 B', 50, 11, '1L7oR9xH6tRfl-dhFV7ahTI-cdZ4xQHYs', '2022-09-01', '1G_4S5LkCkSmuseQ6YMQo3rdoC6scENaW');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Egmont', 51, 11, '1L7oR9xH6tRfl-dhFV7ahTI-cdZ4xQHYs', '2022-09-01', '1qO2wX2qEhUoFH1OT-hQ85gkuYDX2Eenz');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Coriolan', 53, 11, '1L7oR9xH6tRfl-dhFV7ahTI-cdZ4xQHYs', '2022-09-01', '1SI8P7nPULasp8YZjbnXSCyzF296IgMf8');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Pirate', 20, NULL, '1XjENKcGg1SZTKWLwpwVI2qgAMvALM_fO', '2022-09-01', '1HMKIjUQ5g_ABZVPfVGNWh0q2o10aYoK9');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Tragic Overture', 55, NULL, '1JUTxghD_6MzjzmAmD3VTDxO8ujk0RvOO', '2022-09-01', '1twuS1nhEJJcNVhqhzOO8-48kiWmSVsBi');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Railroad', 57, 12, '1fKgC5GT2a_rgu1Fz3qjQECH7PYMdnfl8', '2022-09-01', '1IiYlL4NeopxmCsjIVqvRTyolsdC4R-FE');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('The Way it goes', 58, 12, '1fKgC5GT2a_rgu1Fz3qjQECH7PYMdnfl8', '2022-09-01', '1YZ-8O3Rzh8n1JXDoPpzpAAPNWB0YSY64');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Dont Waste My Time', 59, 12, '1fKgC5GT2a_rgu1Fz3qjQECH7PYMdnfl8', '2022-09-01', '1l21qaerKhHLakNCyEiom78IzfojpUROK');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Blue Eyed Lady', 60, 12, '1fKgC5GT2a_rgu1Fz3qjQECH7PYMdnfl8', '2022-09-01', '1vjjWkbE6sKc-Key0ouxhF5KVeP0k-w0k');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Salsa', 62, 13, '1BSWFIbALup5ZSqzuUeUNZtl8ETqBF9CC', '2022-09-02', '1b5vBL2P81JhIlRax_xKZAunfqCWpPRjq');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Rhastafarian', 63, 13, '1BSWFIbALup5ZSqzuUeUNZtl8ETqBF9CC', '2022-09-02', '1lL-TEXMjbIairvVwGSEZjsEyW4yw1Fq7');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Mandeville', 64, 13, '1BSWFIbALup5ZSqzuUeUNZtl8ETqBF9CC', '2022-09-02', '1PW1SfXXQCU8UArla7WfNBnlOaZc1XwXs');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Easy Jam', 65, 13, '1BSWFIbALup5ZSqzuUeUNZtl8ETqBF9CC', '2022-09-02', '1I6ZdBDB-Yw3ijkyVsuPOqbyRnpjsJvZb');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Dudakupado', 66, 13, '1BSWFIbALup5ZSqzuUeUNZtl8ETqBF9CC', '2022-09-02', '1XbsqkQX6c3fB7OTs0PY2h19FQsHsR_BG');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Dub Eastern', 67, 13, '1BSWFIbALup5ZSqzuUeUNZtl8ETqBF9CC', '2022-09-02', '129lKT4kaNQvZEUuEsuU2LDM7vkbljasY');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Remember', 69, 14, '13HBSHLosp_gAz5wtZxrMhS7CRtbQnAxU', '2022-09-01', '1_jXLMrjp6pVVEvEjUOSYh5bUabUmfh18');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Diamond', 70, 14, '13HBSHLosp_gAz5wtZxrMhS7CRtbQnAxU', '2022-09-01', '1PqWEuVxd6vjb27mBMHffB6tX-CVAIzoG');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Captain', 27, NULL, '1XjENKcGg1SZTKWLwpwVI2qgAMvALM_fO', '2022-09-01', '1HMKIjUQ5g_ABZVPfVGNWh0q2o10aYoK9');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Restaurant', 72, 15, '13TOHRlg1b5e3LHDNjqGp1T2YRvIpora5', '2022-09-01', '1TJwhk8lfTDcP-797aCubH6hbg1ejjuyU');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Jazz Drums', 73, 15, '13TOHRlg1b5e3LHDNjqGp1T2YRvIpora5', '2022-09-01', '1dLcz2OTbCaUt5mLQTVo7_VbCuiQSXRMf');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Caffeteria', 74, 15, '13TOHRlg1b5e3LHDNjqGp1T2YRvIpora5', '2022-09-01', '1R8bpdoypu-pz2rb1Wlc5yP0JYD3SPcEK');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Freedom', 24, NULL, '1YY7aBmn4EIWusCfEQyxKoiczuE6szLgi', '2022-09-15', '1bqeJB6_UWzQc4tzNUD0e-q955y2q1YJ0');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('canzoneIO', 33, NULL, '1XjENKcGg1SZTKWLwpwVI2qgAMvALM_fO', '2022-09-24', '1HMKIjUQ5g_ABZVPfVGNWh0q2o10aYoK9');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('MozartTest Figaro', 34, NULL, '1o3DzMkQjSvV073XkaWehezls8GLfn3Mx', '2022-09-01', '11RRu4AW5KtzEaunSFsl5eKIoDTYVYQQ1');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('MozartTest Figaro', 35, NULL, '1o3DzMkQjSvV073XkaWehezls8GLfn3Mx', '2022-09-01', '11RRu4AW5KtzEaunSFsl5eKIoDTYVYQQ1');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('MozartTest Rondo Alla Turca', 36, NULL, '1o3DzMkQjSvV073XkaWehezls8GLfn3Mx', '2022-09-01', '1xsw3WMPMYJzegqBwIjOCocysB60XdP1s');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Cooking Jazz', 75, 15, '13TOHRlg1b5e3LHDNjqGp1T2YRvIpora5', '2022-09-01', '1sEcYXTMBARQaTx0leCSw4V5lPMybbcDj');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Cooking Jazz 2', 76, 15, '13TOHRlg1b5e3LHDNjqGp1T2YRvIpora5', '2022-09-01', '1QzEbrzGNrLm1Ks8UhoWOfsGe_qZL_a2e');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Control', 78, 16, '18hMe9IfTjARWnfsCY0Mno2jnQ6dx_5eY', '2022-09-01', '1DGiq7ec_TVNyDAwoKaBnW4WM2Mtd1pgC');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Superhero', 79, 16, '18hMe9IfTjARWnfsCY0Mno2jnQ6dx_5eY', '2022-09-01', '1MjbxvfTLQgnoPjs72EE44V1PjzLxnjCk');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('MATAFAKA', 80, 16, '18hMe9IfTjARWnfsCY0Mno2jnQ6dx_5eY', '2022-09-01', '1_hczsP8MarsGwdHdMa_onVXKfsxhOnIw');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Sunburst', 82, 17, '1SxciHeJ8OXh3EHcWyjig0UHGk0S9CSNA', '2022-09-01', '1KbhR_VRjWtrAs6YJRmsy5aRV22S5xu7L');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Infectious', 83, 17, '1SxciHeJ8OXh3EHcWyjig0UHGk0S9CSNA', '2022-09-01', '1lfGcem13EBcG5GpvCfSjY8pmpYXPXwqb');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Hope', 84, 17, '1SxciHeJ8OXh3EHcWyjig0UHGk0S9CSNA', '2022-09-01', '1S00oqO7oizjqDaLSP4hsu5fBOLuZOUOd');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Candyland', 85, 17, '1SxciHeJ8OXh3EHcWyjig0UHGk0S9CSNA', '2022-09-01', '1uas64p49R8VeXVyRbOa737qz8h-bBESB');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Feel Good', 87, 18, '1qwKCkTsIwYugGLwuFiSsG2AA4wVj7VHb', '2022-09-01', '1E3lktCUWwYASF7umO1jNmVw-6CJ8wb9s');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Cradles', 88, 18, '1qwKCkTsIwYugGLwuFiSsG2AA4wVj7VHb', '2022-09-01', '1C_uW7zq_egjG8_qRassCWkXS-QvvtLBo');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Shine', 89, 18, '1qwKCkTsIwYugGLwuFiSsG2AA4wVj7VHb', '2022-09-01', '1e11YQeOzo6oTFoY9OXHaBFkWikEOc3-t');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Ark', 90, 18, '1qwKCkTsIwYugGLwuFiSsG2AA4wVj7VHb', '2022-09-01', '1SsQ1dlpOG5TiMWsozjD6tKH61WfI44Wk');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Sky High', 92, 20, '11TEN7OGw_ZUNVMOn9e3rMOBcUbmtqua9', '2022-09-01', '1kFg96hBmXA3sbm5h4czckmSZ61w4uuEv');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Energy', 93, 20, '11TEN7OGw_ZUNVMOn9e3rMOBcUbmtqua9', '2022-09-01', '1g3Utaa0DmAoO7_dYE6q3mlB4fyKfn9Xu');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Symbolism', 94, 20, '11TEN7OGw_ZUNVMOn9e3rMOBcUbmtqua9', '2022-09-01', '16ARceXVNjkWW6J4zd4RLfPP7Se3P7jPQ');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Why We Lose', 96, 21, '1VMxvDGPYItF2PnVIUcgLYQQOUoeIEkWe', '2022-09-01', '1k9XunHlJaye5dx-HLgJ3Bri6JzQv2ol5');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('On On', 97, 21, '1VMxvDGPYItF2PnVIUcgLYQQOUoeIEkWe', '2022-09-01', '1z0gYxX-b6CCiQ7QdVQdq6TXpWLfeMA6i');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('We Are', 99, NULL, '1g_Jp3_uMFZz6iukmNgtsNKERwdz0lcnG', '2022-09-01', '1YBwDodEU4RdvlMjHj30ulKOEsn7YWsV2');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Shootin Stars', 100, NULL, '1WKBpAeX6VlJBn8qjPuLoZaiR9Hstt2v3', '2022-09-01', '1fFWvD1VaMdnkGZiS7OvTcwtZJmfQYUoD');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Nekozilla', 101, NULL, '1m6Zo96EALob2HPOfwgMXu0daWTKPrz4D', '2022-09-01', '1AluAAAEOA6z6q3I6tTF4wkvfvYZ5fqzk');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('My Heart', 102, NULL, '1d_qL_D72e1AnQwfV5i9aWDTFq9BG58l_', '2022-09-01', '1slPh7wgSHAslDnLVDNSIzVasVsNe3OBe');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Mortals', 103, NULL, '1X-jrU-4q66V1YXvru_cyu2nvCGKvnGHz', '2022-09-01', '1S83nl9sHV1lnesGC-I90_BkfBB_7xVLt');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Light It Up', 104, NULL, '1ozpCcTiyyqqQ4s4vtHyRyWRPDurjW2dP', '2022-09-01', '140Q9xvaI80qPMyrjuVE5QqKHTkq6I970');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Heroes Tonight', 105, NULL, '1OZCvF1zxLcF-fyPl5W4-yLK-9gOLMKiS', '2022-09-01', '1ls2uvTDxT-SkoV5Vuq1tF0FbzUpeI9Cb');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Invisible', 106, NULL, '1pQUji9jOwks-AyuyQW6EuHS6ytQW3Coj', '2022-09-01', '1GqifwwgT9-3nMEco2WfNCic_7EdeCOCa');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('HellCat', 107, NULL, '1m2UREZNCfCF3JLs14c0lXuLjNiHZVV5Y', '2022-09-01', '1qyA9Z1EPoFBMYKbZt2oPxp0DXYmEbrf5');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Firefly', 108, NULL, '1SxWPXBDgjMRrNynRUvRJK81HrsoX1Ppp', '2022-09-01', '1z4YgOZvQsrRoNQ0y9f7lXahDYh2PRcdT');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Dreams', 109, NULL, '1V22r7b8sD5jWwREkiqm_yLzbUEvVlbot', '2022-09-01', '1yy6HXSVsHgzuAGs9-37ypLPKZIP_3g-0');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Cloud9', 110, NULL, '1bLYJ1KYOZhMRqET_7i1kYh6TKtBxrrPb', '2022-09-01', '1-WbMBp_kKIDrD4rOG1ZE2AcqM99H5F0q');
+INSERT INTO public.songs (name, idsong, album, cover, releasedate, content) OVERRIDING SYSTEM VALUE VALUES ('Blank', 111, NULL, '1BKYk-GOXcXhjbQ00V2NcJlJAl4zDOYw0', '2022-09-01', '1qMzrwWZOkKFshZOo4YWC4JodJx_Hp8lV');
+
+
+--
+-- TOC entry 3273 (class 0 OID 18203)
+-- Dependencies: 216
+-- Data for Name: statistics; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (46, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (50, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (51, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (45, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (40, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (59, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (57, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (58, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (63, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (64, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (65, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (66, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (69, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (26, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (41, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (76, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (42, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (36, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (84, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (47, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (83, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (97, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (87, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (89, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (90, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (92, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (100, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (103, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (104, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (105, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (106, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (107, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (108, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (109, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (101, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (99, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (27, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (55, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (102, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (110, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (94, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (96, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (93, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (44, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (80, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (111, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (60, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (33, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (85, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (88, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (43, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (49, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (53, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (82, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (79, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (78, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (67, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (34, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (35, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (73, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (72, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (70, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (74, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (75, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (62, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (25, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (24, 0, 0, 0);
+INSERT INTO public.statistics (song, upvote, downvote, views) VALUES (20, 0, 0, 0);
+
+
+--
+-- TOC entry 3274 (class 0 OID 18206)
+-- Dependencies: 217
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: admin
+--
+
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('Matrix', 'matrix', 'Matrix', '2022-08-01', 'pbkdf2:sha256:260000$rrYbNpwaZqIRz9w9$d21f084b71eb3df2a4aa68baa21453f6c6481a8c399e56e87f7f3fab0110d8d6', 'M', 12345678, 'matrixneilx@gmail.com');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('Stefano', 'stefano', 'masiero', '2022-08-25', 'pbkdf2:sha256:260000$GyI2lkaF0jdlJhxw$63cf8a309fd5e615f61c07686768bee15568234f24d91a32481b3e220252a26f', 'M', 12345678, 'stefano@gmail.com');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('Noemi01', 'Noemi Maria', 'Pastrello', '2001-05-30', 'pbkdf2:sha256:260000$0J30PzsxLismpMMa$1b36e5f807ac0906e02326653b3d737997b3602c717d0b36c2b726b9aff9ea9f', 'F', 377220, 'noemimaria.pastrello@gmail.com');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('Ale', 'Alessia ', 'Scaggiante ', '2002-04-08', 'pbkdf2:sha256:260000$DkcyinLpORTAWDih$b0447aa80d251cf54a80617ce68e59896b7331e52bb6c0f53204a32dc41edfd1', 'F', 345646, 'alessiascaggianteee@gmail.com');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('JackSparrow', 'Jack', 'Sparrow', '2022-09-01', 'pbkdf2:sha256:260000$OlVuiYEi4Ta6DAD2$a4985a83a3e98e85373e29b5888ac22bb4f68732fbe09ec397c068c3360f9850', 'M', 123456, 'Captain@Jack.Sparrow');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('StefanoArtist', 'Stefano', 'Masiero', '2022-09-15', 'pbkdf2:sha256:260000$Nea0jdnUUHnqR7fQ$5611688e57f9be27ae3697ab7ca3224b315fb86a2bd84b460c269fa740776ec9', 'M', 123456, 'ste@gmail.com');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('Barbossa', 'Barbossa', 'Captain', '2022-09-01', 'pbkdf2:sha256:260000$Vet17y7VpTwO7E0E$4580ab85caebe60cfb0f203e0efab89e09cc6f4472dcd3a738cc778d02520724', 'M', 233232, 'Captain@barbossa.com');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('riccardo', 'riccardo', 'riccardo', '2022-09-24', 'pbkdf2:sha256:260000$w5LOpWYrZdyCFhYG$5ac2a799d776cf9506c457acb9a4f16d4256097035971a486af3369b6b78ea69', 'M', 366131, 'riccardo.comellato@gmail.com');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('comellato', 'comellato', 'comellato', '2022-09-24', 'pbkdf2:sha256:260000$g8AL06defUGoIOHW$190bd89c160c211114813adad2647f7e77be5e7edcb7f3f19a029097e83ee93b', 'M', 366131, 'ai@ai.com');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('io', 'io', 'io', '2022-09-24', 'pbkdf2:sha256:260000$EXZPyXki9MrFiWKA$c26db0fe1b7c6d81a9bedc026a9a1c594f21a6ed3411f87ba9dfbfcf716b82d4', 'M', 456456, 'r.c@gmail.com');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('Mozart', 'Wolfang', 'Mozart', '2022-09-01', 'pbkdf2:sha256:260000$hrygxcjdC9L5JnN3$88d6f113ce627011735b7cee510fcdb7133c7d534913e24b92cc71ed9eaaabc0', 'M', 786542, 'mozart@artist.com');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('Beethoven', 'Ludwig', 'Beethoven', '2022-09-01', 'pbkdf2:sha256:260000$oYN2QxRyHehbJuFU$96cc056c389f704a34d7621ee90e23bf4d955694170687319ceab658e11f701c', 'M', 867452, 'Beethoven@artist.com');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('Brahmss', 'Jeremy', 'Brahmss', '2022-09-01', 'pbkdf2:sha256:260000$s6nOHRXvtMgzjcw6$a98390e0372cc12f0342868763963dacd98949b23589b6bf530835667e36d1bf', 'M', 796764, 'Brahmss@artist.com');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('StatusQuo', 'Stefany', 'Quo', '2022-09-01', 'pbkdf2:sha256:260000$L0xagbdW1mOb36I8$f8c08899b646659b8732f3427898c687ce006b143d25939af9a2cc411f287070', 'F', 953768, 'StatusQuo@artist.com');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('RegaeArtist', 'Reggie', 'Argentina', '2022-09-01', 'pbkdf2:sha256:260000$YDUh7iGMjkdycAJp$a0a40f1347be424628a47f25b2c6e5d0cc0b5b1b757dba0d5ad3cc3ac81aec15', 'M', 768756, 'RegaeArtist@artist.com');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('HGArtist', 'Hugh', 'Gerald', '2022-09-01', 'pbkdf2:sha256:260000$fxN0VHHreNE91v1n$0f7db9ff5e56e07c9689d9bb6323ad92df66cf2a611e2420c9cdc78bd7c53fc8', 'M', 435645, 'HGArtist@artist.com');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('JazzArtist', 'Jenny', 'White', '2022-09-01', 'pbkdf2:sha256:260000$9hwCB3QPLQFU3cNz$2397b64765d03e5f6aecb991fc44fe629aedaa7e8c5bfd8641b276726a5abce6', 'F', 323645, 'JazzArtist@artist.com');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('UnkownBrain', 'Matty', 'Perry', '2022-09-01', 'pbkdf2:sha256:260000$q8ct1ZYzYNDAnYI5$790cd65fdccbfb6f78ebc404cfcc261a0defd213552d9dd0ff0eecc779dcba10', 'M', 342564, 'UnkownBrain@artist.com');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('Tobu', 'Tobu', 'Tobu', '2022-09-01', 'pbkdf2:sha256:260000$Cz7UsK53d5yo7hsB$019ea429e2c7de52304fdf66da1c6d16347b7f38164577bbad7454917b0347d6', 'F', 645365, 'Tobu@artist.com');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('SArtists', 'Simon', 'Says', '2022-09-01', 'pbkdf2:sha256:260000$gdBAxvlVRpLnZ3Cn$5bfa6a8e82b65609c089dce4e93397003106932bab00848772ee3cdbb0791793', 'M', 574356, 'SArtists@artist.com');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('Elektronomia', 'Electon', 'Neuron', '2022-09-01', 'pbkdf2:sha256:260000$NM4Xp2SU5lYaBv7X$3bca17a946a56864e6873f4388b093b97f649c471744b40c5e300ce2926580a4', 'M', 754665, 'Elektronomia@artist.com');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('Cartoon', 'Marvel', 'Disney', '2022-09-01', 'pbkdf2:sha256:260000$EdS9iyRd8Wq10zXP$8d11b4050c04f4b94fcbc02b18a8ea6112f663b539dcd2a940727d42cc1a3fde', 'M', 654645, 'Cartoon@artist.com');
+INSERT INTO public.users (username, name, surname, birthdate, password, gender, phone, email) VALUES ('OtherArtists', 'Otter', 'Artiss', '2022-09-01', 'pbkdf2:sha256:260000$bhBAgpirrg26FYHl$687f8726f98502d8e6a0df9f18c03221cfd0a590983c344b0c4305dde2e5bca5', 'M', 452542, 'OtherArtists@artist.com');
+
+
+--
+-- TOC entry 3296 (class 0 OID 0)
+-- Dependencies: 201
+-- Name: albums_idalbum_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
+--
+
+SELECT pg_catalog.setval('public.albums_idalbum_seq', 21, true);
+
+
+--
+-- TOC entry 3297 (class 0 OID 0)
+-- Dependencies: 210
+-- Name: playlists_idlist_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
+--
+
+SELECT pg_catalog.setval('public.playlists_idlist_seq', 30, true);
+
+
+--
+-- TOC entry 3298 (class 0 OID 0)
+-- Dependencies: 215
+-- Name: songs_idsong_seq; Type: SEQUENCE SET; Schema: public; Owner: admin
+--
+
+SELECT pg_catalog.setval('public.songs_idsong_seq', 111, true);
+
+
+--
+-- TOC entry 3079 (class 2606 OID 18212)
+-- Name: albums albums_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.albums
+    ADD CONSTRAINT albums_pkey PRIMARY KEY (idalbum);
+
+
+--
+-- TOC entry 3081 (class 2606 OID 18214)
+-- Name: artists artists_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.artists
+    ADD CONSTRAINT artists_pkey PRIMARY KEY (username);
+
+
+--
+-- TOC entry 3083 (class 2606 OID 18216)
+-- Name: belong belong_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.belong
+    ADD CONSTRAINT belong_pkey PRIMARY KEY (song, genre);
+
+
+--
+-- TOC entry 3085 (class 2606 OID 18218)
+-- Name: contains contains_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.contains
+    ADD CONSTRAINT contains_pkey PRIMARY KEY (song, list);
+
+
+--
+-- TOC entry 3087 (class 2606 OID 18220)
+-- Name: creates creates_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.creates
+    ADD CONSTRAINT creates_pkey PRIMARY KEY (song, username);
+
+
+--
+-- TOC entry 3089 (class 2606 OID 18222)
+-- Name: genres genres_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.genres
+    ADD CONSTRAINT genres_pkey PRIMARY KEY (name);
+
+
+--
+-- TOC entry 3091 (class 2606 OID 18224)
+-- Name: normallisteners normallisteners_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.normallisteners
+    ADD CONSTRAINT normallisteners_pkey PRIMARY KEY (username);
+
+
+--
+-- TOC entry 3093 (class 2606 OID 18226)
+-- Name: normalsongs normalsongs_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.normalsongs
+    ADD CONSTRAINT normalsongs_pkey PRIMARY KEY (song);
+
+
+--
+-- TOC entry 3095 (class 2606 OID 18228)
+-- Name: playlists playlists_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.playlists
+    ADD CONSTRAINT playlists_pkey PRIMARY KEY (idlist);
+
+
+--
+-- TOC entry 3097 (class 2606 OID 18230)
+-- Name: premiumlisteners premiumlisteners_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.premiumlisteners
+    ADD CONSTRAINT premiumlisteners_pkey PRIMARY KEY (username);
+
+
+--
+-- TOC entry 3099 (class 2606 OID 18232)
+-- Name: premiumsongs premiumsongs_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.premiumsongs
+    ADD CONSTRAINT premiumsongs_pkey PRIMARY KEY (song);
+
+
+--
+-- TOC entry 3101 (class 2606 OID 18234)
+-- Name: records records_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.records
+    ADD CONSTRAINT records_pkey PRIMARY KEY ("user", song);
+
+
+--
+-- TOC entry 3103 (class 2606 OID 18236)
+-- Name: songs songs_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.songs
+    ADD CONSTRAINT songs_pkey PRIMARY KEY (idsong);
+
+
+--
+-- TOC entry 3105 (class 2606 OID 18238)
+-- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_email_key UNIQUE (email);
+
+
+--
+-- TOC entry 3107 (class 2606 OID 18240)
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (username);
+
+
+--
+-- TOC entry 3125 (class 2620 OID 18332)
+-- Name: records delete_statistics_vote; Type: TRIGGER; Schema: public; Owner: admin
+--
+
+CREATE TRIGGER delete_statistics_vote AFTER DELETE ON public.records FOR EACH ROW EXECUTE FUNCTION public.delete_vote();
+
+
+--
+-- TOC entry 3126 (class 2620 OID 18329)
+-- Name: records update_statistics_vote; Type: TRIGGER; Schema: public; Owner: admin
+--
+
+CREATE TRIGGER update_statistics_vote AFTER INSERT ON public.records FOR EACH ROW EXECUTE FUNCTION public.update_vote();
+
+
+--
+-- TOC entry 3108 (class 2606 OID 18241)
+-- Name: albums albums_artist_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.albums
+    ADD CONSTRAINT albums_artist_fkey FOREIGN KEY (artist) REFERENCES public.artists(username) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3109 (class 2606 OID 18246)
+-- Name: artists artists_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.artists
+    ADD CONSTRAINT artists_username_fkey FOREIGN KEY (username) REFERENCES public.users(username) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3110 (class 2606 OID 18251)
+-- Name: belong belong_genre_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.belong
+    ADD CONSTRAINT belong_genre_fkey FOREIGN KEY (genre) REFERENCES public.genres(name);
+
+
+--
+-- TOC entry 3111 (class 2606 OID 18256)
+-- Name: belong belong_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.belong
+    ADD CONSTRAINT belong_song_fkey FOREIGN KEY (song) REFERENCES public.songs(idsong) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3112 (class 2606 OID 18261)
+-- Name: contains contains_list_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.contains
+    ADD CONSTRAINT contains_list_fkey FOREIGN KEY (list) REFERENCES public.playlists(idlist) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3113 (class 2606 OID 18266)
+-- Name: contains contains_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.contains
+    ADD CONSTRAINT contains_song_fkey FOREIGN KEY (song) REFERENCES public.songs(idsong) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3114 (class 2606 OID 18271)
+-- Name: creates creates_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.creates
+    ADD CONSTRAINT creates_song_fkey FOREIGN KEY (song) REFERENCES public.songs(idsong) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3115 (class 2606 OID 18276)
+-- Name: creates creates_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.creates
+    ADD CONSTRAINT creates_username_fkey FOREIGN KEY (username) REFERENCES public.artists(username) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3116 (class 2606 OID 18281)
+-- Name: normallisteners normallisteners_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.normallisteners
+    ADD CONSTRAINT normallisteners_username_fkey FOREIGN KEY (username) REFERENCES public.users(username) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3117 (class 2606 OID 18286)
+-- Name: normalsongs normalsongs_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.normalsongs
+    ADD CONSTRAINT normalsongs_song_fkey FOREIGN KEY (song) REFERENCES public.songs(idsong) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3118 (class 2606 OID 18291)
+-- Name: playlists playlists_author_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.playlists
+    ADD CONSTRAINT playlists_author_fkey FOREIGN KEY (author) REFERENCES public.users(username) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3119 (class 2606 OID 18296)
+-- Name: premiumlisteners premiumlisteners_username_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.premiumlisteners
+    ADD CONSTRAINT premiumlisteners_username_fkey FOREIGN KEY (username) REFERENCES public.users(username) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3120 (class 2606 OID 18301)
+-- Name: premiumsongs premiumsongs_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.premiumsongs
+    ADD CONSTRAINT premiumsongs_song_fkey FOREIGN KEY (song) REFERENCES public.songs(idsong) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3121 (class 2606 OID 18306)
+-- Name: records song; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.records
+    ADD CONSTRAINT song FOREIGN KEY (song) REFERENCES public.songs(idsong) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3123 (class 2606 OID 18311)
+-- Name: songs songs_album_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.songs
+    ADD CONSTRAINT songs_album_fkey FOREIGN KEY (album) REFERENCES public.albums(idalbum) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3124 (class 2606 OID 18316)
+-- Name: statistics statistics_song_fkey; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.statistics
+    ADD CONSTRAINT statistics_song_fkey FOREIGN KEY (song) REFERENCES public.songs(idsong) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3122 (class 2606 OID 18321)
+-- Name: records user; Type: FK CONSTRAINT; Schema: public; Owner: admin
+--
+
+ALTER TABLE ONLY public.records
+    ADD CONSTRAINT "user" FOREIGN KEY ("user") REFERENCES public.users(username) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3281 (class 0 OID 0)
+-- Dependencies: 200
+-- Name: TABLE albums; Type: ACL; Schema: public; Owner: admin
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.albums TO artists;
+GRANT SELECT ON TABLE public.albums TO premium_listeners;
+GRANT SELECT ON TABLE public.albums TO listeners;
+GRANT SELECT,DELETE ON TABLE public.albums TO delete_manager;
+
+
+--
+-- TOC entry 3282 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: TABLE artists; Type: ACL; Schema: public; Owner: admin
+--
+
+GRANT SELECT,INSERT ON TABLE public.artists TO guest_manager;
+GRANT SELECT,DELETE,UPDATE ON TABLE public.artists TO artists;
+GRANT SELECT ON TABLE public.artists TO premium_listeners;
+GRANT SELECT ON TABLE public.artists TO listeners;
+GRANT SELECT,DELETE ON TABLE public.artists TO delete_manager;
+
+
+--
+-- TOC entry 3283 (class 0 OID 0)
+-- Dependencies: 203
+-- Name: TABLE belong; Type: ACL; Schema: public; Owner: admin
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.belong TO artists;
+GRANT SELECT ON TABLE public.belong TO premium_listeners;
+GRANT SELECT ON TABLE public.belong TO listeners;
+GRANT SELECT,DELETE ON TABLE public.belong TO delete_manager;
+
+
+--
+-- TOC entry 3284 (class 0 OID 0)
+-- Dependencies: 204
+-- Name: TABLE contains; Type: ACL; Schema: public; Owner: admin
+--
+
+GRANT SELECT,INSERT,DELETE ON TABLE public.contains TO artists;
+GRANT SELECT,INSERT,DELETE ON TABLE public.contains TO premium_listeners;
+GRANT SELECT,INSERT,DELETE ON TABLE public.contains TO listeners;
+GRANT SELECT,DELETE ON TABLE public.contains TO guest_manager;
+GRANT SELECT,DELETE ON TABLE public.contains TO delete_manager;
+
+
+--
+-- TOC entry 3285 (class 0 OID 0)
+-- Dependencies: 205
+-- Name: TABLE creates; Type: ACL; Schema: public; Owner: admin
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.creates TO artists;
+GRANT SELECT ON TABLE public.creates TO premium_listeners;
+GRANT SELECT ON TABLE public.creates TO listeners;
+GRANT SELECT,DELETE ON TABLE public.creates TO delete_manager;
+
+
+--
+-- TOC entry 3286 (class 0 OID 0)
+-- Dependencies: 206
+-- Name: TABLE genres; Type: ACL; Schema: public; Owner: admin
+--
+
+GRANT SELECT ON TABLE public.genres TO artists;
+GRANT SELECT ON TABLE public.genres TO premium_listeners;
+GRANT SELECT ON TABLE public.genres TO listeners;
+
+
+--
+-- TOC entry 3287 (class 0 OID 0)
+-- Dependencies: 207
+-- Name: TABLE normallisteners; Type: ACL; Schema: public; Owner: admin
+--
+
+GRANT SELECT,INSERT,DELETE ON TABLE public.normallisteners TO guest_manager;
+GRANT SELECT,INSERT ON TABLE public.normallisteners TO listeners;
+GRANT SELECT,DELETE ON TABLE public.normallisteners TO delete_manager;
+
+
+--
+-- TOC entry 3288 (class 0 OID 0)
+-- Dependencies: 208
+-- Name: TABLE normalsongs; Type: ACL; Schema: public; Owner: admin
+--
+
+GRANT SELECT,INSERT,DELETE ON TABLE public.normalsongs TO artists;
+GRANT SELECT ON TABLE public.normalsongs TO premium_listeners;
+GRANT SELECT ON TABLE public.normalsongs TO listeners;
+GRANT SELECT,DELETE ON TABLE public.normalsongs TO delete_manager;
+
+
+--
+-- TOC entry 3289 (class 0 OID 0)
+-- Dependencies: 209
+-- Name: TABLE playlists; Type: ACL; Schema: public; Owner: admin
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.playlists TO artists;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.playlists TO premium_listeners;
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.playlists TO listeners;
+GRANT SELECT,DELETE ON TABLE public.playlists TO delete_manager;
+
+
+--
+-- TOC entry 3290 (class 0 OID 0)
+-- Dependencies: 211
+-- Name: TABLE premiumlisteners; Type: ACL; Schema: public; Owner: admin
+--
+
+GRANT SELECT,INSERT ON TABLE public.premiumlisteners TO guest_manager;
+GRANT SELECT,DELETE ON TABLE public.premiumlisteners TO premium_listeners;
+GRANT SELECT,DELETE ON TABLE public.premiumlisteners TO delete_manager;
+
+
+--
+-- TOC entry 3291 (class 0 OID 0)
+-- Dependencies: 212
+-- Name: TABLE premiumsongs; Type: ACL; Schema: public; Owner: admin
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.premiumsongs TO artists;
+GRANT SELECT ON TABLE public.premiumsongs TO premium_listeners;
+GRANT SELECT,DELETE ON TABLE public.premiumsongs TO delete_manager;
+
+
+--
+-- TOC entry 3292 (class 0 OID 0)
+-- Dependencies: 213
+-- Name: TABLE records; Type: ACL; Schema: public; Owner: admin
+--
+
+GRANT SELECT,INSERT,DELETE,TRIGGER,UPDATE ON TABLE public.records TO artists;
+GRANT SELECT,DELETE,TRIGGER ON TABLE public.records TO delete_manager;
+GRANT SELECT,INSERT,DELETE,TRIGGER,UPDATE ON TABLE public.records TO listeners;
+GRANT SELECT,INSERT,DELETE,TRIGGER,UPDATE ON TABLE public.records TO premium_listeners;
+
+
+--
+-- TOC entry 3293 (class 0 OID 0)
+-- Dependencies: 214
+-- Name: TABLE songs; Type: ACL; Schema: public; Owner: admin
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.songs TO artists;
+GRANT SELECT ON TABLE public.songs TO premium_listeners;
+GRANT SELECT ON TABLE public.songs TO listeners;
+GRANT SELECT,DELETE ON TABLE public.songs TO delete_manager;
+
+
+--
+-- TOC entry 3294 (class 0 OID 0)
+-- Dependencies: 216
+-- Name: TABLE statistics; Type: ACL; Schema: public; Owner: admin
+--
+
+GRANT SELECT,INSERT,DELETE,UPDATE ON TABLE public.statistics TO artists;
+GRANT SELECT,UPDATE ON TABLE public.statistics TO premium_listeners;
+GRANT SELECT,UPDATE ON TABLE public.statistics TO listeners;
+GRANT SELECT,DELETE ON TABLE public.statistics TO delete_manager;
+
+
+--
+-- TOC entry 3295 (class 0 OID 0)
+-- Dependencies: 217
+-- Name: TABLE users; Type: ACL; Schema: public; Owner: admin
+--
+
+GRANT SELECT,INSERT ON TABLE public.users TO guest_manager;
+GRANT SELECT,DELETE,UPDATE ON TABLE public.users TO artists;
+GRANT SELECT,DELETE,UPDATE ON TABLE public.users TO premium_listeners;
+GRANT SELECT,DELETE,UPDATE ON TABLE public.users TO listeners;
+GRANT SELECT,DELETE ON TABLE public.users TO delete_manager;
+
+
+-- Completed on 2022-09-27 22:58:08 CEST
+
+--
+-- PostgreSQL database dump complete
+--
+
