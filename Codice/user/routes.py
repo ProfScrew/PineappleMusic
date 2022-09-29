@@ -14,9 +14,12 @@ user = Blueprint('user', __name__, static_folder='static',
 @user.route('/home', methods=['GET'])
 @login_required
 def home():
+    likes = Song.get_top_like_songs()
+    views = Song.get_top_view_songs()
     form_genre=GetSongsGenres()
     genres=Genre.get_genres()
-    return render_template("home.html", title="Home", form_genre=form_genre,user=current_user,genres=genres)
+    
+    return render_template("home.html", title="Home", form_genre=form_genre,user=current_user,genres=genres, songview = views, songlike = likes, songsuggestion = likes)
 
 
 @user.route('/profile', methods=['GET', 'POST'])

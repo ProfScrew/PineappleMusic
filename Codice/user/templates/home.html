@@ -1,6 +1,6 @@
 {% extends 'menu.html' %}
 {% block js %}
-<script type="text/javascript" src="{{ url_for('user.static', filename='js/script.js')}}"></script>
+  <script type="text/javascript" src="{{ url_for('user.static', filename='js/script.js')}}"></script>
 {% endblock %}
 
 {% block content %}
@@ -9,19 +9,19 @@
   <div class="row">
     <h1 class="text-center">Home</h1>
     {% for item in genres %}
-    <div class="col-lg-3 col-6">
-      <div class="card card-music text-white bg-success mb-3" type="submit" style="max-width: 18rem;">
-        <form method="POST" action="{{ url_for('music.getsongfromgenre') }}">
-        {{ form_genre.csrf_token }}
-        {{ form_genre.genre(value=item.name)}}
-        <div class="img card-img-top"
-          style="background-image: url(https://drive.google.com/uc?export=view&id={{item.cover}})"></div>
-        <div class="card-body">
-          <h5 class="card-title" style="text-align: center">{{item.name}}</h5>
+      <div class="col-lg-3 col-6">
+        <div class="card card-music text-white bg-success mb-3" type="submit" style="max-width: 18rem;">
+          <form method="POST" action="{{ url_for('music.getsongfromgenre') }}">
+            {{ form_genre.csrf_token }}
+            {{ form_genre.genre(value=item.name)}}
+            <div class="img card-img-top"
+              style="background-image: url(https://drive.google.com/uc?export=view&id={{item.cover}})"></div>
+            <div class="card-body">
+              <h5 class="card-title" style="text-align: center">{{item.name}}</h5>
+            </div>
+          </form>
         </div>
-        </form>
       </div>
-    </div>
     {% endfor %}
   </div>
 </div>
@@ -31,70 +31,31 @@
 <br>
 <br>
 
-<h2 style="text-align: center">TOP 10 SONGS</h2>
+<h2 style="text-align: center">TOP 10 VIEWS</h2>
 <div class="container-fluid song-list">
 
-  <div class="col-12">
-    <h1 class="text-center">{{page_name}}</h1>
-  </div>
-
-  <audio id="playerhidden" controls autoplay hidden>
-    <source type="audio/mpeg">
-  </audio>
-
   <div class="col-12 table-responsive">
-    <table id="test" class="table table-striped" style="width:100%">
+    <table id="test1" class="table table-striped" style="width:100%">
       <thead class="table-dark">
         <tr>
           <th>Cover</th>
-          <th>Cover Link</th>
-          <th>Song id</th>
-          <th>Artist</th>
           <th>Name</th>
-          <th>Album</th>
+          <th>Artist</th>
           <th>Genre</th>
-          <th>Content Link</th>
-          {% if add_to_playlist%}
-          <th>Add to Playlist</th>
-          {% endif %}
-          {% if delete_from_playlist%}
-          <th>Delete from playlist</th>
-          {% endif %}
+          <th>Album</th>
+          <th>Views</th>
         </tr>
       </thead>
       <tbody>
-        {% for item in listsong %}
-        <tr class="table-light">
-          <td><img src="https://drive.google.com/uc?export=view&id={{item[0].cover}}" height="50" width="50">
-          </td>
-          <td>{{item[0].cover}}</td>
-          <td>{{item[0].idsong}}</td>
-          <td>{{item.username}}</td>
-          <td>{{item[0].name}}</td>
-          <td>{{item.name}}</td>
-          <td>{{item.genre}}</td>
-          <td>{{item[0].content}}</td>
-          {% if add_to_playlist%}
-          <td>
-            <form method="POST" action="{{ url_for('music.search') }}">
-              {{ form.csrf_token }}
-              {{ form.songid(value=item[0].idsong)}}
-              {{
-              form.playlist(class="selectpicker",multiple=True,**{"data-live-search":"true","title":"List
-              of your playlist"})}}
-              {{ form.submit(class="btn btn-success")}}
-            </form>
-          </td>
-          {% endif %}
-          {% if delete_from_playlist%}
-          <form method="POST" action="{{ url_for('music.getsongfromplaylist') }}">
-            {{ delete_form.csrf_token }}
-            {{ delete_form.idsong(value=item[0].idsong)}}
-            {{ delete_form.playlistid(value=playlistid)}}
-            <td>{{ delete_form.submit(class="btn btn-danger")}}</td>
-          </form>
-          {% endif %}
-        </tr>
+        {% for item in songview %}
+          <tr class="table-light">
+            <td><img src="https://drive.google.com/uc?export=view&id={{item.cover}}" height="50" width="50"></td>
+            <td>{{item.name}}</td>
+            <td>{{item.artist}}</td>
+            <td>{{item.genre}}</td>
+            <td>{{item.album}}</td>
+            <td>{{item.views}}</td>
+          </tr>
         {% endfor %}
       </tbody>
     </table>
@@ -102,76 +63,68 @@
   </div>
 </div>
 
-<h2 style="text-align: center">TOP 5 ARTISTS</h2>
+<h2 style="text-align: center">TOP 10 LIKES</h2>
 <div class="container-fluid song-list">
-
-  <div class="col-12">
-    <h1 class="text-center">{{page_name}}</h1>
-  </div>
-
-  <audio id="playerhidden" controls autoplay hidden>
-    <source type="audio/mpeg">
-  </audio>
 
   <div class="col-12 table-responsive">
     <table id="test2" class="table table-striped" style="width:100%">
       <thead class="table-dark">
         <tr>
           <th>Cover</th>
-          <th>Cover Link</th>
-          <th>Song id</th>
-          <th>Artist</th>
           <th>Name</th>
-          <th>Album</th>
+          <th>Artist</th>
           <th>Genre</th>
-          <th>Content Link</th>
-          {% if add_to_playlist%}
-          <th>Add to Playlist</th>
-          {% endif %}
-          {% if delete_from_playlist%}
-          <th>Delete from playlist</th>
-          {% endif %}
+          <th>Album</th>
+          <th>Likes</th>
         </tr>
       </thead>
       <tbody>
-        {% for item in listsong %}
-        <tr class="table-light">
-          <td><img src="https://drive.google.com/uc?export=view&id={{item[0].cover}}" height="50" width="50">
-          </td>
-          <td>{{item[0].cover}}</td>
-          <td>{{item[0].idsong}}</td>
-          <td>{{item.username}}</td>
-          <td>{{item[0].name}}</td>
-          <td>{{item.name}}</td>
-          <td>{{item.genre}}</td>
-          <td>{{item[0].content}}</td>
-          {% if add_to_playlist%}
-          <td>
-            <form method="POST" action="{{ url_for('music.search') }}">
-              {{ form.csrf_token }}
-              {{ form.songid(value=item[0].idsong)}}
-              {{
-              form.playlist(class="selectpicker",multiple=True,**{"data-live-search":"true","title":"List
-              of your playlist"})}}
-              {{ form.submit(class="btn btn-success")}}
-            </form>
-          </td>
-          {% endif %}
-          {% if delete_from_playlist%}
-          <form method="POST" action="{{ url_for('music.getsongfromplaylist') }}">
-            {{ delete_form.csrf_token }}
-            {{ delete_form.idsong(value=item[0].idsong)}}
-            {{ delete_form.playlistid(value=playlistid)}}
-            <td>{{ delete_form.submit(class="btn btn-danger")}}</td>
-          </form>
-          {% endif %}
-        </tr>
+        {% for item in songlike %}
+          <tr class="table-light">
+            <td><img src="https://drive.google.com/uc?export=view&id={{item.cover}}" height="50" width="50"></td>
+            <td>{{item.name}}</td>
+            <td>{{item.artist}}</td>
+            <td>{{item.genre}}</td>
+            <td>{{item.album}}</td>
+            <td>{{item.likes}}</td>
+          </tr>
         {% endfor %}
       </tbody>
     </table>
 
   </div>
 </div>
+
+<h2 style="text-align: center">YOUR SUGGESTION</h2>
+<div class="container-fluid song-list">
+  <div class="col-12 table-responsive">
+    <table id="test3" class="table table-striped" style="width:100%">
+      <thead class="table-dark">
+        <tr>
+          <th>Cover</th>
+          <th>Name</th>
+          <th>Artist</th>
+          <th>Genre</th>
+          <th>Album</th>
+          <th>Likes</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in songsuggestion %}
+          <tr class="table-light">
+            <td><img src="https://drive.google.com/uc?export=view&id={{item.cover}}" height="50" width="50"></td>
+            <td>{{item.name}}</td>
+            <td>{{item.artist}}</td>
+            <td>{{item.genre}}</td>
+            <td>{{item.album}}</td>
+            <td>{{item.likes}}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
 
 
 

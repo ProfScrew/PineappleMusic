@@ -1,5 +1,6 @@
 
 
+import statistics
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
@@ -571,6 +572,37 @@ class Song(Base):
         except:
             Session_artist.rollback()
             return False
+    
+    def get_top_like_songs():
+        try:
+            songs = Session_listener.query(Song.name ,
+                                           Song.cover.label("cover"),
+                                           Belong.genre,
+                                           Creates.username.label("artist"),
+                                           Album.name.label("album"),
+                                           Statistic.upvote.label("likes")).join(Belong).join(Creates).outerjoin(Album).join(NormalSong).join(Statistic).order_by(desc(Statistic.upvote)).limit(10).all()
+            Session_listener.commit()
+            return songs
+        except:
+            Session_listener.rollback()
+            return None
+    def get_top_view_songs():
+        try:
+            songs = Session_listener.query(Song.name ,
+                                           Song.cover.label("cover"),
+                                           Belong.genre ,
+                                           Creates.username.label("artist"),
+                                           Album.name.label("album"),
+                                           Statistic.views.label("views")).join(Belong).join(Creates).outerjoin(Album).join(NormalSong).join(Statistic).order_by(desc(Statistic.views)).limit(10).all()
+            Session_listener.commit()
+            return songs
+        except:
+            Session_listener.rollback()
+            return None
+    
+    def get_suggestion_songs():
+        #
+        return
     
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
