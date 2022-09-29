@@ -45,7 +45,7 @@ def search():
     form=AddToPlaylist()
     session=User.get_type_user_session(current_user.username)
     if current_user.type_account==1:
-        song=NormalSong.get_songs()
+        song=NormalSong.get_songs(current_user.username)
     else:
         song=Song.get_songs(current_user.username)
 
