@@ -1,11 +1,11 @@
 
 
-import statistics
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.exc import PendingRollbackError, IntegrityError
 
+from sqlalchemy.sql.functions import count
 from sqlalchemy.sql.expression import update
 
 from flask_login import UserMixin
@@ -600,8 +600,15 @@ class Song(Base):
             Session_listener.rollback()
             return None
     
-    def get_suggestion_songs():
-        #
+    def get_suggestion_songs(temp_user):
+        
+        count_of_genre = Session_listener.query(Genre.name.label("genre"), count(Record.song).label("likes")).join(Belong).join(Song).join(Record).filter(and_(Record.vote == True,Record.user == temp_user)).group_by(Genre.name).order_by(desc("likes")).all()
+        total_likes = 0
+        for i in count_of_genre:
+            total_likes = total_likes + i.likes
+        for i in count_of_genre:
+            i.likes = i.likes * 100 / total_likes
+        
         return
     
     # questo metodo è opzionale, serve solo per pretty printing

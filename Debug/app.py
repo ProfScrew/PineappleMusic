@@ -1,6 +1,7 @@
 from unicodedata import name
 import sqlalchemy
 from sqlalchemy import *
+from sqlalchemy.sql.functions import count
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -16,13 +17,37 @@ from flask import Flask
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 
-engine = create_engine('postgresql://artists:PassArtists@129.152.15.83:5432/PineappleMusic', echo=True)
+engine = create_engine('postgresql://artists:PassArtists@localhost:5432/PineappleMusic', echo=True)
 
 
 
 Session = sessionmaker(bind=engine)       # factory pattern
 session = Session()
 
+
+songs = session.query(Genre, count(Belong.song).label("Songs")).join(Belong).group_by(Genre.name).all()
+
+for i in songs:
+    print(i)
+    
+count_of_genre = session.query(Genre.name.label("genre"),
+                             count(Record.song).label("likes")).join(Belong).join(Song).join(Record).filter(and_(Record.vote == True,
+                                                                                                                 Record.user == 'JackSparrow')).order_by(desc("likes")).group_by(Genre.name).all()
+
+print("AAAAAAAAA")
+for i in count_of_genre:
+    print(i.likes)
+    
+total_likes = 0
+for i in count_of_genre:
+    total_likes = total_likes + i.likes
+    
+a = []
+for i in count_of_genre:
+    a.append = (i.likes * 100) / total_likes
+
+for i in a:
+    
 #user = session.query(User.username,User.name,User.surname,User.birthdate,User.email,User.gender,User.phone,User.password,NormalListener.username.label('normallistener'),PremiumListener.username.label('premiumlistener'),Artist.username.label('artist')).outerjoin(NormalListener).outerjoin(PremiumListener).outerjoin(Artist).filter(User.username == 'JackSparrow').first()
 
 #user = User.query.get('JackSparrow')
@@ -42,17 +67,17 @@ session = Session()
 #song = session.query(Song,Record).outerjoin(Record).all()
 #record = session.query(Song, Record).outerjoin(Record).filter(Record.user == 'JackSparrow').all()
 #query = song.union(record)
-songsjack = session.query(Record).filter(Record.user == 'JackSparrow').subquery()
+
+
+#songsjack = session.query(Record).filter(Record.user == 'JackSparrow').subquery()
 
     
-query = session.query(songsjack,Song).outerjoin(songsjack).limit(3).all()
+#query = session.query(songsjack,Song).outerjoin(songsjack).limit(3).all()
 
 
 
 
 
-for i in query:
-    print(i[2])
 
 #   last_orders = db.session.query(
 #       Order.customer_id, db.func.max(Order.order_date).label('last_order_date')
