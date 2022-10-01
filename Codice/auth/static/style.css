@@ -1,0 +1,14 @@
+.signin{
+    position: absolute;
+    top:5%;
+}
+.signup{
+    position: absolute;
+    top:8%;
+}
+canvas{
+    display:block;
+    vertical-align:bottom;
+    min-height: 1300px;
+    max-height: 4000px;
+}

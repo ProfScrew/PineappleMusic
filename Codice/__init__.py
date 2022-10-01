@@ -2,7 +2,7 @@ from flask import Flask
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 
-from Codice.config import config
+from Codice.localconfig import config
 from Codice.models import User
 from Codice.database import *
 
@@ -34,7 +34,7 @@ def create_app():
     @login_manager.user_loader
     # user loader
     def load_user(user_id):
-        user = User.query.get(user_id)
+        user = User.get_user(Session_guestmanager,user_id)
         user.type_account = User.get_type_user(user_id)
         user.type_session = User.get_type_user_session_from_number(user_id,user.type_account)
         return user

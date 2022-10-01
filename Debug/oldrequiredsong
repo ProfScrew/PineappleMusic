@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('auth.static',filename='css/style.css') }}">
+{% endblock %}
+
+{% block pagebody %}
+
+<section class="vh-100">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+        <div class="card bg-dark text-white" style="border-radius: 1rem;">
+          <div class="card-body p-5 text-center">
+
+            <div class="mb-md-5 mt-md-4 pb-5">
+              <img class="mb-4" src="{{ url_for('static',filename='img/pineapplemusic.ico') }}" alt="logo" width="72"
+                height="100">
+              <h2 class="fw-bold mb-2 text-uppercase">Insert your first song.</h2>
+              <p class="text-white-50 mb-5">To Procede with your registration inser your first song!</p>
+
+              <form method="POST" action="{{ url_for('auth.requiredsong') }}">
+                {{ form.csrf_token }}
+
+                <div class="form-outline form-white mb-4">
+                  {{ form.name(class="form-control form-control-lg")}}
+                  {{ form.name.label(class="form-label")}}
+                </div>
+
+                <div class="form-outline form-white mb-4">
+                  {{ form.cover(class="form-control form-control-lg")}}
+                  {{ form.cover.label(class="form-label")}}
+                </div>
+
+                <div class="form-outline form-white mb-4">
+                  {{ form.content(class="form-control form-control-lg")}}
+                  {{ form.content.label(class="form-label")}}
+                </div>
+
+                <div class="form-outline form-white mb-4">
+                  {{ form.release_date(class="form-control form-control-lg")}}
+                  {{ form.release_date.label(class="form-label")}}
+                </div>
+
+                <div class="form-outline form-white mb-4">
+                  {{ form.premium(class="form-control form-control-lg")}}
+                  {{ form.premium.label(class="form-label")}}
+                </div>
+                <div class="form-outline form-white mb-4">
+                  {{ form.genre(class="form-control form-control-lg")}}
+                  {{ form.genre.label(class="form-label")}}
+                </div>
+                <hr>
+                <div class="form-outline form-white mb-4">
+                  {{ form.username(class="form-control form-control-lg")}}
+                  {{ form.username.label(class="form-label")}}
+                </div>
+
+                <div class="form-outline form-white mb-4">
+                  {{ form.password(class="form-control form-control-lg")}}
+                  {{ form.password.label(class="form-label")}}
+                </div>
+
+
+
+                {{ form.submit(class="btn btn-outline-light btn-lg px-5")}}
+
+              </form>
+              <div>
+                <p class="text-white-50 mb-2">
+                  To upload song and content, create a file share link on google drive and paste it here.
+                </p>
+                <p class="text-white-50 mb-2">
+                  PS. If you leave this page and try to login your account will be deleted and
+                  you will have to register again.
+                </p>
+                {% for message in get_flashed_messages()%}
+                <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                  {{message}}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {%endfor%}
+              </div>
+
+
+
+
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</section>
+
+{% endblock %}

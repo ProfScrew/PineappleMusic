@@ -14,12 +14,16 @@ user = Blueprint('user', __name__, static_folder='static',
 @user.route('/home', methods=['GET'])
 @login_required
 def home():
-    likes = Song.get_top_like_songs()
-    views = Song.get_top_view_songs()
+    likes = Song.get_top_like_songs(current_user.type_session)
+    views = Song.get_top_view_songs(current_user.type_session)
+    suggestion = Song.get_suggestion_songs(current_user.username, current_user.type_session)
+    if suggestion == None:
+        suggestion = views
+        
     form_genre=GetSongsGenres()
     genres=Genre.get_genres()
     
-    return render_template("home.html", title="Home", form_genre=form_genre,user=current_user,genres=genres, songview = views, songlike = likes, songsuggestion = likes)
+    return render_template("home.html", title="Home", form_genre=form_genre,user=current_user,genres=genres, songview = views, songlike = likes, songsuggestion = suggestion)
 
 
 @user.route('/profile', methods=['GET', 'POST'])

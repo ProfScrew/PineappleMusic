@@ -1,106 +1,94 @@
 {% extends "base.html" %}
 {% block css %}
-<link rel="stylesheet" href="{{ url_for('auth.static',filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('auth.static',filename='style.css') }}">
 {% endblock %}
 {% block pagebody %}
 
-<section class="vh-100">
-    <div class="container py-5 h-100">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-                <div class="card bg-dark text-white" style="border-radius: 1rem;">
-                    <div class="card-body p-5 text-center">
 
-                        <div class="mb-md-5 mt-md-4 pb-5">
-                            <img class="mb-4" src="{{ url_for('static',filename='img/pineapplemusic.ico') }}" alt="logo"
-                                width="72" height="100">
-                            <h2 class="fw-bold mb-2 text-uppercase">Register</h2>
-                            <p class="text-white-50 mb-5">Please enter your data!</p>
+<div class="container-fluid" id="particles-js">
+
+    <div class="row">
+
+        <div class="flexBox" style="display: flex; flex-flow: row wrap; justify-content: center;">
+
+            <div class="card signup bg-dark text-white" style="border-radius: 1rem;">
+
+                <div class="card-body  p-5  text-center">
+                    <div class="mb-md-2 mt-md-2 pb-2">
+                        <img class="mb-1" src="{{ url_for('static',filename='img/pineapplemusic.ico') }}" alt="logo"
+                            width="72" height="100">
+                        <h2 class="fw-bold mb-1 text-uppercase">Register</h2>
+                        <p class="text-white-50 mb-">Please enter your data!</p>
 
                         <form method="POST" action="{{ url_for('auth.signup') }}">
                             {{ form.csrf_token }}
-                  
-                            <div class="form-outline form-white mb-4">
-                              {{ form.username(class="form-control form-control-lg")}}
-                              {{ form.username.label(class="form-label")}} 
-                            </div>
-                             
-                            <div class="form-outline form-white mb-4">
-                                {{ form.name(class="form-control form-control-lg")}}
-                                {{ form.name.label(class="form-label")}} 
-                            </div>
 
                             <div class="form-outline form-white mb-4">
-                                {{ form.surname(class="form-control form-control-lg")}}
-                                {{ form.surname.label(class="form-label")}} 
-                            </div>
-                            <!-- DATA DI NASCITA-->
-                            <div class="form-outline form-white mb-4">
+                                {{ form.username(class="form-control form-control-lg")}}
+                                {{ form.username.label(class="form-label")}}
+                                        {{ form.name(class="form-control form-control-lg")}}
+                                        {{ form.name.label(class="form-label")}}
+                                        {{ form.surname(class="form-control form-control-lg")}}
+                                        {{ form.surname.label(class="form-label")}}
+                                
+                                
+                                
                                 {{ form.birthdate(class="form-control form-control-lg")}}
-                                {{ form.birthdate.label(class="form-label")}} 
-                            </div>
-
-                            <div class="form-outline form-white mb-4">
+                                {{ form.birthdate.label(class="form-label")}}
+                            
                                 <div class="form-group">
                                     <div class="input-group" id="show_hide_password">
-                                      {{ form.password(class="form-control form-control-lg")}}
+                                        {{ form.password(class="form-control form-control-lg")}}
 
-                                        <div class="input-group-addon px-2 pt-2" style="background-color: white; border-radius: 0px 5px 5px 0px; ">
-                                            <a href=""><i class="fa-solid fa-eye" aria-hidden="true"></i></a> 
+                                        <div class="input-group-addon px-2 pt-2"
+                                            style="background-color: white; border-radius: 0px 5px 5px 0px; ">
+                                            <a href=""><i class="fa-solid fa-eye" aria-hidden="true"></i></a>
                                         </div>
-                                      
+
                                     </div>
-                                {{ form.password.label(class="form-label") }}
-                            
-                            </div>
+                                    {{ form.password.label(class="form-label") }}
 
-                            <!-- Gender chekc box or two option thing-->
-                            <div class="form-outline form-white mb-4">
+                                </div>
                                 {{ form.gender(class="form-control form-control-lg dropdown-toggle")}}
-                                {{ form.gender.label(class="form-label")}} 
-                            </div> 
-
-                            <div class="form-outline form-white mb-4">
+                                {{ form.gender.label(class="form-label")}}
                                 {{ form.phone(class="form-control form-control-lg")}}
-                                {{ form.phone.label(class="form-label")}} 
-                            </div>
-                            
-                            <div class="form-outline form-white mb-4">
+                                {{ form.phone.label(class="form-label")}}
                                 {{ form.email(class="form-control form-control-lg")}}
-                                {{ form.email.label(class="form-label")}} 
-                            </div>
-                           
-                            
-
-                            <div class="form-outline form-white mb-4">
+                                {{ form.email.label(class="form-label")}}
                                 {{ form.artist(class="form-control form-control-lg dropdown-toggle")}}
-                                {{ form.artist.label(class="form-label")}} 
+                                {{ form.artist.label(class="form-label")}}
                             </div>
-
                             {{ form.submit(class="btn btn-outline-light btn-lg px-5")}}
-                  
+                            
                         </form>
-
-                        </div>
-
-                        {% for message in get_flashed_messages()%}
-                            <div class="alert alert-primary alert-dismissible fade show" role="alert">
-                                {{message}}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        {%endfor%}
-                        
-
-                        <div>
-                            <p class="mb-0"><br>You are a registered artist <br>and need to insert your first song? <br><a href="{{url_for('auth.requiredsong')}}"
-                                class="text-white-50 fw-bold">Click Here</a>
-                            </p>
-                        </div>
                     </div>
+                    {% for message in get_flashed_messages()%}
+                        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                            {{message}}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {%endfor%}<!--Scrivi quando ritorni-->
+                    <div>
+                        <p class="mb-0"><br>You are a registered artist <br>and need to insert your first song?
+                            <br><a href="{{url_for('auth.requiredsong')}}" class="text-white-50 fw-bold">Click
+                                Here</a>
+                        </p>
+                    </div>
+                    
                 </div>
             </div>
         </div>
+  
     </div>
-</section>
 
+
+    <canvas class="particles-js-canvas-el " style="width: 100%; height: 100%; border:1px;" width="100%" height="100%">
+    </canvas>
+
+</div>
+
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/particles.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/app.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/stats.js')}}"></script>
 {% endblock %}

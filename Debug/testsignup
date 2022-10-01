@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('auth.static',filename='style.css') }}">
+{% endblock %}
+{% block pagebody %}
+
+
+<div class="container-fluid" id="particles-js">
+
+    <div class="row">
+
+        <div class="flexBox" style="display: flex; flex-flow: row wrap; justify-content: center;">
+
+            <div class="card prova bg-dark text-white" style="border-radius: 1rem;">
+
+                <div class="card-body  p-5  text-center">
+                    <img class="mb-4" src="{{ url_for('static',filename='img/pineapplemusic.ico') }}" alt="logo"
+                                width="72" height="100">
+                    <h2 class="fw-bold mb-2 text-uppercase">Register</h2>
+                    <p class="text-white-50 mb-5">Please enter your data!</p>
+                    
+                    <form method="POST" action="{{ url_for('auth.signup') }}">
+                        {{ form.csrf_token }}
+
+                        <div class="form-outline form-white mb-4">
+                            {{ form.username(class="form-control form-control-lg")}}
+                            {{ form.username.label(class="form-label")}}
+                            {{ form.name(class="form-control form-control-lg")}}
+                            {{ form.name.label(class="form-label")}}
+                            {{ form.surname(class="form-control form-control-lg")}}
+                            {{ form.surname.label(class="form-label")}}
+                            {{ form.birthdate(class="form-control form-control-lg")}}
+                                    {{ form.birthdate.label(class="form-label")}}
+                        </div>
+                    </form>
+
+                    
+                    
+                </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+    <canvas class="particles-js-canvas-el" style="width: 100%; height: 100%;" width="1896" height="42">
+    </canvas>
+
+</div>
+
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/particles.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/app.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/stats.js')}}"></script>
+{% endblock %}

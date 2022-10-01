@@ -16,15 +16,14 @@ music = Blueprint('music', __name__, static_folder='static',
 def views():
     var=request.data
     data = json.loads(var)
-    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAa", var)
+    #print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAa", var)
     #if data["upvote"] == "up":
     #    print("AAAAAAAAAAAAAAAAAAAAAAAA")
     
     if data["view"] == "true":
         Statistic.increase_views(int(data["idsong"]),current_user.type_session)
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAA")  
+        #print("AAAAAAAAAAAAAAAAAAAAAAAAAA")  
     elif "upvote" in data:
-        
         if data["upvote"] == "up":
             like = True
             Record.delete(current_user.username, int(data["idsong"]),current_user.type_session)
@@ -44,15 +43,11 @@ def views():
 def search():
     form=AddToPlaylist()
     session=User.get_type_user_session(current_user.username)
-    if current_user.type_account==1:
-        song=NormalSong.get_songs(current_user.username)
-    else:
-        song=Song.get_songs(current_user.username)
+    
+    song=Song.get_songs(current_user.username,current_user.type_session)
 
     playlist = Playlist.get_playlist_user(session,current_user.username)
     form.playlist.choices=Playlist.get_playlist_name_id(session,playlist)
-    
-    
     
     if form.validate_on_submit():
         for idl in form.playlist.data:
@@ -107,10 +102,7 @@ def getsongfromgenre():
     session=User.get_type_user_session(current_user.username)
 
     if genre_form.validate_on_submit():
-        if current_user.type_account==1:
-            song=NormalSong.get_songs(current_user.username,genre_form.genre.data)
-        else:
-            song=Song.get_songs(current_user.username, genre_form.genre.data)
+        song = Song.get_songs(current_user.username,current_user.type_session, genre_form.genre.data)
 
         playlist = Playlist.get_playlist_user(session,current_user.username)
         form.playlist.choices=Playlist.get_playlist_name_id(session,playlist)

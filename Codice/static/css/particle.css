@@ -1,8 +1,3 @@
-canvas{
-  display:block;
-  vertical-align:bottom;
-}
-
 /* ---- stats.js ---- */
 
 .count-particles{
@@ -46,17 +41,17 @@ canvas{
 
 #particles-js{
   width: 100%;
-  height: 100%;
-  background-color: #43715f;
+  min-height: 1300px;
+  max-height: 4000px;
+  background-color: #005fc9;
   background-image: url('');
   background-size: cover;
   background-position: 50% 50%;
-  background-repeat: no-repeat;
-  position: relative;
+  background-repeat: repeat;
 }
+
 
 .test{
   position: absolute;
-  top:40%;
-  left:40%;
+  top: 30%;
 }
