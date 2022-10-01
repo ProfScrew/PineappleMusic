@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, abort
 from flask_login import login_required, current_user
 
 from Codice.models import *
@@ -20,6 +20,9 @@ def statistics():
 @artist.route('/song', methods=['GET','POST'])
 @login_required
 def song():
+    if current_user.type_account != 3:
+        abort(403)
+            
     form = SongForm()
     modify_song=ModifySong()
     delete_song=DeleteSong()
@@ -72,6 +75,9 @@ def song():
 @artist.route('/album', methods=['GET','POST'])
 @login_required
 def album():
+    if current_user.type_account != 3:
+        abort(403)
+        
     form = AlbumForm()
     delete_album=DeleteAlbum()
     modify_album=ModifyAlbum()
@@ -100,11 +106,16 @@ def album():
 @artist.route('/modifyalbum', methods=['GET'])
 @login_required
 def modifyalbum_redirect():
+    if current_user.type_account != 3:
+        abort(403)
     return redirect(url_for('artist.album'))
 
 @artist.route('/modifyalbum', methods=['POST'])
 @login_required
 def modifyalbum():
+    if current_user.type_account != 3:
+        abort(403)
+        
     modify_album=ModifyAlbum()
     album_form =ModifyAlbumForm()
     if album_form.validate_on_submit():
@@ -122,6 +133,9 @@ def modifyalbum():
 @artist.route('/deletealbum', methods=['POST'])
 @login_required
 def deletealbum():
+    if current_user.type_account != 3:
+        abort(403)
+        
     delete_album=DeleteAlbum()
     if delete_album.validate_on_submit():
         if Album.delete_album(delete_album.idalbum.data):
@@ -134,6 +148,9 @@ def deletealbum():
 @artist.route('/modifysong', methods=['GET','POST'])
 @login_required
 def modifysong():
+    if current_user.type_account != 3:
+        abort(403)
+        
     song = ModifySong()
     form = ModifySongForm()
     song_info = Song.get_song_id(song.idsong.data)
@@ -204,6 +221,9 @@ def modifysong():
 @artist.route('/deletesong', methods=['POST'])
 @login_required
 def deletesong():
+    if current_user.type_account != 3:
+        abort(403)
+        
     delete_song = DeleteSong()
     if delete_song.validate_on_submit():
         if Song.delete_song(delete_song.idsong.data):
