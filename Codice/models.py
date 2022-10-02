@@ -597,7 +597,7 @@ class Song(Base):
                                                Belong.genre.label("genre"),
                                                Creates.username.label("artist"),
                                                Album.name.label("album"),
-                                               Statistic.upvote.label("likes")).join(Belong).join(Creates).outerjoin(Album).join(NormalSong).join(Statistic).order_by(desc(Statistic.upvote)).all()
+                                               Statistic.upvote.label("likes")).join(Belong).join(Creates).outerjoin(Album).join(NormalSong).join(Statistic).order_by(desc(Statistic.upvote)).limit(10).all()
                 
             elif temp_session_db == Session_premiumlistener or temp_session_db == Session_artist:
                 songs = temp_session_db.query(Song.name.label("name"),
@@ -605,7 +605,7 @@ class Song(Base):
                                                Belong.genre.label("genre"),
                                                Creates.username.label("artist"),
                                                Album.name.label("album"),
-                                               Statistic.upvote.label("likes")).join(Belong).join(Creates).outerjoin(Album).join(Statistic).order_by(desc(Statistic.upvote)).all()
+                                               Statistic.upvote.label("likes")).join(Belong).join(Creates).outerjoin(Album).join(Statistic).order_by(desc(Statistic.upvote)).limit(10).all()
             
             temp_session_db.commit()
             return songs
@@ -621,14 +621,14 @@ class Song(Base):
                                                Belong.genre.label("genre"),
                                                Creates.username.label("artist"),
                                                Album.name.label("album"),
-                                               Statistic.views.label("views")).join(Belong).join(Creates).outerjoin(Album).join(NormalSong).join(Statistic).order_by(desc(Statistic.views)).all()
+                                               Statistic.views.label("views")).join(Belong).join(Creates).outerjoin(Album).join(NormalSong).join(Statistic).order_by(desc(Statistic.views)).limit(10).all()
             elif temp_session_db == Session_premiumlistener or temp_session_db == Session_artist:
                 songs = temp_session_db.query(Song.name.label("name"),
                                                 Song.cover.label("cover"),
                                                 Belong.genre.label("genre"),
                                                 Creates.username.label("artist"),
                                                 Album.name.label("album"),
-                                                Statistic.views.label("views")).join(Belong).join(Creates).outerjoin(Album).join(Statistic).order_by(desc(Statistic.views)).all()
+                                                Statistic.views.label("views")).join(Belong).join(Creates).outerjoin(Album).join(Statistic).order_by(desc(Statistic.views)).limit(10).all()
                 
             temp_session_db.commit()
             return songs
@@ -643,11 +643,11 @@ class Song(Base):
             if temp_session_db == Session_listener:
                 count_of_genre = temp_session_db.query(Genre.name.label("genre"),
                                                        count(Record.song).label("likes")).join(Belong).join(Song).join(Record).join(NormalSong).filter(and_(Record.vote == True,
-                                                                                                                                                            Record.user == temp_user)).order_by(desc("likes")).group_by(Genre.name).all()
+                                                                                                                                                            Record.user == temp_user)).order_by(desc("likes")).group_by(Genre.name).limit(10).all()
             elif temp_session_db == Session_premiumlistener or temp_session_db == Session_artist:
                 count_of_genre = temp_session_db.query(Genre.name.label("genre"),
                                                        count(Record.song).label("likes")).join(Belong).join(Song).join(Record).filter(and_(Record.vote == True,
-                                                                                                                                           Record.user == temp_user)).order_by(desc("likes")).group_by(Genre.name).all()
+                                                                                                                                           Record.user == temp_user)).order_by(desc("likes")).group_by(Genre.name).limit(10).all()
                 
             
             if count_of_genre == []:
@@ -687,7 +687,7 @@ class Song(Base):
                     result_query = song
                 else:
                     result_query = union(result_query, song)
-            result = temp_session_db.execute(result_query).all()
+            result = temp_session_db.execute(result_query).limit(10).all()
             temp_session_db.commit()
             return result
         except:

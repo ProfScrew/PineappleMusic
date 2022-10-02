@@ -1,8 +1,8 @@
 {% extends 'menu.html' %}
 {% block content %}
 
-<div class="d-flex justify-content-center dashboard-content px-3 pt-4  text-center">
-  <div class="container">
+<div class="d-flex justify-content-center dashboard-content px-3 pt-4  text-center"></div>
+  <div class="container-fluid">
   <div class="col-12">
     <h1 class="text-center">Statistics</h1>
   </div>
@@ -14,6 +14,7 @@
         <canvas id="downvote"></canvas>
     </div>
 </div>
+
 
 <script>
     //graph views
@@ -33,7 +34,7 @@
         labels: labels,
         datasets: [
           {
-            label: "Views for every Songs",
+            label: "Views for every Song",
             backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
             data: view
           }
