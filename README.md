@@ -4,8 +4,6 @@ Applicazione Player Musicale
 Site https://pineapplemusic.tech/
 
 Idee da implementare:
-
-- 1 rivedere statistiche upvote downvote
 - 1 aggiungere indici per velocizare funzionamento
 
 - 2 javascript ottimizare

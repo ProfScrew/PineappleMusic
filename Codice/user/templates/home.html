@@ -35,6 +35,8 @@
 <div class="container-fluid song-list">
 
   <div class="col-12 table-responsive">
+    <form id="formtest1" method="POST" action="{{ url_for('music.getsongfromhome') }}">
+      {{ form_redirect.csrf_token }}
     <table id="test1" class="table table-striped" style="width:100%">
       <thead class="table-dark">
         <tr>
@@ -59,7 +61,8 @@
         {% endfor %}
       </tbody>
     </table>
-
+    {{ form_redirect.choice(class="form-control",value="views")}}
+  </form>
   </div>
 </div>
 
@@ -67,6 +70,8 @@
 <div class="container-fluid song-list">
 
   <div class="col-12 table-responsive">
+    <form id="formtest2" method="POST" action="{{ url_for('music.getsongfromhome') }}">
+      {{ form_redirect.csrf_token }}
     <table id="test2" class="table table-striped" style="width:100%">
       <thead class="table-dark">
         <tr>
@@ -91,13 +96,16 @@
         {% endfor %}
       </tbody>
     </table>
-
+    {{ form_redirect.choice(class="form-control",value="likes")}}
+  </form>
   </div>
 </div>
 
 <h2 style="text-align: center">YOUR SUGGESTION</h2>
 <div class="container-fluid song-list">
   <div class="col-12 table-responsive">
+    <form id="formtest3" method="POST" action="{{ url_for('music.getsongfromhome') }}">
+      {{ form_redirect.csrf_token }}
     <table id="test3" class="table table-striped" style="width:100%">
       <thead class="table-dark">
         <tr>
@@ -120,6 +128,8 @@
         {% endfor %}
       </tbody>
     </table>
+    {{ form_redirect.choice(class="form-control",value="suggestions")}}
+  </form>
   </div>
 </div>
 

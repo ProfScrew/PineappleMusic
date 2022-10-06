@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import  StringField, PasswordField,DateField,SubmitField,EmailField, SelectField
+from wtforms import  StringField, PasswordField,DateField,SubmitField,EmailField, SelectField, HiddenField
 from wtforms.validators import DataRequired, Length, Email, Optional
 
 months = ['',1,2,3,4,5,6,7,8,9,10,11,12]
@@ -27,3 +27,6 @@ class CrediCardForm(FlaskForm):
     cvv =StringField("CVV", validators=[DataRequired(), Length(min=3,max=3)])
   
     submit = SubmitField("Update")
+    
+class TableChoice(FlaskForm):
+    choice = HiddenField("choice")

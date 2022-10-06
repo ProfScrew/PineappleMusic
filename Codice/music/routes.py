@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, flash,redirect,url_for,request
 from flask_login import  login_required,current_user
 
 import json
+from Codice.user.forms import TableChoice
 
 from Codice.models import *
 from Codice.database import *
@@ -42,7 +43,7 @@ def views():
 @music.route('/search', methods=['GET','POST'])
 def search():
     form=AddToPlaylist()
-    session=User.get_type_user_session(current_user.username)
+    session=current_user.type_session
     
     song=Song.get_songs(current_user.username,current_user.type_session)
 
@@ -118,3 +119,21 @@ def getsongfromgenre():
 @music.route('/getsongfromgenre', methods=['GET'])
 def getsongfromgenre_redirect():
     return redirect(url_for('user.home'))
+
+
+@login_required
+@music.route('/getsongfromhome', methods=['GET'])
+def getsongfromhomeget_redirect():
+    return redirect(url_for('user.home'))
+
+@login_required
+@music.route('/getsongfromhome', methods=['POST'])
+def getsongfromhome():
+    form_choice = TableChoice()
+    form=AddToPlaylist()
+    if form_choice.validate_on_submit():
+        playlist = Playlist.get_playlist_user(session,current_user.username)
+        print("AAAAAAAAAAAAAAAAAAAAAAAAAA ",form_choice.choice.data)
+        #query
+    return render_template("songs.html",user=current_user,page_name="Search Songs",add_to_playlist=True,
+                            listsong=song,playlist=playlist,form=form)

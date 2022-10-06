@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash
 from flask_login import login_required, logout_user, current_user
 
 from Codice.database import *
-from Codice.user.forms import CrediCardForm, ModifyProfileForm
+from Codice.user.forms import CrediCardForm, ModifyProfileForm, TableChoice
 from Codice.music.forms import GetSongsGenres
 from Codice.models import *
 
@@ -19,11 +19,11 @@ def home():
     suggestion = Song.get_suggestion_songs(current_user.username, current_user.type_session)
     if suggestion == None:
         suggestion = views
-        
+    form_redirect = TableChoice()    
     form_genre=GetSongsGenres()
     genres=Genre.get_genres()
     
-    return render_template("home.html", title="Home", form_genre=form_genre,user=current_user,genres=genres, songview = views, songlike = likes, songsuggestion = suggestion)
+    return render_template("home.html", title="Home", form_genre=form_genre,user=current_user,genres=genres, songview = views, songlike = likes, songsuggestion = suggestion, form_redirect = form_redirect)
 
 
 @user.route('/profile', methods=['GET', 'POST'])

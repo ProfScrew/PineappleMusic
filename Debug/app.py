@@ -11,7 +11,7 @@ from flask_wtf.csrf import CSRFProtect
 
 #from Codice.database import Session_artist
 
-from models import *
+from ..Codice.models import Song, Artist, User, Creates, Session_guestmanager
 
 from flask import Flask
 from flask_login import LoginManager
@@ -26,49 +26,11 @@ session = Session()
 
 
 
-count_of_genre = session.query(Genre.name.label("genre"),
-                             count(Record.song).label("likes")).join(Belong).join(Song).join(Record).filter(and_(Record.vote == True,
-                                                                                                                 Record.user == 'JackSparrow')).order_by(desc("likes")).group_by(Genre.name).all()
-total_likes = 0
-for i in count_of_genre:
-    total_likes = total_likes + i.likes
-arr = []
-for i in count_of_genre:
-    temp = round(((i.likes * 100) / total_likes)/10)
-    if temp != 0:
-        col = []
-        col.append(i.genre)
-        col.append(temp)
-        arr.append(col)
-        
-songs = []
-for i in arr:
-    print("Genre: ", i[0])
-    #song = sqlalchemy.sql.select(Song).join(Belong).filter(Belong.genre == i[0]).limit(i[1])
-    song = session.query(Song.name.label("name"),
-                                           Song.cover.label("cover"),
-                                           Belong.genre.label("genre"),
-                                           Creates.username.label("artist"),
-                                           Album.name.label("album"),
-                                           Statistic.views.label("views")).join(Belong).join(Creates).outerjoin(Album).join(Statistic).order_by(desc(Statistic.views)).filter(Belong.genre == i[0]).limit(i[1])
-    if i == arr[0]:
-        result_query = song
-    else:
-        result_query = union(result_query, song)
-    for j in songs:
-        print(j)
-result = session.execute(result_query).all()
-    
+for i in range(1, 8000):
+    song = Song.get_songs('JackSparrow', session)
+    for a in song:
+        print(a)
 
-
-#result = songs[0].union(songs[1],songs[2]).all()
-
-print("Result:--------------------------")
-for i in result:
-    
-    print(i)
-print("All:------------------------")
-print(result)
     
 #user = session.query(User.username,User.name,User.surname,User.birthdate,User.email,User.gender,User.phone,User.password,NormalListener.username.label('normallistener'),PremiumListener.username.label('premiumlistener'),Artist.username.label('artist')).outerjoin(NormalListener).outerjoin(PremiumListener).outerjoin(Artist).filter(User.username == 'JackSparrow').first()
 

@@ -534,7 +534,7 @@ class Song(Base):
         try:
             if temp_session_db == Session_listener:
                 if genre=='':
-                    song_user = temp_session_db.query(Record).filter(Record.user == temp_user).subquery()
+                    song_user = temp_session_db.query(Record).filter(Record.user == temp_user).subquery()   #sotto query per estrarre like
                     songs = temp_session_db.query(Song,Belong.genre,Creates.username,Album.name,song_user).join(Belong).join(Creates).outerjoin(Album).join(NormalSong).outerjoin(song_user).all()
                 else:
                     song_user = temp_session_db.query(Record).filter(Record.user == temp_user).subquery()
@@ -589,23 +589,40 @@ class Song(Base):
             Session_artist.rollback()
             return False
     
-    def get_top_like_songs(temp_session_db):
+    def get_top_like_songs(temp_session_db, redirect_search = False, temp_user = None):
         try:
-            if temp_session_db == Session_listener:
-                songs = temp_session_db.query(Song.name.label("name"),
-                                               Song.cover.label("cover"),
-                                               Belong.genre.label("genre"),
-                                               Creates.username.label("artist"),
-                                               Album.name.label("album"),
-                                               Statistic.upvote.label("likes")).join(Belong).join(Creates).outerjoin(Album).join(NormalSong).join(Statistic).order_by(desc(Statistic.upvote)).all()
-                
-            elif temp_session_db == Session_premiumlistener or temp_session_db == Session_artist:
-                songs = temp_session_db.query(Song.name.label("name"),
-                                               Song.cover.label("cover"),
-                                               Belong.genre.label("genre"),
-                                               Creates.username.label("artist"),
-                                               Album.name.label("album"),
-                                               Statistic.upvote.label("likes")).join(Belong).join(Creates).outerjoin(Album).join(Statistic).order_by(desc(Statistic.upvote)).all()
+            if redirect_search:
+                if temp_session_db == Session_listener: #this part is used for the redirect from homepage
+                    song_user = temp_session_db.query(Record).filter(Record.user == temp_user).subquery()
+                    songs = temp_session_db.query(Song,
+                                                Belong.genre,
+                                                Creates.username,
+                                                Album.name,
+                                                song_user).join(Belong).join(Creates).outerjoin(Album).join(NormalSong).join(Statistic).outerjoin(song_user).order_by(desc(Statistic.upvote)).limit(10).all()
+                    
+                elif temp_session_db == Session_premiumlistener or temp_session_db == Session_artist:
+                    song_user = temp_session_db.query(Record).filter(Record.user == temp_user).subquery()
+                    songs = temp_session_db.query(Song,
+                                                Belong.genre,
+                                                Creates.username,
+                                                Album.name,
+                                                song_user).join(Belong).join(Creates).outerjoin(Album).join(Statistic).outerjoin(song_user).order_by(desc(Statistic.upvote)).limit(10).all()
+            else:
+                if temp_session_db == Session_listener:
+                    songs = temp_session_db.query(Song.name.label("name"),
+                                                Song.cover.label("cover"),
+                                                Belong.genre.label("genre"),
+                                                Creates.username.label("artist"),
+                                                Album.name.label("album"),
+                                                Statistic.upvote.label("likes")).join(Belong).join(Creates).outerjoin(Album).join(NormalSong).join(Statistic).order_by(desc(Statistic.upvote)).limit(10).all()
+                    
+                elif temp_session_db == Session_premiumlistener or temp_session_db == Session_artist:
+                    songs = temp_session_db.query(Song.name.label("name"),
+                                                Song.cover.label("cover"),
+                                                Belong.genre.label("genre"),
+                                                Creates.username.label("artist"),
+                                                Album.name.label("album"),
+                                                Statistic.upvote.label("likes")).join(Belong).join(Creates).outerjoin(Album).join(Statistic).order_by(desc(Statistic.upvote)).limit(10).all()
             
             temp_session_db.commit()
             return songs
@@ -613,30 +630,47 @@ class Song(Base):
             temp_session_db.rollback()
             return None
         
-    def get_top_view_songs(temp_session_db):
+    def get_top_view_songs(temp_session_db, redirect_search = False, temp_user = None):
+        
         try:
-            if temp_session_db == Session_listener:
-                songs = temp_session_db.query(Song.name.label("name"),
-                                               Song.cover.label("cover"),
-                                               Belong.genre.label("genre"),
-                                               Creates.username.label("artist"),
-                                               Album.name.label("album"),
-                                               Statistic.views.label("views")).join(Belong).join(Creates).outerjoin(Album).join(NormalSong).join(Statistic).order_by(desc(Statistic.views)).all()
-            elif temp_session_db == Session_premiumlistener or temp_session_db == Session_artist:
-                songs = temp_session_db.query(Song.name.label("name"),
+            if redirect_search: #this part is used for the redirect from homepage 
+                if temp_session_db == Session_listener:
+                    song_user = temp_session_db.query(Record).filter(Record.user == temp_user).subquery()
+                    songs = temp_session_db.query(Song,
+                                                Belong.genre,
+                                                Creates.username,
+                                                Album.name,
+                                                song_user).join(Belong).join(Creates).outerjoin(Album).join(NormalSong).join(Statistic).outerjoin(song_user).order_by(desc(Statistic.views)).limit(10).all()
+                elif temp_session_db == Session_premiumlistener or temp_session_db == Session_artist:
+                    song_user = temp_session_db.query(Record).filter(Record.user == temp_user).subquery()
+                    songs = temp_session_db.query(Song,
+                                                    Belong.genre,
+                                                    Creates.username,
+                                                    Album.name,
+                                                    song_user).join(Belong).join(Creates).outerjoin(Album).join(Statistic).outerjoin(song_user).order_by(desc(Statistic.views)).limit(10).all()
+            else:
+                if temp_session_db == Session_listener:
+                    songs = temp_session_db.query(Song.name.label("name"),
                                                 Song.cover.label("cover"),
                                                 Belong.genre.label("genre"),
                                                 Creates.username.label("artist"),
                                                 Album.name.label("album"),
-                                                Statistic.views.label("views")).join(Belong).join(Creates).outerjoin(Album).join(Statistic).order_by(desc(Statistic.views)).all()
-                
+                                                Statistic.views.label("views")).join(Belong).join(Creates).outerjoin(Album).join(NormalSong).join(Statistic).order_by(desc(Statistic.views)).limit(10).all()
+                elif temp_session_db == Session_premiumlistener or temp_session_db == Session_artist:
+                    songs = temp_session_db.query(Song.name.label("name"),
+                                                    Song.cover.label("cover"),
+                                                    Belong.genre.label("genre"),
+                                                    Creates.username.label("artist"),
+                                                    Album.name.label("album"),
+                                                    Statistic.views.label("views")).join(Belong).join(Creates).outerjoin(Album).join(Statistic).order_by(desc(Statistic.views)).limit(10).all()
+                    
             temp_session_db.commit()
             return songs
         except:
             temp_session_db.rollback()
             return None
     
-    def get_suggestion_songs(temp_user, temp_session_db):
+    def get_suggestion_songs(temp_user, temp_session_db, redirect_search = False):
         
         try:        
             #count genre | num liked in this cathegory
@@ -667,22 +701,37 @@ class Song(Base):
                     arr.append(col)
                 
             for i in arr:   #extract songs per each genre
-                
-                if temp_session_db == Session_listener:
-                    song = temp_session_db.query(Song.name.label("name"),
+                if redirect_search:
+                    if temp_session_db == Session_listener:
+                        song_user = temp_session_db.query(Record).filter(Record.user == temp_user).subquery()
+                        song = temp_session_db.query(Song,
+                                                        Belong.genre,
+                                                        Creates.username,
+                                                        Album.name,
+                                                        song_user).join(Belong).join(Creates).outerjoin(Album).join(NormalSong).join(Statistic).outerjoin(song_user).order_by(desc(Statistic.views)).filter(Belong.genre == i[0]).limit(i[1])
+                        
+                    elif temp_session_db == Session_premiumlistener or temp_session_db == Session_artist:
+                        song = temp_session_db.query(Song,
+                                                    Belong.genre,
+                                                    Creates.username,
+                                                    Album.name,
+                                                    song_user).join(Belong).join(Creates).outerjoin(Album).join(Statistic).outerjoin(song_user).order_by(desc(Statistic.views)).filter(Belong.genre == i[0]).limit(i[1])
+                else:
+                    if temp_session_db == Session_listener:
+                        song = temp_session_db.query(Song.name.label("name"),
+                                                        Song.cover.label("cover"),
+                                                        Belong.genre.label("genre"),
+                                                        Creates.username.label("artist"),
+                                                        Album.name.label("album"),
+                                                        Statistic.views.label("views")).join(Belong).join(Creates).outerjoin(Album).join(NormalSong).join(Statistic).order_by(desc(Statistic.views)).filter(Belong.genre == i[0]).limit(i[1])
+                        
+                    elif temp_session_db == Session_premiumlistener or temp_session_db == Session_artist:
+                        song = temp_session_db.query(Song.name.label("name"),
                                                     Song.cover.label("cover"),
                                                     Belong.genre.label("genre"),
                                                     Creates.username.label("artist"),
                                                     Album.name.label("album"),
-                                                    Statistic.views.label("views")).join(Belong).join(Creates).outerjoin(Album).join(NormalSong).join(Statistic).order_by(desc(Statistic.views)).filter(Belong.genre == i[0]).limit(i[1])
-                    
-                elif temp_session_db == Session_premiumlistener or temp_session_db == Session_artist:
-                    song = temp_session_db.query(Song.name.label("name"),
-                                                 Song.cover.label("cover"),
-                                                 Belong.genre.label("genre"),
-                                                 Creates.username.label("artist"),
-                                                 Album.name.label("album"),
-                                                 Statistic.views.label("views")).join(Belong).join(Creates).outerjoin(Album).join(Statistic).order_by(desc(Statistic.views)).filter(Belong.genre == i[0]).limit(i[1])
+                                                    Statistic.views.label("views")).join(Belong).join(Creates).outerjoin(Album).join(Statistic).order_by(desc(Statistic.views)).filter(Belong.genre == i[0]).limit(i[1])
                 if i == arr[0]:
                     result_query = song
                 else:
