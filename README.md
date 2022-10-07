@@ -4,10 +4,12 @@ Applicazione Player Musicale
 Site https://pineapplemusic.tech/
 
 Idee da implementare:
+
+- 1 rivedere statistiche upvote downvote
+- 1 bloccare l'accesso alle route da normal a artist
 - 1 aggiungere indici per velocizare funzionamento
 
 - 2 javascript ottimizare
-- 2 genere su database con cover ed estrarre da li
 - 2 ottimizzare modelli (esempio get_song intelligente)
 
 

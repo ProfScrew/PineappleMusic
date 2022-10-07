@@ -677,11 +677,11 @@ class Song(Base):
             if temp_session_db == Session_listener:
                 count_of_genre = temp_session_db.query(Genre.name.label("genre"),
                                                        count(Record.song).label("likes")).join(Belong).join(Song).join(Record).join(NormalSong).filter(and_(Record.vote == True,
-                                                                                                                                                            Record.user == temp_user)).order_by(desc("likes")).group_by(Genre.name).all()
+                                                                                                                                                            Record.user == temp_user)).order_by(desc("likes")).group_by(Genre.name).limit(10).all()
             elif temp_session_db == Session_premiumlistener or temp_session_db == Session_artist:
                 count_of_genre = temp_session_db.query(Genre.name.label("genre"),
                                                        count(Record.song).label("likes")).join(Belong).join(Song).join(Record).filter(and_(Record.vote == True,
-                                                                                                                                           Record.user == temp_user)).order_by(desc("likes")).group_by(Genre.name).all()
+                                                                                                                                           Record.user == temp_user)).order_by(desc("likes")).group_by(Genre.name).limit(10).all()
                 
             
             if count_of_genre == []:
@@ -736,7 +736,7 @@ class Song(Base):
                     result_query = song
                 else:
                     result_query = union(result_query, song)
-            result = temp_session_db.execute(result_query).all()
+            result = temp_session_db.execute(result_query).limit(10).all()
             temp_session_db.commit()
             return result
         except:
