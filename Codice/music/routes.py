@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, flash,redirect,url_for,request
+from flask import Blueprint, render_template, flash,redirect,url_for, request, abort
 from flask_login import  login_required,current_user
 
 import json
@@ -132,8 +132,19 @@ def getsongfromhome():
     form_choice = TableChoice()
     form=AddToPlaylist()
     if form_choice.validate_on_submit():
-        playlist = Playlist.get_playlist_user(session,current_user.username)
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAA ",form_choice.choice.data)
-        #query
+        
+        if form_choice.choice.data == 'views':
+            song = Song.get_top_view_songs(current_user.type_session,True,current_user.username)
+        elif form_choice.choice.data == 'likes':
+            song = Song.get_top_like_songs(current_user.type_session,True,current_user.username)
+        elif form_choice.choice.data == 'suggestions':
+            song = Song.get_suggestion_songs(current_user.username,current_user.type_session, True)
+            if song == None:
+                song = Song.get_top_view_songs(current_user.type_session,True,current_user.username)
+        else:
+            abort(412)
+        playlist = Playlist.get_playlist_user(current_user.type_session,current_user.username)
+        form.playlist.choices=Playlist.get_playlist_name_id(current_user.type_session,playlist)
+        
     return render_template("songs.html",user=current_user,page_name="Search Songs",add_to_playlist=True,
                             listsong=song,playlist=playlist,form=form)
