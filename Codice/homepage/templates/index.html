@@ -6,19 +6,69 @@
 
 
 <div class="container-fluid" id="particles-js">
+
   <div class="row">
+
     <div class="flexBox" style="display: flex; flex-flow: row wrap; justify-content: center;">
-      <div class="card test" style="width: 18rem;">
-        <img class="mb-4" src="/static/img/pineapplemusic.ico" alt="logo" width="72" height="100">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-            content.</p>
-          <button type="button" class="btn btn-success" onclick="location.href = '/auth/signin';">Login</button>
+
+      <div class="card signin bg-dark text-white" style="border-radius: 1rem;">
+
+        <div class="card-body  p-5  text-center">
+          <div class="mb-md-5 mt-md-4 pb-5">
+            <img class="mb-4" src="{{ url_for('static',filename='img/pineapplemusic.ico') }}" alt="logo" width="72"
+              height="100">
+
+            <h2 class="fw-bold mb-2 text-uppercase">PineappleMusic</h2>
+
+            <p class="mb-0">Welcome to Pineapple Streaming service. </p>
+            <p class="mb-0">This site was realized as part of CT0006 course of Ca' Foscari University </p>
+            <p class="mb-0"> Please enjoy our site, to continue please login or register</p>
+            <br>
+
+
+            <div class="row gx-3 mb-3">
+              <!-- Form Group (first name)-->
+              <div class="col-md-6">
+                <a  href="{{url_for('auth.signin')}}"><button type="button" class="btn btn-success">Login</button></a>
+              </div>
+              <!-- Form Group (last name)-->
+              <div class="col-md-6">
+                <a  href="{{url_for('auth.signup')}}"><button type="button" class="btn btn-success">Register</button></a>
+              </div>
+            </div>
+            
+
+
+            {% for message in get_flashed_messages()%}
+            <div class="alert alert-primary alert-dismissible fade show" role="alert">
+              {{message}}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            {%endfor%}
+          </div>
+
+
+          <div>
+            <p class="mb-0">Don't have an account? <a href="{{url_for('auth.signup')}}"
+                class="text-white-50 fw-bold">Sign Up</a>
+            </p>
+          </div>
+          <div>
+            <p class="mb-0"><br>You are a registered artist <br>and need to insert your first
+              song? <br><a href="{{url_for('auth.requiredsong')}}" class="text-white-50 fw-bold">Click Here</a>
+            </p>
+          </div>
         </div>
+
+
+
+
       </div>
     </div>
   </div>
+
+
   <canvas class="particles-js-canvas-el" style="width: 100%; height: 100%;" width="1896" height="42">
   </canvas>
 

@@ -89,7 +89,7 @@ hr.h-color {
     align-items: center;
     position: fixed;
     bottom: 0;
-    height: 7rem;
+    height: 9rem;
     z-index: 5;
     
 
@@ -171,12 +171,16 @@ i:hover {
     align-items: center;
     gap: 1.5em;
     color: var(--secondary-color);
+    height: 100%;
 }
 
 .control-buttons {
     display: flex;
     align-items: center;
-    gap: 1em;
+    gap: 1.5em;
+    padding-top: 0em;
+    position: relative;
+    top: -20px;
 }
 
 .play-pause,
@@ -199,6 +203,8 @@ i:hover {
     align-items: center;
     justify-content: center;
     gap: 1em;
+    position: relative;
+    bottom: -19px;
 }
 
 .progress-bar {
@@ -246,7 +252,7 @@ i:hover {
 }
 
 .song-list{
-    padding-bottom:  8rem;
+    padding-bottom:  10rem;
     max-height: 100vh;
     box-sizing: border-box;
     overflow-y: auto;
