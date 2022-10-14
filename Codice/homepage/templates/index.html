@@ -29,36 +29,94 @@
             <div class="row gx-3 mb-3">
               <!-- Form Group (first name)-->
               <div class="col-md-6">
-                <a  href="{{url_for('auth.signin')}}"><button type="button" class="btn btn-success">Login</button></a>
+                <a href="{{url_for('auth.signin')}}"><button type="button" class="btn btn-outline-light btn-lg px-5">Login</button></a>
               </div>
               <!-- Form Group (last name)-->
               <div class="col-md-6">
-                <a  href="{{url_for('auth.signup')}}"><button type="button" class="btn btn-success">Register</button></a>
+                <a href="{{url_for('auth.signup')}}"><button type="button" class="btn btn-outline-light btn-lg px-5">Register</button></a>
+              </div>
+
+            </div>
+
+            <br>
+            <br>
+            <br>
+            <br>
+          
+          <div>
+            <p class="mb-0">Here is also some information you may find usefull
+            </p>
+          </div>
+
+          <br>
+          <div class="row gx-3 mb-3">
+            <!-- Form Group (first name)-->
+            <div class="col-md-6">
+              <button type="button" class="btn btn-outline-success btn-lg px-5 " data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                Disclaimer
+              </button>
+            </div>
+            <!-- Form Group (last name)-->
+            <div class="col-md-6">
+              <button type="button" class="btn btn-outline-success btn-lg px-5" data-bs-toggle="modal" data-bs-target="#staticBackdroptwo">
+                Authors
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Button trigger modal -->
+
+
+          <!-- Modal -->
+          <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content" style="background-color: #dfae00;">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="staticBackdropLabel">Disclaimer</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  This site was realized as a project with no intention to profit from it and abuse
+                  the copyright of songs. All of the songs uploaded by us developers here are not copyrighted.
+                  If you want us to remove any song, please contact one of the developers. Thank you.
+                </div>
+                <div class="modal-footer">
+                  <button style="background-color: #212529;" type="button" class="btn btn-secondary"
+                    data-bs-dismiss="modal">Understood</button>
+                </div>
               </div>
             </div>
-            
+          </div>
 
 
-            {% for message in get_flashed_messages()%}
-            <div class="alert alert-primary alert-dismissible fade show" role="alert">
-              {{message}}
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
+          <!-- Modal -->
+          <div class="modal fade" id="staticBackdroptwo" data-bs-backdrop="static" data-bs-keyboard="false"
+            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content" style="background-color: #dfae00;">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="staticBackdropLabel">Authors</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <p>This site was realized by the following developers:</p>
+                  <p>Stefano Masiero</p>
+                  <p>Maksym Novytskyy</p>
+                  <p>Riccardo Comellato</p>
+                </div>
+                <div class="modal-footer">
+                  <button style="background-color: #212529;" type="button" class="btn btn-secondary"
+                    data-bs-dismiss="modal">Understood</button>
+                </div>
+              </div>
             </div>
-
-            {%endfor%}
           </div>
 
+        </div>
 
-          <div>
-            <p class="mb-0">Don't have an account? <a href="{{url_for('auth.signup')}}"
-                class="text-white-50 fw-bold">Sign Up</a>
-            </p>
-          </div>
-          <div>
-            <p class="mb-0"><br>You are a registered artist <br>and need to insert your first
-              song? <br><a href="{{url_for('auth.requiredsong')}}" class="text-white-50 fw-bold">Click Here</a>
-            </p>
-          </div>
         </div>
 
 
