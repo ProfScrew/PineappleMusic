@@ -81,7 +81,8 @@ class User(Base, UserMixin):
             Session_guestmanager.commit()
             return num
         except:
-            Session_guestmanager.rollback()
+            pass
+            #Session_guestmanager.rollback()
             
     #rivedere se uso, altrimenti buttare via
     def get_type_user_session(temp_username):
@@ -762,10 +763,12 @@ class NormalSong(Base):
         self.song = song
 
     def check_song(temp_song):
-        temp = Session_artist.query(NormalSong.song).filter(NormalSong.song == temp_song).first() is not None
-        Session_artist.commit()
-        return temp
-         
+        try:    
+            temp = Session_artist.query(NormalSong.song).filter(NormalSong.song == temp_song).first() is not None
+            Session_artist.commit()
+            return temp
+        except:
+            Session_artist.rollback
     
     # questo metodo è opzionale, serve solo per pretty printing
 
@@ -787,10 +790,13 @@ class PremiumSong(Base):
         self.song = song
 
     def check_song(temp_song):
-        temp = Session_artist.query(PremiumSong.song).filter(PremiumSong.song == temp_song).first() is not None
-        Session_artist.commit()
-        return temp
-    
+        try:
+            temp = Session_artist.query(PremiumSong.song).filter(PremiumSong.song == temp_song).first() is not None
+            Session_artist.commit()
+            return temp
+        except:
+            Session_artist.rollback()
+
     # questo metodo è opzionale, serve solo per pretty printing
 
     def __repr__(self):
@@ -1043,9 +1049,13 @@ class Playlist(Base):
             return False
 
     def get_playlist_user(temp_session_db,temp_author):
-        playlists = temp_session_db.query(Playlist).filter(Playlist.author == temp_author).all()
-        temp_session_db.commit()
-        return playlists
+        try:    
+            playlists = temp_session_db.query(Playlist).filter(Playlist.author == temp_author).all()
+            temp_session_db.commit()
+            return playlists
+        except:
+            temp_session_db.rollback()
+            return None
 
     
     def get_playlist_name_id(temp_username, playlists):
@@ -1058,8 +1068,11 @@ class Playlist(Base):
         return playlists_names_id
     
     def delete_playlist(idplaylist):
-        Session_artist.query(Playlist).filter(Playlist.idlist==idplaylist).delete()
-        Session_artist.commit()
+        try:
+            Session_artist.query(Playlist).filter(Playlist.idlist==idplaylist).delete()
+            Session_artist.commit()
+        except:
+            pass
 
     def __repr__(self):
         return "<Playlist(name='%s', idlist='%d', creationdate='%s',author='%s')>" % (self.name, self.idlist, self.creationdate, self.author)
@@ -1091,8 +1104,11 @@ class Contains(Base):
             Session_artist.rollback()
 
     def delete_song_from_playlist(idsong,idplaylist):
-        Session_artist.query(Contains).filter(Contains.song==idsong,Contains.list==idplaylist).delete()
-        Session_artist.commit()
+        try:
+            Session_artist.query(Contains).filter(Contains.song==idsong,Contains.list==idplaylist).delete()
+            Session_artist.commit()
+        except:
+            Session_artist.rollback()
         
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
