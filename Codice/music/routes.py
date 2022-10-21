@@ -43,12 +43,16 @@ def views():
 @music.route('/search', methods=['GET','POST'])
 def search():
     form=AddToPlaylist()
-    session=current_user.type_session
     
+    print(current_user.type_session,current_user.username)
+
+    playlist = Playlist.get_playlist_user(current_user.type_session,current_user.username)
+    form.playlist.choices=Playlist.get_playlist_name_id(current_user.type_session,playlist)
+
     song=Song.get_songs(current_user.username,current_user.type_session)
 
-    playlist = Playlist.get_playlist_user(session,current_user.username)
-    form.playlist.choices=Playlist.get_playlist_name_id(session,playlist)
+    
+    
     
     if form.validate_on_submit():
         for idl in form.playlist.data:

@@ -78,11 +78,9 @@ class User(Base, UserMixin):
                 num = 3
             else:
                 num = 0
-            Session_guestmanager.commit()
             return num
         except:
-            pass
-            #Session_guestmanager.rollback()
+            Session_guestmanager.rollback()
             
     #rivedere se uso, altrimenti buttare via
     def get_type_user_session(temp_username):
@@ -108,7 +106,7 @@ class User(Base, UserMixin):
         try:
             user = temp_session_db.query(User).filter(
                 User.username == username).first()
-            temp_session_db.commit()
+
             return user
         except:
             temp_session_db.rollback()
@@ -215,7 +213,6 @@ class NormalListener(Base):
     def get_user(temp_session_db, temp_username):
         user = temp_session_db.query(NormalListener).filter(
             NormalListener.username == temp_username).first()
-        temp_session_db.commit()
         return user
 
     # questo metodo è opzionale, serve solo per pretty printing
@@ -360,13 +357,11 @@ class Album(Base):
     def get_albums(temp_username):
         albums = Session_artist.query(Album).filter(
             Album.artist == temp_username).all()
-        Session_artist.commit()
         return albums
     
     def get_albums_id(temp_idalbum):
         albums = Session_artist.query(Album).filter(
             Album.idalbum == temp_idalbum).first()
-        Session_artist.commit()
         return albums
 
     def get_albums_name(temp_username, albums, choice):
@@ -547,7 +542,6 @@ class Song(Base):
                 else:
                     song_user = temp_session_db.query(Record).filter(Record.user == temp_user).subquery()
                     songs = temp_session_db.query(Song,Belong.genre,Creates.username,Album.name,song_user).join(Belong).join(Creates).outerjoin(Album).outerjoin(song_user).filter(Belong.genre==genre).all()
-            temp_session_db.commit()
             return songs
         except:
             temp_session_db.rollback()
@@ -555,12 +549,10 @@ class Song(Base):
 
     def get_songs_artist(temp_artist):
         temp = Session_artist.query(Song).join(Creates).filter(Creates.username == temp_artist).all()
-        Session_artist.commit()
         return temp
     
     def get_song_id(temp_idsong):
         temp = Session_artist.query(Song).filter(Song.idsong == temp_idsong).first()
-        Session_artist.commit()
         return temp
     
     def check_links(cover, content):
@@ -577,7 +569,6 @@ class Song(Base):
     def get_song_playlist(temp_user,idplaylist):
         song_user = Session_artist.query(Record).filter(Record.user == temp_user).subquery()
         songs=Session_artist.query(Song,Belong.genre,Creates.username,Album.name,song_user).join(Belong).join(Creates).outerjoin(Album).join(Contains).outerjoin(song_user).filter(Contains.list==idplaylist).all()
-        Session_artist.commit()
         return songs
 
     def delete_song(temp_idsong):
@@ -625,7 +616,6 @@ class Song(Base):
                                                 Album.name.label("album"),
                                                 Statistic.upvote.label("likes")).join(Belong).join(Creates).outerjoin(Album).join(Statistic).order_by(desc(Statistic.upvote)).limit(10).all()
             
-            temp_session_db.commit()
             return songs
         except:
             temp_session_db.rollback()
@@ -665,7 +655,7 @@ class Song(Base):
                                                     Album.name.label("album"),
                                                     Statistic.views.label("views")).join(Belong).join(Creates).outerjoin(Album).join(Statistic).order_by(desc(Statistic.views)).limit(10).all()
                     
-            temp_session_db.commit()
+            
             return songs
         except:
             temp_session_db.rollback()
@@ -763,12 +753,9 @@ class NormalSong(Base):
         self.song = song
 
     def check_song(temp_song):
-        try:    
-            temp = Session_artist.query(NormalSong.song).filter(NormalSong.song == temp_song).first() is not None
-            Session_artist.commit()
-            return temp
-        except:
-            Session_artist.rollback
+        temp = Session_artist.query(NormalSong.song).filter(NormalSong.song == temp_song).first() is not None
+        return temp
+         
     
     # questo metodo è opzionale, serve solo per pretty printing
 
@@ -790,13 +777,9 @@ class PremiumSong(Base):
         self.song = song
 
     def check_song(temp_song):
-        try:
-            temp = Session_artist.query(PremiumSong.song).filter(PremiumSong.song == temp_song).first() is not None
-            Session_artist.commit()
-            return temp
-        except:
-            Session_artist.rollback()
-
+        temp = Session_artist.query(PremiumSong.song).filter(PremiumSong.song == temp_song).first() is not None
+        return temp
+    
     # questo metodo è opzionale, serve solo per pretty printing
 
     def __repr__(self):
@@ -881,7 +864,6 @@ class Statistic(Base):
 
     def get_statistics(temp_username):
         temp = Session_artist.query(Statistic.upvote,Statistic.downvote,Statistic.views,Song.name).join(Song).join(Creates).filter(Creates.username == temp_username).all()
-        Session_artist.commit()
         return temp
     
     #rivedere se serve
@@ -967,7 +949,6 @@ class Belong(Base):
     def get_genre_list(temp_song_id): ###rivedere funzione
         list_new = Genre.list.copy()
         entry = Session_artist.query(Belong).filter(Belong.song == temp_song_id).first()
-        Session_artist.commit()
         check = False
         forcondition = (b for b in range(len(list_new)) if entry.genre == list_new[b])
         for b in forcondition:
@@ -1006,7 +987,6 @@ class Creates(Base):
     def check_artist(temp_username):
         user = Session_artist.query(Creates).filter(
             Creates.username == temp_username).count()
-        Session_artist.commit()
         if user > 0:
             return True
         else:
@@ -1049,13 +1029,8 @@ class Playlist(Base):
             return False
 
     def get_playlist_user(temp_session_db,temp_author):
-        try:    
-            playlists = temp_session_db.query(Playlist).filter(Playlist.author == temp_author).all()
-            temp_session_db.commit()
-            return playlists
-        except:
-            temp_session_db.rollback()
-            return None
+        playlists = temp_session_db.query(Playlist).filter(Playlist.author == temp_author).all()
+        return playlists
 
     
     def get_playlist_name_id(temp_username, playlists):
@@ -1068,11 +1043,8 @@ class Playlist(Base):
         return playlists_names_id
     
     def delete_playlist(idplaylist):
-        try:
-            Session_artist.query(Playlist).filter(Playlist.idlist==idplaylist).delete()
-            Session_artist.commit()
-        except:
-            pass
+        Session_artist.query(Playlist).filter(Playlist.idlist==idplaylist).delete()
+        Session_artist.commit()
 
     def __repr__(self):
         return "<Playlist(name='%s', idlist='%d', creationdate='%s',author='%s')>" % (self.name, self.idlist, self.creationdate, self.author)
@@ -1104,11 +1076,8 @@ class Contains(Base):
             Session_artist.rollback()
 
     def delete_song_from_playlist(idsong,idplaylist):
-        try:
-            Session_artist.query(Contains).filter(Contains.song==idsong,Contains.list==idplaylist).delete()
-            Session_artist.commit()
-        except:
-            Session_artist.rollback()
+        Session_artist.query(Contains).filter(Contains.song==idsong,Contains.list==idplaylist).delete()
+        Session_artist.commit()
         
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
