@@ -116,7 +116,7 @@ def getsongfromgenre():
             for idl in form.playlist.data:
                 Contains.create(form.songid.data, idl)
         
-        return render_template("songs.html",user=current_user,page_name="Search Songs",add_to_playlist=True,
+        return render_template("songs.html",user=current_user,page_name=genre_form.genre.data,add_to_playlist=True,
                             listsong=song,playlist=playlist,form=form)
 
 @login_required
@@ -139,10 +139,13 @@ def getsongfromhome():
         
         if form_choice.choice.data == 'views':
             song = Song.get_top_view_songs(current_user.type_session,True,current_user.username)
+            pagename="TOP 10 VIEWS"
         elif form_choice.choice.data == 'likes':
             song = Song.get_top_like_songs(current_user.type_session,True,current_user.username)
+            pagename="TOP 10 LIKES"
         elif form_choice.choice.data == 'suggestions':
             song = Song.get_suggestion_songs(current_user.username,current_user.type_session, True)
+            pagename="YOUR SUGGESTION"
             if song == None:
                 song = Song.get_top_view_songs(current_user.type_session,True,current_user.username)
         else:
@@ -150,5 +153,5 @@ def getsongfromhome():
         playlist = Playlist.get_playlist_user(current_user.type_session,current_user.username)
         form.playlist.choices=Playlist.get_playlist_name_id(current_user.type_session,playlist)
         
-    return render_template("songs.html",user=current_user,page_name="Search Songs",add_to_playlist=True,
+    return render_template("songs.html",user=current_user,page_name=pagename,add_to_playlist=True,
                             listsong=song,playlist=playlist,form=form)

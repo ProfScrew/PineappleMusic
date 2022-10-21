@@ -23,7 +23,7 @@ def create_app():
     # settig flask-sqalchemy database connection
     app.config['SQLALCHEMY_DATABASE_URI'] = config['GUEST_MANAGER_DB']
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
+    app.config['SQLALCHEMY_POOL_SIZE'] = 20
 
 
     # setting up native flask-login manager
@@ -34,11 +34,10 @@ def create_app():
     @login_manager.user_loader
     # user loader
     def load_user(user_id):
-        user = User.get_user(Session_guestmanager,user_id)
+        #user = User.get_user(Session_guestmanager,user_id)
+        user = User.query.get(user_id)
         user.type_account = User.get_type_user(user_id)
         user.type_session = User.get_type_user_session_from_number(user_id,user.type_account)
-        print("MERDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaa")
-        print(user,user.type_account,user.type_session)
         return user
         
 

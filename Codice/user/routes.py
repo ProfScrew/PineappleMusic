@@ -17,6 +17,7 @@ def home():
     likes = Song.get_top_like_songs(current_user.type_session)
     views = Song.get_top_view_songs(current_user.type_session)
     suggestion = Song.get_suggestion_songs(current_user.username, current_user.type_session)
+    print("SUGGESTION: ", suggestion)
     if suggestion == None:
         suggestion = views
     form_redirect = TableChoice()    

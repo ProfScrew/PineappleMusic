@@ -702,6 +702,7 @@ class Song(Base):
                                                         song_user).join(Belong).join(Creates).outerjoin(Album).join(NormalSong).join(Statistic).outerjoin(song_user).order_by(desc(Statistic.views)).filter(Belong.genre == i[0]).limit(i[1])
                         
                     elif temp_session_db == Session_premiumlistener or temp_session_db == Session_artist:
+                        song_user = temp_session_db.query(Record).filter(Record.user == temp_user).subquery()
                         song = temp_session_db.query(Song,
                                                     Belong.genre,
                                                     Creates.username,
@@ -727,8 +728,7 @@ class Song(Base):
                     result_query = song
                 else:
                     result_query = union(result_query, song)
-            result = temp_session_db.execute(result_query).limit(10).all()
-            temp_session_db.commit()
+            result = temp_session_db.execute(result_query).all()
             return result
         except:
             temp_session_db.rollback()
