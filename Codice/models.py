@@ -23,15 +23,10 @@ from Codice.database import Session_artist, Session_deletemanager, Session_guest
 
 Base = declarative_base()
 Base.query = Session.query_property()
-# USERS
-
-# tabella = classe che eredita da Base
-
 
 class User(Base, UserMixin):
-    __tablename__ = 'users'                   # obbligatorio
+    __tablename__ = 'users'
 
-    # almeno un attributo deve fare parte della primary key
     username = Column(String, primary_key=True)
     name = Column(String)
     surname = Column(String)
@@ -41,7 +36,6 @@ class User(Base, UserMixin):
     phone = Column(Integer)
     email = Column(String)
     
-    #account = None
     
     def __init__(self, username, name, surname, birthdate, password, gender, phone, email):
         self.username = username
@@ -53,14 +47,8 @@ class User(Base, UserMixin):
         self.phone = phone
         self.email = email
         
-    
-    
-         
     def get_current_user():
         return current_user.username
-
-    def scream():
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 
     def encrypt_password(password):
         return generate_password_hash(password)
@@ -68,6 +56,7 @@ class User(Base, UserMixin):
     def verify_password(self, password):
         return check_password_hash(self.password, password)
 
+    # the following three methods are used to get the type of user and the type of user session
     def get_type_user(temp_username):
         try:
             if Session_guestmanager.query(NormalListener).filter(NormalListener.username == temp_username).count() == 1:
@@ -82,7 +71,6 @@ class User(Base, UserMixin):
         except:
             Session_guestmanager.rollback()
             
-    #rivedere se uso, altrimenti buttare via
     def get_type_user_session(temp_username):
         type_user = User.get_type_user(temp_username)
         if type_user == 1:
@@ -91,10 +79,8 @@ class User(Base, UserMixin):
             return Session_premiumlistener
         elif type_user == 3:
             return Session_artist
-    ####
         
     def get_type_user_session_from_number(temp_username, type_user):
-
         if type_user == 1:
             return Session_listener
         elif type_user == 2:
@@ -106,7 +92,6 @@ class User(Base, UserMixin):
         try:
             user = temp_session_db.query(User).filter(
                 User.username == username).first()
-
             return user
         except:
             temp_session_db.rollback()
@@ -129,14 +114,9 @@ class User(Base, UserMixin):
             temp_session_db.rollback()
             flash("User or email Already in use")
             return False
-        except PendingRollbackError as e:
+        except:
             temp_session_db.rollback()
             return False
-        except:
-            temp_session_db.flush()
-            return False
-        
-            
 
     def update_user(temp_session_db, temp_username, temp_name, temp_surname, temp_birthdate, temp_password, temp_phone, temp_email, check_password):
         try:
@@ -159,7 +139,6 @@ class User(Base, UserMixin):
     def delete_user(username):
         try:
             user = User.get_user(Session_deletemanager,username)
-            # print(user)
             Session_deletemanager.delete(user)
             Session_deletemanager.commit()
         except:
@@ -171,35 +150,24 @@ class User(Base, UserMixin):
             Session_guestmanager.add(premiumlistener)
             user = NormalListener.get_user(Session_guestmanager, username)
             Session_guestmanager.delete(user)
-
             Session_guestmanager.commit()
             return True
         except:
             Session_guestmanager.rollback()
             return False
 
-    # questo metodo è opzionale, serve solo per pretty printing
-
     def __repr__(self):
-        return "<User(username='%s', name='%s', surname='%s',birthdate='%s' password='%s', gender='%s',phone='%d',email='%s')>" % (self.username, self.name, self.surname, self.birthdate, self.password, self.gender, self.phone, self.email)
-
-    # def verify_password(password):
-    #    return True
-
-    # def verify_password(self,password):
-    #    if self.password == password:
-    #        return True
-    #    else:
-    #        return False
+        return "<User(username='%s', name='%s', surname='%s',birthdate='%s' password='%s', gender='%s',phone='%d',email='%s')>" % (
+            self.username, self.name, self.surname, self.birthdate,
+            self.password, self.gender, self.phone, self.email)
 
     def get_id(self):
         return (self.username)
 
-# NORMALLISTENER
 
 
 class NormalListener(Base):
-    __tablename__ = 'normallisteners'                   # obbligatorio
+    __tablename__ = 'normallisteners'
 
     username = Column(String, ForeignKey(User.username), primary_key=True)
 
@@ -209,22 +177,18 @@ class NormalListener(Base):
     def __init__(self, username):
         self.username = username
 
-    ###rivedere perche
     def get_user(temp_session_db, temp_username):
         user = temp_session_db.query(NormalListener).filter(
             NormalListener.username == temp_username).first()
         return user
 
-    # questo metodo è opzionale, serve solo per pretty printing
-
     def __repr__(self):
         return "<NormalListener(username='%s')>" % (self.username)
 
 
-# PREMIUMLISTENERS
 
 class PremiumListener(Base):
-    __tablename__ = 'premiumlisteners'                   # obbligatorio
+    __tablename__ = 'premiumlisteners'
 
     username = Column(String, ForeignKey(User.username), primary_key=True)
 
@@ -234,16 +198,13 @@ class PremiumListener(Base):
     def __init__(self, username):
         self.username = username
 
-    # questo metodo è opzionale, serve solo per pretty printing
-
     def __repr__(self):
         return "<PremiumListener(username='%s')>" % (self.username)
 
-# ARTIST
 
 
 class Artist(Base):
-    __tablename__ = 'artists'                   # obbligatorio
+    __tablename__ = 'artists'
 
     username = Column(String, ForeignKey(User.username), primary_key=True)
 
@@ -255,31 +216,26 @@ class Artist(Base):
 
     def insert_album(temp_name, temp_cover, temp_artist):
         try:    
-            album = Album.insert_album(temp_name, temp_cover, temp_artist)
+            album = Album(name=temp_name, idalbum=None, cover=temp_cover, artist=temp_artist)
             Session_artist.add(album)
             Session_artist.commit()
             return True
         except:
             Session_artist.rollback()
-            return False
-        
+            return False 
     
     def insert_song(temp_name, temp_album, temp_cover, temp_releasedate, temp_content, temp_username, song_genres, song_type):
         try:
             song = Song(name=temp_name, idsong=None, album=temp_album, cover=temp_cover,
                         releasedate=temp_releasedate, content=temp_content)
             Session_artist.add(song)
-            Session_artist.flush()
             belong = Belong(genre=song_genres, song=song.idsong)
             Session_artist.add(belong)
 
             if song_type == 'The song will be premium':
-                # PremiumSong.register(song.idsong)
                 premiumsong = PremiumSong(song=song.idsong)
                 Session_artist.add(premiumsong)
-
             else:
-                # NormalSong.register(song.idsong)
                 normalsong = NormalSong(song=song.idsong)
                 Session_artist.add(normalsong)
 
@@ -327,7 +283,7 @@ class Artist(Base):
         except:
             return False
         
-    def switch_exclusivity(temp_premium, temp_idsong, temp_session_db):#session artist dentro
+    def switch_exclusivity(temp_premium, temp_idsong, temp_session_db):
         if temp_premium == 1:   #add premium remove normal
             query = NormalSong(song=temp_idsong)
             temp_session_db.delete(query)
@@ -393,11 +349,9 @@ class Artist(Base):
                 album = temp_session_db.query(Album).filter(Album.idalbum == temp_idalbum).first()
                 if temp_name == album.name:#modifica cover
                     query = update(Album).where(Album.idalbum == temp_idalbum).values(cover = temp_cover.split("/")[5])
-                    #Song.change_cover_album(temp_idalbum, temp_cover.split("/")[5])
                 else:#modifica tutto
                     if not Album.check_artist_album_name(temp_artist,temp_name):
                         query = update(Album).where(Album.idalbum == temp_idalbum).values(cover = temp_cover.split("/")[5], name = temp_name)
-                        #
                     else:
                         return False
                     
@@ -428,16 +382,12 @@ class Artist(Base):
             temp_session_db.rollback()
             return False
 
-    # questo metodo è opzionale, serve solo per pretty printing
-
     def __repr__(self):
         return "<Artist(username='%s')>" % (self.username)
 
-# ALBUMS
-
 
 class Album(Base):
-    __tablename__ = 'albums'                   # obbligatorio
+    __tablename__ = 'albums'
 
     idalbum = Column(Integer, primary_key=True)
     name = Column(String)
@@ -453,20 +403,14 @@ class Album(Base):
         self.cover = cover
         self.artist = artist
 
-    def insert_album(temp_name, temp_cover, temp_artist):
-        album = Album(name=temp_name, idalbum=None, cover=temp_cover,
-                    artist=temp_artist)
-        return album
-
     def check_artist_album_name(temp_username, temp_name):
         album = Session_artist.query(Album).filter(and_( Album.artist == temp_username, Album.name == temp_name)).count()
         if(album>0):
             return True
         else:
             return False 
-        
     
-    def get_albums(temp_username):
+    def get_albums_username(temp_username):
         albums = Session_artist.query(Album).filter(
             Album.artist == temp_username).all()
         return albums
@@ -504,17 +448,14 @@ class Album(Base):
                 return i.idalbum
         return None
     
-    
-    # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
-        # artist o artists?
-        return "<Album(idalbum='%d', name='%s', cover='%s',artists='%s')>" % (self.idalbum, self.name, self.cover, self.artists)
+        return "<Album(idalbum='%d', name='%s', cover='%s',artists='%s')>" % (
+            self.idalbum, self.name, self.cover, self.artists)
 
-# SONGS
 
 
 class Song(Base):
-    __tablename__ = 'songs'                   # obbligatorio
+    __tablename__ = 'songs'
 
     name = Column(String)
     idsong = Column(Integer, primary_key=True)
@@ -534,19 +475,7 @@ class Song(Base):
         self.releasedate = releasedate
         self.content = content
 
-    def insert_song(temp_name, temp_album, temp_cover, temp_releasedate, temp_content): #togliere sta funzione 
-        # Session_artist
-
-        song = Song(name=temp_name, idsong=None, album=temp_album, cover=temp_cover,
-                    releasedate=temp_releasedate, content=temp_content)
-        return song
-
-    
-    # def get_song_with_artist_genres():
-    #
-    #    return song
-
-    def get_songs(temp_user, temp_session_db, genre=''):  # provisoria###############
+    def get_songs(temp_user, temp_session_db, genre=''):
         try:
             if temp_session_db == Session_listener:
                 if genre=='':
@@ -575,12 +504,10 @@ class Song(Base):
         temp = Session_artist.query(Song).filter(Song.idsong == temp_idsong).first()
         return temp
     
-    
     def get_song_playlist(temp_user,idplaylist):
         song_user = Session_artist.query(Record).filter(Record.user == temp_user).subquery()
         songs=Session_artist.query(Song,Belong.genre,Creates.username,Album.name,song_user).join(Belong).join(Creates).outerjoin(Album).join(Contains).outerjoin(song_user).filter(Contains.list==idplaylist).all()
         return songs
-
     
     def get_top_like_songs(temp_session_db, redirect_search = False, temp_user = None):
         try:
@@ -665,7 +592,7 @@ class Song(Base):
     def get_suggestion_songs(temp_user, temp_session_db, redirect_search = False):
         
         try:        
-            #count genre | num liked in this cathegory
+            #count genre | num liked for each cathegory
             if temp_session_db == Session_listener:
                 count_of_genre = temp_session_db.query(Genre.name.label("genre"),
                                                        count(Record.song).label("likes")).join(Belong).join(Song).join(Record).join(NormalSong).filter(and_(Record.vote == True,
@@ -735,15 +662,14 @@ class Song(Base):
             temp_session_db.rollback()
             return None
     
-    # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
-        return "<Song(name='%s', idsong='%d',album='%d' cover='%s', releaseDate='%s',content='%s')>" % (self.name, self.idsong, self.album, self.cover, self.releasedate, self.content)
+        return "<Song(name='%s', idsong='%d',album='%d' cover='%s', releaseDate='%s',content='%s')>" % (
+            self.name, self.idsong, self.album, self.cover, self.releasedate, self.content)
 
 
-# NORMALSONGS
 
 class NormalSong(Base):
-    __tablename__ = 'normalsongs'                   # obbligatorio
+    __tablename__ = 'normalsongs'
 
     song = Column(Integer, ForeignKey(Song.idsong), primary_key=True)
 
@@ -756,18 +682,14 @@ class NormalSong(Base):
     def check_song(temp_song, temp_session_db):
         temp = temp_session_db.query(NormalSong.song).filter(NormalSong.song == temp_song).first() is not None
         return temp
-         
-    
-    # questo metodo è opzionale, serve solo per pretty printing
 
     def __repr__(self):
         return "<NormalSong(song='%d')>" % (self.song)
 
 
-# PREMIUMSONGS
 
 class PremiumSong(Base):
-    __tablename__ = 'premiumsongs'                   # obbligatorio
+    __tablename__ = 'premiumsongs'
 
     song = Column(Integer, ForeignKey(Song.idsong), primary_key=True)
 
@@ -780,17 +702,14 @@ class PremiumSong(Base):
     def check_song(temp_song, temp_session_db):
         temp = temp_session_db.query(PremiumSong.song).filter(PremiumSong.song == temp_song).first() is not None
         return temp
-    
-    # questo metodo è opzionale, serve solo per pretty printing
 
     def __repr__(self):
         return "<PremiumSong(song='%d')>" % (self.song)
 
 
-# RECORDS
 
 class Record(Base):
-    __tablename__ = 'records'                   # obbligatorio
+    __tablename__ = 'records'
     
     user = Column(String, ForeignKey(User.username), primary_key=True)
     song = Column(Integer, ForeignKey(Song.idsong), primary_key=True)
@@ -805,8 +724,6 @@ class Record(Base):
         self.user = user
         self.song = song
         self.vote = vote
-
-    
     
     def insert(temp_user, temp_song, temp_vote, temp_session_db):
         try:
@@ -816,6 +733,7 @@ class Record(Base):
         except:
             temp_session_db.rollback()
         return
+    
     def delete(temp_user, temp_song, temp_session_db):
         try:
             record = temp_session_db.query(Record).filter(and_(Record.user == temp_user, Record.song == temp_song)).first()
@@ -827,15 +745,14 @@ class Record(Base):
             temp_session_db.rollback()
             return 
 
-    # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
-        return "<Statistic(song='%d', upvote='%d', downvote='%d',views='%d')>" % (self.song, self.upvote, self.downvote, self.views)
+        return "<Statistic(song='%d', upvote='%d', downvote='%d',views='%d')>" % (
+            self.song, self.upvote, self.downvote, self.views)
 
 
-# STATISTICS
 
 class Statistic(Base):
-    __tablename__ = 'statistics'                   # obbligatorio
+    __tablename__ = 'statistics'
 
     song = Column(Integer, ForeignKey(Song.idsong), primary_key=True)
     upvote = Column(Integer)
@@ -852,13 +769,8 @@ class Statistic(Base):
         self.views = views
 
     def increase_views(temp_song, temp_session_db):
-        try:    
-            #update(Song).where(Song.idsong == temp_idsong).values(album=temp_album)
-            
+        try: 
             temp_session_db.execute(update(Statistic).where(Statistic.song == temp_song).values(views= Statistic.views+1))
-            #   temp_session_db.query(Statistic).filter_by().update({})
-            
-            #   session.query(Tag).filter_by(tag_id=5).update({'count': Tag.count + 1})
             temp_session_db.commit()
         except:
             temp_session_db.rollback()
@@ -877,19 +789,14 @@ class Statistic(Base):
         except:
             temp_session_db.rollback()
             return False
-        
-        return
     
-    # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         return "<Statistic(song='%d', upvote='%d', downvote='%d',views='%d')>" % (self.song, self.upvote, self.downvote, self.views)
 
 
 
-# GENERES
-
 class Genre(Base):
-    __tablename__ = 'genres'                   # obbligatorio
+    __tablename__ = 'genres'
 
     name = Column(String, primary_key=True)
     cover = Column(String)
@@ -903,37 +810,13 @@ class Genre(Base):
     def get_genres():
         return Session_artist.query(Genre).all()
 
-    
-    
-    # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         return "<Genre(name='%s')>" % (self.name)
 
-# verso artist
-
-'''
-class Relate(Base):
-    __tablename__ = 'relate'                   # obbligatorio
-
-    genre = Column(String, ForeignKey(Genre.name), primary_key=True)
-    artist = Column(String, ForeignKey(Artist.username), primary_key=True)
-
-    genres = relationship(Genre, backref="relate")
-    artists = relationship(Artist, backref="relate")
-
-    def __init__(self, genre, artist):
-        self.genre = genre
-        self.artist = artist
-
-    # questo metodo è opzionale, serve solo per pretty printing
-    def __repr__(self):
-        return "<Relate(genre='%s', artist='%s')>" % (self.genre, self.artist)
-'''
-# verso song
 
 
 class Belong(Base):
-    __tablename__ = 'belong'                   # obbligatorio
+    __tablename__ = 'belong'
 
     genre = Column(String, ForeignKey(Genre.name), primary_key=True)
     song = Column(String, ForeignKey(Song.idsong), primary_key=True)
@@ -947,9 +830,9 @@ class Belong(Base):
         self.genre = genre
         self.song = song
 
-    def get_genre_list(temp_song_id): ###rivedere funzione
+    def get_genre_list(temp_song_id, temp_session_db):#returns a list of genres and the song genre is on the first position
         list_new = Genre.list.copy()
-        entry = Session_artist.query(Belong).filter(Belong.song == temp_song_id).first()
+        entry = temp_session_db.query(Belong).filter(Belong.song == temp_song_id).first()
         check = False
         forcondition = (b for b in range(len(list_new)) if entry.genre == list_new[b])
         for b in forcondition:
@@ -961,17 +844,13 @@ class Belong(Base):
         
         return list_new
     
-    ##########################################################################################################
-    # questo metodo è opzionale, serve solo per pretty printing
-
     def __repr__(self):
         return "<Belong(genre='%s', song='%s')>" % (self.genre, self.song)
 
-# CREATES
 
 
 class Creates(Base):
-    __tablename__ = 'creates'                   # obbligatorio
+    __tablename__ = 'creates'
 
     song = Column(String,  ForeignKey(Song.idsong), primary_key=True,)
     username = Column(String, ForeignKey(Artist.username), primary_key=True)
@@ -993,15 +872,13 @@ class Creates(Base):
         else:
             return False
 
-    # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         return "<Creates(song='%s',username='%s')>" % (self.song, self.username)
 
 
-# PLAYLIST
 
 class Playlist(Base):
-    __tablename__ = 'playlists'                   # obbligatorio
+    __tablename__ = 'playlists'
 
     name = Column(String)
     idlist = Column(Integer, primary_key=True)
@@ -1017,8 +894,6 @@ class Playlist(Base):
         self.creationdate = creationdate
         self.author = author
 
-    # questo metodo è opzionale, serve solo per pretty printing
-
     def create(temp_session_db,temp_name,temp_author):
         try:
             playlist=Playlist(name=temp_name,idlist=None,author=temp_author, creationdate=date.today())
@@ -1032,9 +907,8 @@ class Playlist(Base):
     def get_playlist_user(temp_session_db,temp_author):
         playlists = temp_session_db.query(Playlist).filter(Playlist.author == temp_author).all()
         return playlists
-
     
-    def get_playlist_name_id(temp_username, playlists):
+    def get_playlist_name_id(temp_username, playlists): #used to create list of playlists in the search page
         playlists_names_id = [('','')]
         if playlists is not None:
             for i in playlists:
@@ -1051,13 +925,13 @@ class Playlist(Base):
             temp_session_db.rollback()
 
     def __repr__(self):
-        return "<Playlist(name='%s', idlist='%d', creationdate='%s',author='%s')>" % (self.name, self.idlist, self.creationdate, self.author)
+        return "<Playlist(name='%s', idlist='%d', creationdate='%s',author='%s')>" % (
+            self.name, self.idlist, self.creationdate, self.author)
 
 
-#contain in playlist
 
-class Contains(Base):
-    __tablename__ = 'contains'                   # obbligatorio
+class Contains(Base):   #song contain in playlist
+    __tablename__ = 'contains'
 
     song = Column(Integer, ForeignKey(Song.idsong), primary_key=True)
     list = Column(Integer, ForeignKey(Playlist.idlist), primary_key=True)
@@ -1086,6 +960,5 @@ class Contains(Base):
         except:
             temp_session_db.rollback
         
-    # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         return "<Contains(song='%d', list='%d')>" % (self.song, self.list)

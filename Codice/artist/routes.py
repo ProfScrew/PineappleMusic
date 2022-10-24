@@ -31,7 +31,7 @@ def song():
     form.genre.choices = Genre.list
     
     #albums managment
-    list_albums = Album.get_albums(current_user.username)
+    list_albums = Album.get_albums_username(current_user.username)
     list_albums_names = Album.get_albums_name(temp_username= current_user.username,albums= list_albums, choice = None)
     form.album.choices = list_albums_names
     songs= Song.get_songs_artist(current_user.username)
@@ -101,7 +101,7 @@ def album():
     return render_template('album.html', form = form, user = current_user,
                            delete_album=delete_album,
                            modify_album=modify_album,
-                           album=Album.get_albums(current_user.username))
+                           album=Album.get_albums_username(current_user.username))
 
 
 
@@ -158,10 +158,10 @@ def modifysong():
     song_info = Song.get_song_id(song.idsong.data)
     
     #genre choice
-    form.genre.choices = Belong.get_genre_list(song.idsong.data)
+    form.genre.choices = Belong.get_genre_list(song.idsong.data, current_user.type_session)
     
     #album managment
-    list_albums = Album.get_albums(current_user.username)
+    list_albums = Album.get_albums_username(current_user.username)
     list_albums_names = Album.get_albums_name(current_user.username,list_albums,song_info.album)
     form.album.choices = list_albums_names
     
