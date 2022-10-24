@@ -306,6 +306,127 @@ class Artist(Base):
                 return 1
         except:
             return 0
+    
+    def check_link(temp_link):
+        try:
+            request_cover = requests.get(temp_link)
+            if request_cover.status_code == 200:
+                return True
+            else:
+                return False
+        except:
+            return False
+    def check_links(cover, content):
+        try:
+            request_cover = requests.get(cover)
+            request_content = requests.get(content)
+            if request_cover.status_code == 200 and request_content.status_code == 200:
+                return True
+            else:
+                return False
+        except:
+            return False
+        
+    def switch_exclusivity(temp_premium, temp_idsong, temp_session_db):#session artist dentro
+        if temp_premium == 1:   #add premium remove normal
+            query = NormalSong(song=temp_idsong)
+            temp_session_db.delete(query)
+            query = PremiumSong(song=temp_idsong)
+            temp_session_db.add(query)
+            
+        elif temp_premium == 2: #add normal remove premium
+            query = PremiumSong(song=temp_idsong)
+            temp_session_db.delete(query)
+            query = NormalSong(song=temp_idsong)
+            temp_session_db.add(query)
+    
+    def modify_song(temp_idsong,temp_name,temp_album,temp_cover,temp_content,temp_releasedate, temp_genre, temp_premium, temp_session_db):
+        try:
+            query_update = []
+            if temp_name != None:
+                query_update.append(update(Song).where(Song.idsong == temp_idsong).values(name = temp_name))
+            if temp_album == -1:
+                query_update.append(update(Song).where(Song.idsong == temp_idsong).values(album=None))
+            elif temp_album != None:
+                query_update.append(update(Song).where(Song.idsong == temp_idsong).values(album=temp_album))
+            if temp_cover != None:
+                query_update.append(update(Song).where(Song.idsong == temp_idsong).values(cover = temp_cover))
+            if temp_content != None:
+                query_update.append(update(Song).where(Song.idsong == temp_idsong).values(content = temp_content))
+            if temp_releasedate != None:
+                query_update.append(update(Song).where(Song.idsong == temp_idsong).values(releasedate = temp_releasedate))
+            if temp_genre != None:
+                query_update.append(update(Belong).where(Belong.song == temp_idsong).values(genre = temp_genre))
+             
+            for i in query_update:
+                temp_session_db.execute(i)
+            
+            if temp_premium != None:
+                Artist.switch_exclusivity(temp_premium, temp_idsong, temp_session_db)
+                
+            temp_session_db.commit()
+            return True
+        except:
+            temp_session_db.rollback()
+            return False
+    
+    def delete_song(temp_idsong,temp_session_db):
+        try:
+            song = temp_session_db.query(Song).filter(Song.idsong == temp_idsong).first()
+            temp_session_db.delete(song)
+            temp_session_db.commit()
+            return True
+        except:
+            temp_session_db.rollback()
+            return False
+    
+    def modify_album(temp_idalbum, temp_name, temp_cover, temp_artist, temp_session_db):
+        try:
+            if temp_cover == '':
+                if not Album.check_artist_album_name(temp_artist,temp_name):#modifica nome
+                    query = update(Album).where(Album.idalbum == temp_idalbum).values(name = temp_name)
+                else:
+                    return False
+            else:
+                if not Artist.check_link(temp_cover):
+                    return False
+                album = temp_session_db.query(Album).filter(Album.idalbum == temp_idalbum).first()
+                if temp_name == album.name:#modifica cover
+                    query = update(Album).where(Album.idalbum == temp_idalbum).values(cover = temp_cover.split("/")[5])
+                    #Song.change_cover_album(temp_idalbum, temp_cover.split("/")[5])
+                else:#modifica tutto
+                    if not Album.check_artist_album_name(temp_artist,temp_name):
+                        query = update(Album).where(Album.idalbum == temp_idalbum).values(cover = temp_cover.split("/")[5], name = temp_name)
+                        #
+                    else:
+                        return False
+                    
+            temp_session_db.execute(query)
+            
+            if temp_cover != '':
+                Artist.change_cover_album(temp_idalbum, temp_cover.split("/")[5])
+            
+            temp_session_db.commit()
+            return True
+        except:
+            temp_session_db.rollback()
+            return False
+    
+    def change_cover_album(temp_album, temp_cover,temp_session_db):
+        query = update(Song).where(Song.album == temp_album).values(cover = temp_cover)
+        temp_session_db.execute(query)
+        return
+    
+    def delete_album(temp_idalbum, temp_session_db):
+        try:
+            album = temp_session_db.query(Album).filter(
+                Album.idalbum == temp_idalbum).first()
+            temp_session_db.delete(album)
+            temp_session_db.commit()
+            return True
+        except:
+            temp_session_db.rollback()
+            return False
 
     # questo metodo è opzionale, serve solo per pretty printing
 
@@ -344,15 +465,6 @@ class Album(Base):
         else:
             return False 
         
-    def check_link(temp_link):
-        try:
-            request_cover = requests.get(temp_link)
-            if request_cover.status_code == 200:
-                return True
-            else:
-                return False
-        except:
-            return False
     
     def get_albums(temp_username):
         albums = Session_artist.query(Album).filter(
@@ -392,49 +504,7 @@ class Album(Base):
                 return i.idalbum
         return None
     
-    def modify_album(temp_idalbum, temp_name, temp_cover, temp_artist):
-        try:
-            if temp_cover == '':
-                if not Album.check_artist_album_name(temp_artist,temp_name):#modifica nome
-                    query = update(Album).where(Album.idalbum == temp_idalbum).values(name = temp_name)
-                else:
-                    return False
-            else:
-                if not Album.check_link(temp_cover):
-                    return False
-                album = Session_artist.query(Album).filter(Album.idalbum == temp_idalbum).first()
-                if temp_name == album.name:#modifica cover
-                    query = update(Album).where(Album.idalbum == temp_idalbum).values(cover = temp_cover.split("/")[5])
-                    #Song.change_cover_album(temp_idalbum, temp_cover.split("/")[5])
-                else:#modifica tutto
-                    if not Album.check_artist_album_name(temp_artist,temp_name):
-                        query = update(Album).where(Album.idalbum == temp_idalbum).values(cover = temp_cover.split("/")[5], name = temp_name)
-                        #
-                    else:
-                        return False
-                    
-            Session_artist.execute(query)
-            
-            if temp_cover != '':
-                Song.change_cover_album(temp_idalbum, temp_cover.split("/")[5])
-            
-            Session_artist.commit()
-            return True
-        except:
-            Session_artist.rollback()
-            return False
     
-    def delete_album(temp_idalbum):
-        try:
-            album = Session_artist.query(Album).filter(
-                Album.idalbum == temp_idalbum).first()
-            Session_artist.delete(album)
-            Session_artist.commit()
-            return True
-        except:
-            Session_artist.rollback()
-            return False
-
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):
         # artist o artists?
@@ -464,63 +534,13 @@ class Song(Base):
         self.releasedate = releasedate
         self.content = content
 
-    def insert_song(temp_name, temp_album, temp_cover, temp_releasedate, temp_content):
+    def insert_song(temp_name, temp_album, temp_cover, temp_releasedate, temp_content): #togliere sta funzione 
         # Session_artist
 
         song = Song(name=temp_name, idsong=None, album=temp_album, cover=temp_cover,
                     releasedate=temp_releasedate, content=temp_content)
         return song
 
-    def switch_exclusivity(temp_premium, temp_idsong):#session artist dentro
-        if temp_premium == 1:   #add premium remove normal
-            query = NormalSong(song=temp_idsong)
-            Session_artist.delete(query)
-            query = PremiumSong(song=temp_idsong)
-            Session_artist.add(query)
-            
-        elif temp_premium == 2: #add normal remove premium
-            query = PremiumSong(song=temp_idsong)
-            Session_artist.delete(query)
-            query = NormalSong(song=temp_idsong)
-            Session_artist.add(query)
-            
-            
-
-    def modify_song(temp_idsong,temp_name,temp_album,temp_cover,temp_content,temp_releasedate, temp_genre, temp_premium):
-        try:
-            query_update = []
-            if temp_name != None:
-                query_update.append(update(Song).where(Song.idsong == temp_idsong).values(name = temp_name))
-            if temp_album == -1:
-                query_update.append(update(Song).where(Song.idsong == temp_idsong).values(album=None))
-            elif temp_album != None:
-                query_update.append(update(Song).where(Song.idsong == temp_idsong).values(album=temp_album))
-            if temp_cover != None:
-                query_update.append(update(Song).where(Song.idsong == temp_idsong).values(cover = temp_cover))
-            if temp_content != None:
-                query_update.append(update(Song).where(Song.idsong == temp_idsong).values(content = temp_content))
-            if temp_releasedate != None:
-                query_update.append(update(Song).where(Song.idsong == temp_idsong).values(releasedate = temp_releasedate))
-            if temp_genre != None:
-                query_update.append(update(Belong).where(Belong.song == temp_idsong).values(genre = temp_genre))
-             
-            for i in query_update:
-                Session_artist.execute(i)
-            
-            if temp_premium != None:
-                Song.switch_exclusivity(temp_premium)
-                
-            Session_artist.commit()
-            return True
-        except:
-            Session_artist.rollback()
-            return False
-    
-    
-    def change_cover_album(temp_album, temp_cover):
-        query = update(Song).where(Song.album == temp_album).values(cover = temp_cover)
-        Session_artist.execute(query)
-        return
     
     # def get_song_with_artist_genres():
     #
@@ -555,31 +575,12 @@ class Song(Base):
         temp = Session_artist.query(Song).filter(Song.idsong == temp_idsong).first()
         return temp
     
-    def check_links(cover, content):
-        try:
-            request_cover = requests.get(cover)
-            request_content = requests.get(content)
-            if request_cover.status_code == 200 and request_content.status_code == 200:
-                return True
-            else:
-                return False
-        except:
-            return False
     
     def get_song_playlist(temp_user,idplaylist):
         song_user = Session_artist.query(Record).filter(Record.user == temp_user).subquery()
         songs=Session_artist.query(Song,Belong.genre,Creates.username,Album.name,song_user).join(Belong).join(Creates).outerjoin(Album).join(Contains).outerjoin(song_user).filter(Contains.list==idplaylist).all()
         return songs
 
-    def delete_song(temp_idsong):
-        try:
-            song = Session_artist.query(Song).filter(Song.idsong == temp_idsong).first()
-            Session_artist.delete(song)
-            Session_artist.commit()
-            return True
-        except:
-            Session_artist.rollback()
-            return False
     
     def get_top_like_songs(temp_session_db, redirect_search = False, temp_user = None):
         try:
@@ -752,8 +753,8 @@ class NormalSong(Base):
     def __init__(self, song):
         self.song = song
 
-    def check_song(temp_song):
-        temp = Session_artist.query(NormalSong.song).filter(NormalSong.song == temp_song).first() is not None
+    def check_song(temp_song, temp_session_db):
+        temp = temp_session_db.query(NormalSong.song).filter(NormalSong.song == temp_song).first() is not None
         return temp
          
     
@@ -776,8 +777,8 @@ class PremiumSong(Base):
     def __init__(self, song):
         self.song = song
 
-    def check_song(temp_song):
-        temp = Session_artist.query(PremiumSong.song).filter(PremiumSong.song == temp_song).first() is not None
+    def check_song(temp_song, temp_session_db):
+        temp = temp_session_db.query(PremiumSong.song).filter(PremiumSong.song == temp_song).first() is not None
         return temp
     
     # questo metodo è opzionale, serve solo per pretty printing
@@ -862,19 +863,19 @@ class Statistic(Base):
         except:
             temp_session_db.rollback()
 
-    def get_statistics(temp_username):
-        temp = Session_artist.query(Statistic.upvote,Statistic.downvote,Statistic.views,Song.name).join(Song).join(Creates).filter(Creates.username == temp_username).all()
+    def get_statistics(temp_username, temp_session_db):
+        temp = temp_session_db.query(Statistic.upvote,Statistic.downvote,Statistic.views,Song.name).join(Song).join(Creates).filter(Creates.username == temp_username).all()
         return temp
     
-    #rivedere se serve
-    def insert_statistics(temp_song):
+    #rivedere se serve <---- non usato
+    def insert_statistics(temp_song,temp_session_db):
         try:
             statistic=Statistic(song = temp_song , upvote = 0,downvote = 0, views = 0)
-            Session_artist.add(statistic)
-            Session_artist.commit()
+            temp_session_db.add(statistic)
+            temp_session_db.commit()
             return True
         except:
-            Session_artist.rollback()
+            temp_session_db.rollback()
             return False
         
         return
@@ -1042,9 +1043,12 @@ class Playlist(Base):
                 playlists_names_id.append((str(id),name))
         return playlists_names_id
     
-    def delete_playlist(idplaylist):
-        Session_artist.query(Playlist).filter(Playlist.idlist==idplaylist).delete()
-        Session_artist.commit()
+    def delete_playlist(idplaylist,temp_session_db):
+        try:
+            temp_session_db.query(Playlist).filter(Playlist.idlist==idplaylist).delete()
+            temp_session_db.commit()
+        except:
+            temp_session_db.rollback()
 
     def __repr__(self):
         return "<Playlist(name='%s', idlist='%d', creationdate='%s',author='%s')>" % (self.name, self.idlist, self.creationdate, self.author)
@@ -1067,17 +1071,20 @@ class Contains(Base):
         self.song = song
         self.list = list
 
-    def create(songid,playlistid):
+    def create(songid,playlistid, temp_session_db):
         try:
             contains=Contains(songid,playlistid)
-            Session_artist.add(contains)
-            Session_artist.commit()
+            temp_session_db.add(contains)
+            temp_session_db.commit()
         except:
-            Session_artist.rollback()
+            temp_session_db.rollback()
 
-    def delete_song_from_playlist(idsong,idplaylist):
-        Session_artist.query(Contains).filter(Contains.song==idsong,Contains.list==idplaylist).delete()
-        Session_artist.commit()
+    def delete_song_from_playlist(idsong,idplaylist, temp_session_db):
+        try:
+            temp_session_db.query(Contains).filter(Contains.song==idsong,Contains.list==idplaylist).delete()
+            temp_session_db.commit()
+        except:
+            temp_session_db.rollback
         
     # questo metodo è opzionale, serve solo per pretty printing
     def __repr__(self):

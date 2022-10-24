@@ -56,7 +56,7 @@ def search():
     
     if form.validate_on_submit():
         for idl in form.playlist.data:
-            Contains.create(form.songid.data, idl)
+            Contains.create(form.songid.data, idl, current_user.type_session)
     
     return render_template("songs.html",user=current_user,page_name="Search Songs",add_to_playlist=True,
                            listsong=song,playlist=playlist,form=form)
@@ -75,7 +75,7 @@ def playlist():
             flash("Creation Failed")
     
     if deleteplaylist.validate_on_submit():
-        Playlist.delete_playlist(deleteplaylist.playlistid.data)
+        Playlist.delete_playlist(deleteplaylist.playlistid.data, current_user.type_session)
             
     return render_template("playlist.html",user=current_user, form=form,
                            playlistform=playlistform,delete_playlist=deleteplaylist,
@@ -88,7 +88,7 @@ def getsongfromplaylist():
     delete_form=DeleteSongFromPlaylist()
     if form.validate_on_submit():
         if delete_form.validate_on_submit():
-            Contains.delete_song_from_playlist(delete_form.idsong.data,delete_form.playlistid.data)
+            Contains.delete_song_from_playlist(delete_form.idsong.data,delete_form.playlistid.data, current_user.type_session)
 
         song=Song.get_song_playlist(current_user.username,form.playlistid.data)
         return render_template("songs.html",user=current_user,page_name="Playlist",
@@ -114,7 +114,7 @@ def getsongfromgenre():
         
         if form.validate_on_submit():
             for idl in form.playlist.data:
-                Contains.create(form.songid.data, idl)
+                Contains.create(form.songid.data, idl, current_user.type_session)
         
         return render_template("songs.html",user=current_user,page_name=genre_form.genre.data,add_to_playlist=True,
                             listsong=song,playlist=playlist,form=form)

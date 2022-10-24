@@ -68,7 +68,7 @@ def requiredsong():
         if not form.premium.data == ' ':
             user = User.get_user(Session_guestmanager, form.username.data)
             if user is not None and user.verify_password(form.password.data) and (User.get_type_user(form.username.data) == 3):
-                if Song.check_links(form.cover.data,form.content.data):
+                if Artist.check_links(form.cover.data,form.content.data):
                     if Artist.insert_song(form.name.data, None, form.cover.data.split("/")[5], form.release_date.data,
                                         form.content.data.split("/")[5], form.username.data, form.genre.data, form.premium.data):
                         flash("Succesfull Insert")

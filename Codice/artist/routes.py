@@ -14,7 +14,7 @@ artist = Blueprint('artist', __name__, static_folder='static',
 def statistics():
     if current_user.type_account != 3:
         abort(403)
-    views=Statistic.get_statistics(current_user.username)
+    views=Statistic.get_statistics(current_user.username,current_user.type_session)
     return render_template('statistics.html', user = current_user,views=views)
 
 
@@ -37,7 +37,7 @@ def song():
     songs= Song.get_songs_artist(current_user.username)
     
     if form.validate_on_submit():
-        if Album.check_link(form.content.data):
+        if Artist.check_link(form.content.data):
             if (form.cover.data == None) and (form.album.data == ''):
                 flash("Insert a cover.")
             else:
@@ -48,7 +48,7 @@ def song():
                         flash("Select Exclusivity")
                     else:
                         if form.album.data == '':#no album
-                            if Album.check_link(form.cover.data):    
+                            if Artist.check_link(form.cover.data):    
                                 if Artist.insert_song(form.name.data, None, form.cover.data.split("/")[5], form.release_date.data,
                                                 form.content.data.split("/")[5],current_user.username,form.genre.data,form.premium.data):
                                     flash("Upload Succesfull")
@@ -90,7 +90,7 @@ def album():
         if Album.check_artist_album_name(form.name.data, current_user.username):
             flash("Album name already in use by you.")
         else:
-            if Album.check_link(form.cover.data):
+            if Artist.check_link(form.cover.data):
                 if Artist.insert_album(form.name.data,form.cover.data.split("/")[5],current_user.username):
                     flash("Upload Successful.")
                 else:
@@ -125,7 +125,7 @@ def modifyalbum():
             flash("No nodification made")
             return redirect(url_for('artist.album'))
         else:
-            if Album.modify_album(album_form.idalbum.data,album_form.name.data,album_form.cover.data,current_user.username):
+            if Artist.modify_album(album_form.idalbum.data,album_form.name.data,album_form.cover.data,current_user.username, current_user.type_session):
                 flash("Successful modification.")
                 return redirect(url_for('artist.album'))
             else:
@@ -140,7 +140,7 @@ def deletealbum():
         
     delete_album=DeleteAlbum()
     if delete_album.validate_on_submit():
-        if Album.delete_album(delete_album.idalbum.data):
+        if Artist.delete_album(delete_album.idalbum.data, current_user.type_session):
             flash("Album Deleted.")
         else:
             flash("Error Deleting Album.")
@@ -178,12 +178,12 @@ def modifysong():
         if form.premium.data == '':#premium
             form.premium.data = None
         elif form.premium.data == 'The song will be premium':
-            if not PremiumSong.check_song:
+            if not PremiumSong.check_song(form.name.data, current_user.type_session):
                 form.premium.data = 1
             else:
                 form.premium.data = None
         else:
-            if not NormalSong.check_song:
+            if not NormalSong.check_song(form.name.data,current_user.type_session):
                 form.premium.data = 2
             else:
                 form.premium.data = None
@@ -194,7 +194,7 @@ def modifysong():
         if form.cover.data == '':#cover
             form.cover.data = None
         else:
-            album = Album.check_link(form.cover.data)
+            album = Artist.check_link(form.cover.data)
         
         if form.album.data == list_albums_names[0]:#album
             form.album.data = None
@@ -207,13 +207,13 @@ def modifysong():
             album = True
         if album == False: #checking cover,content and if ok calling update
             flash("Error Cover Link.")
-        elif (not Album.check_link(form.content.data)) and (form.content.data != None) :
+        elif (not Artist.check_link(form.content.data)) and (form.content.data != None) :
             flash("Error Content Link.")
         else:
             if album != True and form.cover.data != None:
                 form.cover.data =form.cover.data.split("/")[5]
-            if Song.modify_song(song_info.idsong,form.name.data,form.album.data,form.cover.data,
-                                form.content.data,form.release_date.data,form.genre.data,form.premium.data):
+            if Artist.modify_song(song_info.idsong,form.name.data,form.album.data,form.cover.data,
+                                form.content.data,form.release_date.data,form.genre.data,form.premium.data, current_user.type_session):
                 flash("Modification Successful")
                 return redirect(url_for('artist.song'))
             else:
@@ -228,7 +228,7 @@ def deletesong():
         
     delete_song = DeleteSong()
     if delete_song.validate_on_submit():
-        if Song.delete_song(delete_song.idsong.data):
+        if Artist.delete_song(delete_song.idsong.data, current_user.type_session):
             flash("Delete successful.")
         else:
             flash("Error song delete.")
