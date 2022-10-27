@@ -1,5 +1,3 @@
-
-
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
@@ -19,6 +17,7 @@ from flask_login import current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from Codice.database import Session_artist, Session_deletemanager, Session_guestmanager, Session_listener, Session_premiumlistener, Session
+
 
 
 Base = declarative_base()
@@ -229,12 +228,16 @@ class Artist(Base):
             Session_artist.rollback()
             return False 
     
+    #inserts song in the database and returns confirmation that is later sent to the route
     def insert_song(temp_name, temp_album, temp_cover, temp_releasedate, temp_content, temp_username, song_genres, song_type, temp_session_db):
         try:
             song = Song(name=temp_name, idsong=None, album=temp_album, cover=temp_cover,
                         releasedate=temp_releasedate, content=temp_content)
             temp_session_db.add(song)
-            temp_session_db.flush()
+            temp_session_db.flush() # used to communicate with the database but information 
+                                    # sent are in pending state(waits for commit).
+                                    # With that we can get the id of the song
+            
             belong = Belong(genre=song_genres, song=song.idsong)
             temp_session_db.add(belong)
 
@@ -250,7 +253,6 @@ class Artist(Base):
 
             statistic=Statistic(song = song.idsong, upvote = 0,downvote = 0, views = 0)
             temp_session_db.add(statistic)
-            print("AAAAAAAAAAAAAAAAAAAAAAaaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
             temp_session_db.commit()
             
             return True
@@ -270,7 +272,7 @@ class Artist(Base):
         except:
             return 0
     
-    def check_link(temp_link):
+    def check_link(temp_link): # the following two functions are used to check if the links are valid
         try:
             request_cover = requests.get(temp_link)
             if request_cover.status_code == 200:
@@ -289,7 +291,8 @@ class Artist(Base):
                 return False
         except:
             return False
-        
+    
+    # used to switch song from normal to premium or viceversa
     def switch_exclusivity(temp_premium, temp_idsong, temp_session_db):
         if temp_premium == 1:   #add premium remove normal
             query = NormalSong(song=temp_idsong)
@@ -303,9 +306,10 @@ class Artist(Base):
             query = NormalSong(song=temp_idsong)
             temp_session_db.add(query)
     
+    # used to modify changed values of a song
     def modify_song(temp_idsong,temp_name,temp_album,temp_cover,temp_content,temp_releasedate, temp_genre, temp_premium, temp_session_db):
         try:
-            query_update = []
+            query_update = []   #the first part checks changes and adds them to the list
             if temp_name != None:
                 query_update.append(update(Song).where(Song.idsong == temp_idsong).values(name = temp_name))
             if temp_album == -1:
@@ -333,6 +337,7 @@ class Artist(Base):
             temp_session_db.rollback()
             return False
     
+    #deletes song from the database linked stuff are deleted automatically by cascade
     def delete_song(temp_idsong,temp_session_db):
         try:
             song = temp_session_db.query(Song).filter(Song.idsong == temp_idsong).first()
@@ -343,10 +348,11 @@ class Artist(Base):
             temp_session_db.rollback()
             return False
     
+    #modifies album name and cover, if cover is changed the changes are applied to all songs of the album
     def modify_album(temp_idalbum, temp_name, temp_cover, temp_artist, temp_session_db):
         try:
             if temp_cover == '':
-                if not Album.check_artist_album_name(temp_artist,temp_name):#modifica nome
+                if not Album.check_artist_album_name(temp_artist,temp_name):            #modifies name
                     query = update(Album).where(Album.idalbum == temp_idalbum).values(name = temp_name)
                 else:
                     return False
@@ -354,9 +360,9 @@ class Artist(Base):
                 if not Artist.check_link(temp_cover):
                     return False
                 album = temp_session_db.query(Album).filter(Album.idalbum == temp_idalbum).first()
-                if temp_name == album.name:#modifica cover
+                if temp_name == album.name:                                             #modifies cover
                     query = update(Album).where(Album.idalbum == temp_idalbum).values(cover = temp_cover.split("/")[5])
-                else:#modifica tutto
+                else:                                                                   #modifies everything
                     if not Album.check_artist_album_name(temp_artist,temp_name):
                         query = update(Album).where(Album.idalbum == temp_idalbum).values(cover = temp_cover.split("/")[5], name = temp_name)
                     else:
@@ -373,11 +379,13 @@ class Artist(Base):
             temp_session_db.rollback()
             return False
     
+    #used to change cover of all songs of an album
     def change_cover_album(temp_album, temp_cover,temp_session_db):
         query = update(Song).where(Song.album == temp_album).values(cover = temp_cover)
         temp_session_db.execute(query)
         return
     
+    # deletes album and all songs linked to it(cascade)
     def delete_album(temp_idalbum, temp_session_db):
         try:
             album = temp_session_db.query(Album).filter(
@@ -410,6 +418,8 @@ class Album(Base):
         self.cover = cover
         self.artist = artist
 
+    # checks if an album with the same name already exists for the same artist
+    # (artist can't have two or more albums with the same name, but exist different albums with the same name but different artists)
     def check_artist_album_name(temp_username, temp_name):
         album = Session_artist.query(Album).filter(and_( Album.artist == temp_username, Album.name == temp_name)).count()
         if(album>0):
@@ -427,6 +437,7 @@ class Album(Base):
             Album.idalbum == temp_idalbum).first()
         return albums
 
+    #used to extract albums in list format user by a form
     def get_albums_name(temp_username, albums, choice):
         list_albums = ['']
         if albums is not None:      #list used in select field by artist
@@ -441,7 +452,7 @@ class Album(Base):
                     list_albums.append('')
         return list_albums
     
-    def extract_cover_album(list_albums, choice):
+    def extract_cover_album(list_albums, choice):   #extracts cover of the album selected in the select field
         try:
             for i in list_albums:
                 if i.name == choice:
@@ -449,7 +460,7 @@ class Album(Base):
             return None
         except:
             return None
-    def extract_id_album(list_albums, choice):
+    def extract_id_album(list_albums, choice):      #extracts id of the album selected in the select field
         for i in list_albums:
             if i.name == choice:
                 return i.idalbum
@@ -482,16 +493,17 @@ class Song(Base):
         self.releasedate = releasedate
         self.content = content
 
+    # function used to get all songs || songs of a specific genre      
     def get_songs(temp_user, temp_session_db, genre=''):
         try:
-            if temp_session_db == Session_listener:
+            if temp_session_db == Session_listener:                                                 #extracts normal songs
                 if genre=='':
-                    song_user = temp_session_db.query(Record).filter(Record.user == temp_user).subquery()   #sotto query per estrarre like
+                    song_user = temp_session_db.query(Record).filter(Record.user == temp_user).subquery()   #subquery used to extract likes and dislikes of the user
                     songs = temp_session_db.query(Song,Belong.genre,Creates.username,Album.name,song_user).join(Belong).join(Creates).outerjoin(Album).join(NormalSong).outerjoin(song_user).all()
                 else:
                     song_user = temp_session_db.query(Record).filter(Record.user == temp_user).subquery()
                     songs = temp_session_db.query(Song,Belong.genre,Creates.username,Album.name,song_user).join(Belong).join(Creates).outerjoin(Album).join(NormalSong).outerjoin(song_user).filter(Belong.genre==genre).all()
-            elif temp_session_db == Session_premiumlistener or temp_session_db == Session_artist:
+            elif temp_session_db == Session_premiumlistener or temp_session_db == Session_artist:   #extracts premium songs
                 if genre=='':
                     song_user = temp_session_db.query(Record).filter(Record.user == temp_user).subquery()
                     songs = temp_session_db.query(Song,Belong.genre,Creates.username,Album.name,song_user).join(Belong).join(Creates).outerjoin(Album).outerjoin(song_user).all()
@@ -511,11 +523,13 @@ class Song(Base):
         temp = Session_artist.query(Song).filter(Song.idsong == temp_idsong).first()
         return temp
     
+    # extracts all songs of a specific playlist
     def get_song_playlist(temp_user,idplaylist):
         song_user = Session_artist.query(Record).filter(Record.user == temp_user).subquery()
         songs=Session_artist.query(Song,Belong.genre,Creates.username,Album.name,song_user).join(Belong).join(Creates).outerjoin(Album).join(Contains).outerjoin(song_user).filter(Contains.list==idplaylist).all()
         return songs
     
+    #used in homepage to extract the 10 most liked songs
     def get_top_like_songs(temp_session_db, redirect_search = False, temp_user = None):
         try:
             if redirect_search:
@@ -555,13 +569,14 @@ class Song(Base):
         except:
             temp_session_db.rollback()
             return None
-        
+    
+    #used in homepage to extract the 10 most listened songs
     def get_top_view_songs(temp_session_db, redirect_search = False, temp_user = None):
         
         try:
             if redirect_search: #this part is used for the redirect from homepage 
                 if temp_session_db == Session_listener:
-                    song_user = temp_session_db.query(Record).filter(Record.user == temp_user).subquery()
+                    song_user = temp_session_db.query(Record).filter(Record.user == temp_user).subquery()   #subquery used to extract likes and dislikes of the user
                     songs = temp_session_db.query(Song,
                                                 Belong.genre,
                                                 Creates.username,
@@ -574,7 +589,7 @@ class Song(Base):
                                                     Creates.username,
                                                     Album.name,
                                                     song_user).join(Belong).join(Creates).outerjoin(Album).join(Statistic).outerjoin(song_user).order_by(desc(Statistic.views)).limit(10).all()
-            else:
+            else:               #this part is used for the homepage
                 if temp_session_db == Session_listener:
                     songs = temp_session_db.query(Song.name.label("name"),
                                                 Song.cover.label("cover"),
@@ -596,6 +611,8 @@ class Song(Base):
             temp_session_db.rollback()
             return None
     
+    # used in homepage to extract 10 songs that are suggested to the user based on his likes by genre, 
+    # if he doesn't have any likes None is returned(in route is viewed top listened songs again) 
     def get_suggestion_songs(temp_user, temp_session_db, redirect_search = False):
         
         try:        
@@ -662,7 +679,7 @@ class Song(Base):
                 if i == arr[0]:
                     result_query = song
                 else:
-                    result_query = union(result_query, song)
+                    result_query = union(result_query, song)    #union of all the queries
             result = temp_session_db.execute(result_query).all()
             return result
         except:
@@ -686,6 +703,7 @@ class NormalSong(Base):
     def __init__(self, song):
         self.song = song
 
+    #check if song is normal
     def check_song(temp_song, temp_session_db):
         temp = temp_session_db.query(NormalSong.song).filter(NormalSong.song == temp_song).first() is not None
         return temp
@@ -706,6 +724,7 @@ class PremiumSong(Base):
     def __init__(self, song):
         self.song = song
 
+    #check if song is premium
     def check_song(temp_song, temp_session_db):
         temp = temp_session_db.query(PremiumSong.song).filter(PremiumSong.song == temp_song).first() is not None
         return temp
@@ -732,6 +751,7 @@ class Record(Base):
         self.song = song
         self.vote = vote
     
+    # insert record(like or dislike) to database
     def insert(temp_user, temp_song, temp_vote, temp_session_db):
         try:
             record = Record(temp_user,temp_song,temp_vote)
@@ -741,6 +761,7 @@ class Record(Base):
             temp_session_db.rollback()
         return
     
+    #if user takes down his vote its deleted from database
     def delete(temp_user, temp_song, temp_session_db):
         try:
             record = temp_session_db.query(Record).filter(and_(Record.user == temp_user, Record.song == temp_song)).first()
@@ -775,6 +796,7 @@ class Statistic(Base):
         self.downvote = downvote
         self.views = views
 
+    #when user clicks a song, views are incremented
     def increase_views(temp_song, temp_session_db):
         try: 
             temp_session_db.execute(update(Statistic).where(Statistic.song == temp_song).values(views= Statistic.views+1))
@@ -782,6 +804,7 @@ class Statistic(Base):
         except:
             temp_session_db.rollback()
 
+    #get statistics used by artist
     def get_statistics(temp_username, temp_session_db):
         temp = temp_session_db.query(Statistic.upvote,Statistic.downvote,Statistic.views,Song.name).join(Song).join(Creates).filter(Creates.username == temp_username).all()
         return temp
@@ -837,7 +860,8 @@ class Belong(Base):
         self.genre = genre
         self.song = song
 
-    def get_genre_list(temp_song_id, temp_session_db):#returns a list of genres and the song genre is on the first position
+    #returns a list of genres and the song genre is on the first position
+    def get_genre_list(temp_song_id, temp_session_db):
         list_new = Genre.list.copy()
         entry = temp_session_db.query(Belong).filter(Belong.song == temp_song_id).first()
         check = False
@@ -871,6 +895,7 @@ class Creates(Base):
         self.username = username
         self.song = song
 
+    # used during login to check if artist has songs, (if not hes account is deleted(another function))
     def check_artist(temp_username):
         user = Session_artist.query(Creates).filter(
             Creates.username == temp_username).count()
@@ -900,7 +925,8 @@ class Playlist(Base):
         self.idlist = idlist
         self.creationdate = creationdate
         self.author = author
-
+    
+    #create an empty playlist
     def create(temp_session_db,temp_name,temp_author):
         try:
             playlist=Playlist(name=temp_name,idlist=None,author=temp_author, creationdate=date.today())
@@ -910,12 +936,13 @@ class Playlist(Base):
         except:
             temp_session_db.rollback()
             return False
-
+    #gets user playlists
     def get_playlist_user(temp_session_db,temp_author):
         playlists = temp_session_db.query(Playlist).filter(Playlist.author == temp_author).all()
         return playlists
     
-    def get_playlist_name_id(temp_username, playlists): #used to create list of playlists in the search page
+    #used to create list of playlists in the search page form
+    def get_playlist_name_id(temp_username, playlists): 
         playlists_names_id = [('','')]
         if playlists is not None:
             for i in playlists:
@@ -952,6 +979,7 @@ class Contains(Base):   #song contain in playlist
         self.song = song
         self.list = list
 
+    #used to get songs in a playlist
     def create(songid,playlistid, temp_session_db):
         try:
             contains=Contains(songid,playlistid)
@@ -959,7 +987,8 @@ class Contains(Base):   #song contain in playlist
             temp_session_db.commit()
         except:
             temp_session_db.rollback()
-
+    
+    #deletes song from playlist(if playlist is deleted its songs are deleted too by cascade so no need to delete them manualy)
     def delete_song_from_playlist(idsong,idplaylist, temp_session_db):
         try:
             temp_session_db.query(Contains).filter(Contains.song==idsong,Contains.list==idplaylist).delete()
