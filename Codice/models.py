@@ -57,7 +57,7 @@ class User(Base, UserMixin):
         return check_password_hash(self.password, password)
 
     # the following three methods are used to get the type of user and the type of user session
-    def get_type_user(temp_username):
+    def get_type_user(temp_username): #1 from username returns number referenced type of user
         try:
             if Session_guestmanager.query(NormalListener).filter(NormalListener.username == temp_username).count() == 1:
                 num = 1
@@ -71,7 +71,7 @@ class User(Base, UserMixin):
         except:
             Session_guestmanager.rollback()
             
-    def get_type_user_session(temp_username):
+    def get_type_user_session(temp_username): #2 returns session from  username
         type_user = User.get_type_user(temp_username)
         if type_user == 1:
             return Session_listener
@@ -80,7 +80,7 @@ class User(Base, UserMixin):
         elif type_user == 3:
             return Session_artist
         
-    def get_type_user_session_from_number(temp_username, type_user):
+    def get_type_user_session_from_number(temp_username, type_user): #3 returns session from number
         if type_user == 1:
             return Session_listener
         elif type_user == 2:
@@ -96,6 +96,7 @@ class User(Base, UserMixin):
         except:
             temp_session_db.rollback()
 
+    #used in signup route 
     def register_user(temp_session_db,  username, name, surname, birthdate, password, gender, phone, email, artist):
         try:
             temp_password = User.encrypt_password(password)
@@ -118,6 +119,7 @@ class User(Base, UserMixin):
             temp_session_db.rollback()
             return False
 
+    #used in profile route to update account info
     def update_user(temp_session_db, temp_username, temp_name, temp_surname, temp_birthdate, temp_password, temp_phone, temp_email, check_password):
         try:
             if check_password:
@@ -136,6 +138,7 @@ class User(Base, UserMixin):
             temp_session_db.rollback()
             return False
 
+    #used to delete acount, all the sub info are deleted automaticaly by the database(using cascade)
     def delete_user(username):
         try:
             user = User.get_user(Session_deletemanager,username)
@@ -144,6 +147,7 @@ class User(Base, UserMixin):
         except:
             Session_deletemanager.rollback()
 
+    #after inserting "card info" user is moved to premium
     def move_user_to_premium(username):
         try:
             premiumlistener = PremiumListener(username)
@@ -177,6 +181,7 @@ class NormalListener(Base):
     def __init__(self, username):
         self.username = username
 
+    #used to find user in pr 
     def get_user(temp_session_db, temp_username):
         user = temp_session_db.query(NormalListener).filter(
             NormalListener.username == temp_username).first()
@@ -224,31 +229,33 @@ class Artist(Base):
             Session_artist.rollback()
             return False 
     
-    def insert_song(temp_name, temp_album, temp_cover, temp_releasedate, temp_content, temp_username, song_genres, song_type):
+    def insert_song(temp_name, temp_album, temp_cover, temp_releasedate, temp_content, temp_username, song_genres, song_type, temp_session_db):
         try:
             song = Song(name=temp_name, idsong=None, album=temp_album, cover=temp_cover,
                         releasedate=temp_releasedate, content=temp_content)
-            Session_artist.add(song)
+            temp_session_db.add(song)
+            temp_session_db.flush()
             belong = Belong(genre=song_genres, song=song.idsong)
-            Session_artist.add(belong)
+            temp_session_db.add(belong)
 
             if song_type == 'The song will be premium':
                 premiumsong = PremiumSong(song=song.idsong)
-                Session_artist.add(premiumsong)
+                temp_session_db.add(premiumsong)
             else:
                 normalsong = NormalSong(song=song.idsong)
-                Session_artist.add(normalsong)
+                temp_session_db.add(normalsong)
 
             create = Creates(username=temp_username, song=song.idsong)
-            Session_artist.add(create)
+            temp_session_db.add(create)
 
             statistic=Statistic(song = song.idsong, upvote = 0,downvote = 0, views = 0)
-            Session_artist.add(statistic)
+            temp_session_db.add(statistic)
+            print("AAAAAAAAAAAAAAAAAAAAAAaaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+            temp_session_db.commit()
             
-            Session_artist.commit()
             return True
         except:
-            Session_artist.rollback()
+            temp_session_db.rollback()
             return False
 
     def check_if_artist(temp_username): #usato nel insert song fouri

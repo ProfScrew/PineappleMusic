@@ -1,5 +1,7 @@
 {% extends 'menu.html' %}
-
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('music.static',filename='css/style.css') }}">
+{% endblock %}
 {% block js %}
 <script type="text/javascript" src="{{ url_for('music.static', filename='js/music.js')}}"></script>
 

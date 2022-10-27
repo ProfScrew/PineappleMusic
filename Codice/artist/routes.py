@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, abort
+from flask import Blueprint, render_template, flash, redirect, url_for, abort
 from flask_login import login_required, current_user
 
 from Codice.models import *
@@ -50,7 +50,7 @@ def song():
                         if form.album.data == '':#no album
                             if Artist.check_link(form.cover.data):    
                                 if Artist.insert_song(form.name.data, None, form.cover.data.split("/")[5], form.release_date.data,
-                                                form.content.data.split("/")[5],current_user.username,form.genre.data,form.premium.data):
+                                                form.content.data.split("/")[5],current_user.username,form.genre.data,form.premium.data,current_user.type_session):
                                     flash("Upload Succesfull")
                                     redirect(url_for('artist.song'))
                                 else:
@@ -64,7 +64,7 @@ def song():
                                 flash("Error Register Ablum")
                             else:
                                 if Artist.insert_song(form.name.data, album, cover, form.release_date.data,
-                                            form.content.data.split("/")[5],current_user.username,form.genre.data,form.premium.data):
+                                            form.content.data.split("/")[5],current_user.username,form.genre.data,form.premium.data,current_user.type_session):
                                     flash("Upload Successful")
                                     redirect(url_for('artist.song'))
                                 else:

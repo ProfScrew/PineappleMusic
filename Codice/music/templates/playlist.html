@@ -1,7 +1,12 @@
 {% extends 'menu.html' %}
+{% block css %}
+    <link rel="stylesheet" href="{{ url_for('music.static',filename='css/style.css') }}">
+{% endblock %}
+
 {% block js %}
 <script type="text/javascript" src="{{ url_for('music.static', filename='js/playlist.js')}}"></script>
 {% endblock %}
+
 {% block content %}
 
 <div class="d-flex justify-content-center dashboard-content px-3 pt-4  text-center">

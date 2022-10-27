@@ -55,3 +55,21 @@
   position: absolute;
   top: 30%;
 }
+/* used in homepage and signin*/
+
+.signin{
+  position: absolute;
+  top:5%;
+}
+.signup{
+  position: absolute;
+  top:8%;
+}
+
+
+canvas{ /* canvas is the element that holds the animation */
+  display:block;
+  vertical-align:bottom;
+  min-height: 1300px;
+  max-height: 4000px;
+}

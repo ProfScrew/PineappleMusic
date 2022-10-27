@@ -2,7 +2,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import scoped_session
 from requests import Session
 
-from Codice.config import config
+from Codice.slowconfig import config
 from Codice.models import create_engine
 
 # setting sqlalchemy connection

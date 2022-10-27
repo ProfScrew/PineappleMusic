@@ -2,7 +2,7 @@ from flask import Flask
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 
-from Codice.config import config
+from Codice.slowconfig import config
 from Codice.models import User
 from Codice.database import *
 
