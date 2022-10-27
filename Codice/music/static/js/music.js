@@ -24,6 +24,9 @@ $('#backsong').on('click', function () {
         $("#artist-song").text($($($("#listsong[value='"+backsong+"']").parent().parent()).find("td")[1]).text());
         $("#songnumber").val(backsong);
         $("#playerhidden").attr("src", "https://docs.google.com/uc?export=open&id=" + $($($("#listsong[value='"+backsong+"']").parent().parent()).find("input")[2]).val());
+        if ($('#playpause').attr('class') == 'play-pause fas fa-play') {
+            $("#playerhidden").trigger("pause");
+        }
     }
 });
 
@@ -39,6 +42,9 @@ $('#nextsong').on('click', function () {
         $("#artist-song").text($($($("#listsong[value='"+nextsong+"']").parent().parent()).find("td")[1]).text());
         $("#songnumber").val(nextsong);
         $("#playerhidden").attr("src", "https://docs.google.com/uc?export=open&id=" + $($($("#listsong[value='"+nextsong+"']").parent().parent()).find("input")[2]).val());
+        if ($('#playpause').attr('class') == 'play-pause fas fa-play') {
+            $("#playerhidden").trigger("pause");
+        }
     }
 });
 
@@ -67,17 +73,17 @@ var interval = setInterval(function () {
     }
 }, 1000);
 
+var old_volume=1.0
 
 $("#icon-volume").on("click", function () {
-    if (typeof ($('#playerhidden').attr('src')) != "undefined" && $('#playerhidden').attr('src').length > 0) {
         if ($('#icon-volume').attr('class') == 'fas fa-volume-down') {
             $('#icon-volume').attr('class', 'fas fa-volume-mute');
+            old_volume = document.getElementById("playerhidden").volume;
             document.getElementById("playerhidden").volume = 0;
         } else {
             $('#icon-volume').attr('class', 'fas fa-volume-down');
-            document.getElementById("playerhidden").volume = 1.0;
+            document.getElementById("playerhidden").volume = old_volume;
         }
-    }
 });
 
 $('.selectpicker').val('default').selectpicker('deselectAll');

@@ -95,6 +95,7 @@
             var vol = pos_curr * 100 / size_bar;
             $('#progress-bar-vol-contr').attr('style', "width:" + parseFloat(vol.toFixed(1)) + "%;");
             document.getElementById("playerhidden").volume = pos_curr / size_bar;
+            $('#icon-volume').attr('class', 'fas fa-volume-down');
         });
 
     });
