@@ -13,7 +13,9 @@ from .forms import DeletePlaylist, DeleteSongFromPlaylist, PlaylistForm,AddToPla
 music = Blueprint('music', __name__, static_folder='static',
                  template_folder='templates')
 
+
 @music.route('/views', methods=['GET','POST'])
+@login_required
 def views():
     var=request.data
     data = json.loads(var)
@@ -39,8 +41,9 @@ def views():
     return "ok"
 
 
-@login_required
+
 @music.route('/search', methods=['GET','POST'])
+@login_required
 def search():
     form=AddToPlaylist()
     
@@ -61,8 +64,9 @@ def search():
     return render_template("songs.html",user=current_user,page_name="Search Songs",add_to_playlist=True,
                            listsong=song,playlist=playlist,form=form)
 
-@login_required
+
 @music.route('/playlist', methods=['GET','POST'])
+@login_required
 def playlist():
     form=PlaylistForm()
     playlistform=GetSongsPlaylist()
@@ -81,8 +85,9 @@ def playlist():
                            playlistform=playlistform,delete_playlist=deleteplaylist,
                            playlist=Playlist.get_playlist_user(session,current_user.username))
 
-@login_required
+
 @music.route('/getsongfromplaylist', methods=['POST'])
+@login_required
 def getsongfromplaylist():
     form=GetSongsPlaylist()
     delete_form=DeleteSongFromPlaylist()
@@ -94,13 +99,15 @@ def getsongfromplaylist():
         return render_template("songs.html",user=current_user,page_name="Playlist",
                 listsong=song,delete_from_playlist=True,delete_form=delete_form,playlistid=form.playlistid.data)
 
-@login_required
+
 @music.route('/getsongfromplaylist', methods=['GET'])
+@login_required
 def getsongfromplaylist_redirect():
     return redirect(url_for('music.playlist'))
 
-@login_required
+
 @music.route('/getsongfromgenre', methods=['POST'])
+@login_required
 def getsongfromgenre():
     form=AddToPlaylist()
     genre_form=GetSongsGenres()
@@ -119,19 +126,22 @@ def getsongfromgenre():
         return render_template("songs.html",user=current_user,page_name=genre_form.genre.data,add_to_playlist=True,
                             listsong=song,playlist=playlist,form=form)
 
-@login_required
+
 @music.route('/getsongfromgenre', methods=['GET'])
+@login_required
 def getsongfromgenre_redirect():
     return redirect(url_for('user.home'))
 
 
-@login_required
+
 @music.route('/getsongfromhome', methods=['GET'])
+@login_required
 def getsongfromhomeget_redirect():
     return redirect(url_for('user.home'))
 
-@login_required
+
 @music.route('/getsongfromhome', methods=['POST'])
+@login_required
 def getsongfromhome():
     form_choice = TableChoice()
     form=AddToPlaylist()

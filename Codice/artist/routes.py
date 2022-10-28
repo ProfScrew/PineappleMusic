@@ -11,6 +11,7 @@ artist = Blueprint('artist', __name__, static_folder='static',
 
 
 @artist.route('/statistics', methods=['GET'])
+@login_required
 def statistics():
     if current_user.type_account != 3:
         abort(403)
