@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block css %}
-    <link rel="stylesheet" href="{{ url_for('static',filename='css/particle.css') }}">
+<link rel="stylesheet" href="{{ url_for('static',filename='css/particle.css') }}">
 {% endblock %}
 {% block pagebody %}
 
@@ -20,7 +20,7 @@
                         <h2 class="fw-bold mb-2 text-uppercase">Insert your first song.</h2>
                         <p class="text-white-50 mb-5">To Procede with your registration inser your first song!</p>
                         <form method="POST" action="{{ url_for('auth.requiredsong') }}">
-                          {{ form.csrf_token }}
+                            {{ form.csrf_token }}
                             {{ form.name(class="form-control form-control-lg")}}
                             {{ form.name.label(class="form-label")}}
                             {{ form.cover(class="form-control form-control-lg")}}
@@ -33,41 +33,41 @@
                             {{ form.premium.label(class="form-label")}}
                             {{ form.genre(class="form-control form-control-lg")}}
                             {{ form.genre.label(class="form-label")}}
-                          <hr>
-                          <div class="form-outline form-white mb-4">
-                            {{ form.username(class="form-control form-control-lg")}}
-                            {{ form.username.label(class="form-label")}}
-                          </div>
-          
-                          <div class="form-outline form-white mb-4">
-                            {{ form.password(class="form-control form-control-lg")}}
-                            {{ form.password.label(class="form-label")}}
-                          </div>
-          
-          
-          
-                          {{ form.submit(class="btn btn-outline-light btn-lg px-5")}}
-          
+                            <hr>
+                            <div class="form-outline form-white mb-4">
+                                {{ form.username(class="form-control form-control-lg")}}
+                                {{ form.username.label(class="form-label")}}
+                            </div>
+
+                            <div class="form-outline form-white mb-4">
+                                {{ form.password(class="form-control form-control-lg")}}
+                                {{ form.password.label(class="form-label")}}
+                            </div>
+
+
+
+                            {{ form.submit(class="btn btn-outline-light btn-lg px-5")}}
+
                         </form>
-                        
+
                     </div>
                     {% for message in get_flashed_messages()%}
-                        <div class="alert alert-primary alert-dismissible fade show" role="alert">
-                            {{message}}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    {%endfor%}<!--Scrivi quando ritorni-->
+                    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                        {{message}}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {%endfor%}
                     <div>
                         <p class="mb-0"><br>You are a registered artist <br>and need to insert your first song?
                             <br><a href="{{url_for('auth.requiredsong')}}" class="text-white-50 fw-bold">Click
                                 Here</a>
                         </p>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
-  
+
     </div>
 
 

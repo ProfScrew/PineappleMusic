@@ -4,13 +4,12 @@
 
 
 <div class="main-container d-flex">
+    <!--black sidebar-->
     <div class="sidebar" id="side_nav">
         <div class="head-box px-2 pt-3 pb-4 d-flex justify-content-between">
             <h1 class="fs-4">
-                <!--<span class="bg-white tex-dark rounded shadow px-2 me-2"> -->
                 <img class="mb-4" src="{{ url_for('static',filename='img/pineapplemusic.ico') }}" alt="logo" width="36"
                     height="50">
-                <!--</span> -->
                 <span class="text-white">PineappleMusic</span>
             </h1>
             <button class="btn d-mb-none d-block close-btn px-1 py-0 text-white d-md-none d-block">
@@ -44,10 +43,8 @@
                 <li><a href="{{url_for('artist.statistics')}}" class="text-decoration-none px-3 py-2 d-block">
                     <i class="fa-solid fa-gauge-high"></i>Statistics</a></li>
             {% endif%}
-
-            
-
         </ul>
+        <!--bottom part of sidebar that contains name to exit from account-->
         <hr class="h-color mx-2">
         <div class=" d-block " id="exitaccount">
             <ul class="list-unstyled px-2">
@@ -61,7 +58,7 @@
         </div>
     </div>
 
-    
+    <!--top bar seen by phone/small screen-->
     <div class="content " style="background-color: #FFFFFF"  >
         <nav class="navbar navbar-expand-md navbar-light d-md-none d-block" style="background-color: #000">
             <div class="container-fluid">
@@ -75,33 +72,11 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-                    
-                        
-
-                    
-                        <!--
-                    <form class="d-flex">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
-                    </form>
-                    -->
                 </div>
             </div>
         </nav>
    
     {% block content %}
-        <!--
-        <div class="dashboard-content px-3 pt-4">
-            <h2 class="fs-5">
-                Dashboard
-            </h2>
-            <p>
-                When an error occurs, or exception as we call it, Python will normally stop and generate an error
-                message.
-                These exceptions can be handled using the try statement:
-            </p>
-        </div>
-        -->
     {% endblock %}
     </div>
 </div>

@@ -1,6 +1,6 @@
 {% extends 'menu.html' %}
 {% block css %}
-    <link rel="stylesheet" href="{{ url_for('music.static',filename='css/style.css') }}">
+<link rel="stylesheet" href="{{ url_for('music.static',filename='css/style.css') }}">
 {% endblock %}
 
 {% block js %}
@@ -10,9 +10,6 @@
 {% block content %}
 
 <div class="d-flex justify-content-center dashboard-content px-3 pt-4  text-center">
-    <!-- Account details card-->
-
-
     <div class="container">
         <div class="row">
             <div class="col-3"></div>
@@ -27,8 +24,6 @@
                                 {{ form.name(class="form-control")}}
                             </div>
                         </div>
-
-                        <!-- Save changes button-->
                         {{ form.submit(class="btn btn-success")}}
                     </form>
 

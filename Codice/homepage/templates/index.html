@@ -27,11 +27,9 @@
 
 
             <div class="row gx-3 mb-3">
-              <!-- Form Group (first name)-->
               <div class="col-md-6">
                 <a href="{{url_for('auth.signin')}}"><button type="button" class="btn btn-outline-light btn-lg px-5">Login</button></a>
               </div>
-              <!-- Form Group (last name)-->
               <div class="col-md-6">
                 <a href="{{url_for('auth.signup')}}"><button type="button" class="btn btn-outline-light btn-lg px-5">Register</button></a>
               </div>
@@ -50,25 +48,18 @@
 
           <br>
           <div class="row gx-3 mb-3">
-            <!-- Form Group (first name)-->
             <div class="col-md-6">
               <button type="button" class="btn btn-outline-success btn-lg px-5 " data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                 Disclaimer
               </button>
             </div>
-            <!-- Form Group (last name)-->
             <div class="col-md-6">
               <button type="button" class="btn btn-outline-success btn-lg px-5" data-bs-toggle="modal" data-bs-target="#staticBackdroptwo">
                 Authors
               </button>
             </div>
-
           </div>
-
-          <!-- Button trigger modal -->
-
-
-          <!-- Modal -->
+          <!-- Modal containing disclaimer-->
           <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
             aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -92,7 +83,7 @@
 
 
 
-          <!-- Modal -->
+          <!-- Modal cointaining authors-->
           <div class="modal fade" id="staticBackdroptwo" data-bs-backdrop="static" data-bs-keyboard="false"
             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -118,9 +109,6 @@
         </div>
 
         </div>
-
-
-
 
       </div>
     </div>

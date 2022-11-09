@@ -4,68 +4,49 @@
 
 
 <div class="d-flex justify-content-center dashboard-content px-3 pt-4  text-center">
-    <!-- Account details card-->
 
-    <div class=""><h1>Profile Info</h1>
-        <div class="">
-            
-            <!-- Form Group (username)-->
+    <div>
+        <h1>Profile Info</h1>
+        <div>
             <form method="POST" action="{{ url_for('user.profile') }}">
                 {{ form.csrf_token }}
-                <hr class="h-color-black mx-2">   
+                <hr class="h-color-black mx-2">
                 <div class="col-md-12">
                     <label class="small mb-1">Username</label>
                     <input class="form-control text-center" type="text" value="{{user.username}}" readonly>
                 </div>
 
                 <div class="row gx-3 mb-3">
-                        <!-- Form Group (first name)-->
                     <div class="col-md-6">
-                        {{ form.name.label(class="small mb-1")}} 
+                        {{ form.name.label(class="small mb-1")}}
                         {{ form.name(class="form-control",value=user.name)}}
 
                     </div>
-                        <!-- Form Group (last name)-->
                     <div class="col-md-6">
-                            {{ form.surname.label(class="small mb-1")}} 
-                            {{ form.surname(class="form-control",value=user.surname)}}
+                        {{ form.surname.label(class="small mb-1")}}
+                        {{ form.surname(class="form-control",value=user.surname)}}
                     </div>
                 </div>
-                    <!-- Form Row        -->
                 <div class="row gx-3 mb-3">
-                        <!-- Form Group (organization name)-->
-
-                    {{ form.birthdate.label(class="form-label")}} 
+                    {{ form.birthdate.label(class="form-label")}}
                     {{ form.birthdate(class="form-control",value=user.birthdate)}}
-
-                        <!-- Form Group (location)-->
                 </div>
-
-
                 <div class="mb-3">
                     <label class="small mb-1" for="inputGender">Gender</label>
                     <input class="form-control text-center" type="text" value="{{user.gender}}" readonly>
                 </div>
-
-
-                    <!-- Form Row-->
                 <div class="row gx-3 mb-3">
-                        <!-- Form Group (phone number)-->
                     <div class="col-md-6">
-                        {{ form.phone.label(class="small mb-1")}} 
+                        {{ form.phone.label(class="small mb-1")}}
                         {{ form.phone(class="form-control",value=user.phone)}}
                     </div>
-                        <!-- Form Group (birthday)-->
                     <div class="col-md-6">
-                        {{ form.email.label(class="small mb-1")}} 
+                        {{ form.email.label(class="small mb-1")}}
                         {{ form.email(class="form-control",value=user.email)}}
                     </div>
                 </div>
-
                 <div class="mb-3">
-                    {{ form.password.label(class="small mb-1")}} 
-                    <!--{{ form.password(class="form-control ",id="pass",type="password",value=user.password)}} -->
-
+                    {{ form.password.label(class="small mb-1")}}
                     <div class="form-group">
                         <div class="input-group" id="show_hide_password">
                             {{ form.password(class="form-control",value=user.password)}}
@@ -75,22 +56,19 @@
                         </div>
                     </div>
                 </div>
-            
-
-                <!-- Save changes button-->
                 {{ form.submit(class="btn btn-success")}}
             </form>
-        
+
             <form method="POST" action="{{ url_for('user.delete') }}">
                 {{ form.csrf_token }}
                 <button type="submit" class="btn btn-danger">Delete Account</button>
             </form>
 
             {% for message in get_flashed_messages()%}
-                <div class="alert alert-primary alert-dismissible fade show" role="alert">
-                  {{message}}
-                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
+            <div class="alert alert-primary alert-dismissible fade show" role="alert">
+                {{message}}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
             {%endfor%}
         </div>
     </div>
