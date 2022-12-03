@@ -1,0 +1,5 @@
+CREATE USER guest_manager WITH PASSWORD 'PassGuestManager';
+CREATE USER delete_manager WITH PASSWORD 'PassDeleteManager';
+CREATE USER artists WITH PASSWORD 'PassArtists';
+CREATE USER listeners WITH PASSWORD 'PassListeners';
+CREATE USER premium_listeners WITH PASSWORD 'PassPremiumListeners';

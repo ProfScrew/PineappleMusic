@@ -21,7 +21,7 @@ class RegisterForm(FlaskForm):
     password = PasswordField("Password", validators=[DataRequired(),Length(min=8)])
     
     gender = SelectField("Gender", choices=[' ','M','F'], validate_choice=True )
-    phone = StringField("Phone", validators=[DataRequired(),Length(min=6, max = 6)])
+    phone = StringField("Phone", validators=[DataRequired(),Length(min=10, max = 13)])
     email = EmailField("Email", validators=[DataRequired(),Email()])
     
     artist = SelectField('Artist', choices=[' ','True','False'])
@@ -40,7 +40,7 @@ class SongForm(FlaskForm):
     cover = StringField("Cover", validators=[DataRequired(),Length(max=120)])
     content=StringField("Content", validators=[DataRequired(),Length(max=120)])
     release_date=DateField("Release Date", validators=[DataRequired()])
-    genre=SelectField("Genre", choices=Genre.list)
+    genre=SelectField("Genre", choices=Genre.get_genre_list_database(), validate_choice=True)
     premium = SelectField("Premium", choices=[' ','The song will be premium','The song will be available to everyone'],
                           validate_choice=True )
     

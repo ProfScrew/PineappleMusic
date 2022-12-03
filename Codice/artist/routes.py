@@ -29,7 +29,7 @@ def song():
     form = SongForm()
     modify_song=ModifySong()
     delete_song=DeleteSong()
-    form.genre.choices = Genre.list
+    form.genre.choices = Genre.get_genre_list_database()
     
     #albums managment
     list_albums = Album.get_albums_username(current_user.username)

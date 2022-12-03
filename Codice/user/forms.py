@@ -13,7 +13,7 @@ class ModifyProfileForm(FlaskForm):
     birthdate = DateField("Birthdate", validators=[DataRequired()])
     password = PasswordField("Password", validators=[Optional(), Length(min=8)])
     
-    phone = StringField("Phone", validators=[DataRequired(),Length(min=6,max=6)])
+    phone = StringField("Phone", validators=[DataRequired(),Length(min=10,max=13)])
     email = EmailField("Email", validators=[DataRequired(),Email()])
     
     submit = SubmitField("Update")

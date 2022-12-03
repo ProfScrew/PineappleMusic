@@ -32,7 +32,7 @@ class User(Base, UserMixin):
     birthdate = Column(Date)
     password = Column(String)
     gender = Column(String)
-    phone = Column(Integer)
+    phone = Column(String)
     email = Column(String)
     
     
@@ -160,7 +160,7 @@ class User(Base, UserMixin):
             return False
 
     def __repr__(self):
-        return "<User(username='%s', name='%s', surname='%s',birthdate='%s' password='%s', gender='%s',phone='%d',email='%s')>" % (
+        return "<User(username='%s', name='%s', surname='%s',birthdate='%s' password='%s', gender='%s',phone='%s',email='%s')>" % (
             self.username, self.name, self.surname, self.birthdate,
             self.password, self.gender, self.phone, self.email)
 
@@ -831,14 +831,20 @@ class Genre(Base):
     name = Column(String, primary_key=True)
     cover = Column(String)
 
-    list = ['', 'Rock', 'Pop', 'Metal', 'Rap',
-            'Classic', 'Jazz', 'Reggae', 'Latin']
 
     def __init__(self, name):
         self.name = name
 
     def get_genres():
         return Session_artist.query(Genre).all()
+
+    def get_genre_list_database():
+        tuple_list = Genre.get_genres()
+        list = ['']
+        for genre in tuple_list:
+            list.append(genre.name)
+        return list
+
 
     def __repr__(self):
         return "<Genre(name='%s')>" % (self.name)
@@ -862,7 +868,7 @@ class Belong(Base):
 
     #returns a list of genres and the song genre is on the first position
     def get_genre_list(temp_song_id, temp_session_db):
-        list_new = Genre.list.copy()
+        list_new = Genre.get_genre_list_database()
         entry = temp_session_db.query(Belong).filter(Belong.song == temp_song_id).first()
         check = False
         forcondition = (b for b in range(len(list_new)) if entry.genre == list_new[b])
@@ -897,7 +903,7 @@ class Creates(Base):
 
     # used during login to check if artist has songs, (if not hes account is deleted(another function))
     def check_artist(temp_username):
-        user = Session_artist.query(Creates).filter(
+        user = Session_deletemanager.query(Creates).filter(
             Creates.username == temp_username).count()
         if user > 0:
             return True
