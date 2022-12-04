@@ -837,7 +837,7 @@ class Genre(Base):
 
     def get_genres():
         return Session_artist.query(Genre).all()
-
+    #returnts a list of genres used by artist to create songs(later modified in belong functions get_genre_list)
     def get_genre_list_database():
         tuple_list = Genre.get_genres()
         list = ['']
