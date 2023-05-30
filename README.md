@@ -1,23 +1,8 @@
-# Progetto_Basi_Dati
-Applicazione Player Musicale
+# PineappleMusic
+Progetto Basi di Dati [CT00006] Università Ca'Foscari 2021/2022. PineappleMusic AudioStreaming Service.
 
 Site https://pineapplemusic.tech/
 
-Idee da implementare:
+(Non Attivo)
 
-- 1 rivedere statistiche upvote downvote
-- 1 bloccare l'accesso alle route da normal a artist
-- 1 aggiungere indici per velocizare funzionamento
-
-- 2 javascript ottimizare
-- 2 ottimizzare modelli (esempio get_song intelligente)
-
-
-- 3 ottimizazzione tipo account su flask(idea: fare una classe a parte e salvare i login/tipo su una lista)
-
-
-
-Priorita:
-1. Obligatorio
-2. Vogliamo Implementare
-3. Optional
+Per avere più info consultare il report
